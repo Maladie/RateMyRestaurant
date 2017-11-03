@@ -1,5 +1,14 @@
 package pl.ratemyrestaurant.repository;
 
-//TODO: implementation
-public interface RestaurantRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import pl.ratemyrestaurant.model.FoodType;
+import pl.ratemyrestaurant.model.Ingredient;
+import pl.ratemyrestaurant.model.Restaurant;
+
+import java.util.List;
+
+public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
+
+    List<Restaurant> findByFoodTypesIn(List<FoodType> foodTypes);
+    List<Restaurant> findByIngredientsIn(List<Ingredient> ingredients);
 }
