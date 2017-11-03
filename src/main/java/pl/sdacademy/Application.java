@@ -7,6 +7,7 @@ import pl.sdacademy.services.GooglePlacesConnector;
 import se.walkercrou.places.Place;
 
 import java.util.List;
+import java.util.Set;
 
 @SpringBootApplication
 public class Application {
@@ -16,7 +17,7 @@ public class Application {
 
         GooglePlacesConnector googlePlacesConnector = new GooglePlacesConnector();
 
-        List<Place> places = googlePlacesConnector.retrieveRestaurants(new UserSearchCircle(50.2606155, 19.0237505, 100));
+        Set<Place> places = googlePlacesConnector.retrieveRestaurants(new UserSearchCircle(50.2606155, 19.0237505, 100));
 
         System.out.println(places);
     }
