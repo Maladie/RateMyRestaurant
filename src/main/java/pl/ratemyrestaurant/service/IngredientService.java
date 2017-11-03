@@ -2,12 +2,13 @@ package pl.ratemyrestaurant.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.ratemyrestaurant.dto.IngredientDTO;
 import pl.ratemyrestaurant.model.Ingredient;
 import pl.ratemyrestaurant.repository.IngredientRepository;
 
 import javax.transaction.Transactional;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -20,7 +21,8 @@ public class IngredientService {
         this.ingredientRepository = ingredientRepository;
     }
 
-    public Ingredient persistIngredient(Ingredient i){
+    public Ingredient addIngredient(IngredientDTO ingredientDTO){
+        Ingredient i = ingredientDTO.toIngredient();
         ingredientRepository.save(i);
         return i;
     }
@@ -39,11 +41,15 @@ public class IngredientService {
         return i;
     }
 
-    public Set<Ingredient> getAllIngredients(){
-        return new HashSet<Ingredient>(ingredientRepository.findAll());
+    public Set<IngredientDTO> getAllIngredientDTOs(){
+        return ingredientRepository
+                .findAll()
+                .stream()
+                .map(i -> i.toIngredientDto())
+                .collect(Collectors.toSet());
     }
 
-    public Ingredient getIngredientById(long id){
-        return ingredientRepository.findById(id);
+    public IngredientDTO getIngredientDTOById(long id){
+        return ingredientRepository.findById(id).toIngredientDto();
     }
 }

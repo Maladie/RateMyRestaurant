@@ -27,6 +27,14 @@ public class Thumb {
         return thumbsDown;
     }
 
+    public void setThumbsUp(int thumbsUp) {
+        this.thumbsUp = thumbsUp;
+    }
+
+    public void setThumbsDown(int thumbsDown) {
+        this.thumbsDown = thumbsDown;
+    }
+
     public void giveThumbUp() {
         thumbsUp++;
     }

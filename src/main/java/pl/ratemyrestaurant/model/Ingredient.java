@@ -1,6 +1,6 @@
 package pl.ratemyrestaurant.model;
 
-import pl.ratemyrestaurant.dto.IngredientDto;
+import pl.ratemyrestaurant.dto.IngredientDTO;
 
 import javax.persistence.*;
 
@@ -36,6 +36,14 @@ public class Ingredient {
         return thumb.getThumbsDown();
     }
 
+    public void setThumbsUp(int thumbsUp) {
+        thumb.setThumbsUp(thumbsUp);
+    }
+
+    public void setThumbsDown(int thumbsDown) {
+        thumb.setThumbsDown(thumbsDown);
+    }
+
     public void giveThumbUp(){
         thumb.giveThumbUp();
     }
@@ -44,11 +52,11 @@ public class Ingredient {
         thumb.giveThumbDown();
     }
 
-    public IngredientDto toIngredientDto(){
+    public IngredientDTO toIngredientDto(){
         int ups = thumb.getThumbsUp();
         int downs = thumb.getThumbsDown();
 
-        return new IngredientDto.IngredientDtoBuilder()
+        return new IngredientDTO.IngredientDtoBuilder()
                 .addName(name)
                 .addThumbsUp(ups)
                 .addThumbsDown(downs)

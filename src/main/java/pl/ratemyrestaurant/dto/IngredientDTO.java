@@ -1,12 +1,15 @@
 package pl.ratemyrestaurant.dto;
 
-public class IngredientDto {
+import pl.ratemyrestaurant.model.Ingredient;
+import pl.ratemyrestaurant.model.Thumb;
+
+public class IngredientDTO {
 
     private String name;
     private int thumbsUp;
     private int thumbsDown;
 
-    public IngredientDto() {
+    public IngredientDTO() {
     }
 
     public String getName() {
@@ -33,31 +36,38 @@ public class IngredientDto {
         this.thumbsDown = thumbsDown;
     }
 
+    public Ingredient toIngredient(){
+        Ingredient ingredient = new Ingredient(name);
+        ingredient.setThumbsUp(thumbsUp);
+        ingredient.setThumbsDown(thumbsDown);
+        return ingredient;
+    }
+
     public static class IngredientDtoBuilder{
 
-        private IngredientDto ingredientDto;
+        private IngredientDTO ingredientDTO;
 
         public IngredientDtoBuilder() {
-            ingredientDto = new IngredientDto();
+            ingredientDTO = new IngredientDTO();
         }
 
         public IngredientDtoBuilder addName(String name){
-            ingredientDto.setName(name);
+            ingredientDTO.setName(name);
             return this;
         }
 
         public IngredientDtoBuilder addThumbsUp(int thumbsUp){
-            ingredientDto.setThumbsUp(thumbsUp);
+            ingredientDTO.setThumbsUp(thumbsUp);
             return this;
         }
 
         public IngredientDtoBuilder addThumbsDown(int thumbsDown){
-            ingredientDto.setThumbsDown(thumbsDown);
+            ingredientDTO.setThumbsDown(thumbsDown);
             return this;
         }
 
-        public IngredientDto build(){
-            return ingredientDto;
+        public IngredientDTO build(){
+            return ingredientDTO;
         }
 
 
