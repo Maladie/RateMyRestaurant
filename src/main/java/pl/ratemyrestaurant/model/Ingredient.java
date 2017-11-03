@@ -36,6 +36,14 @@ public class Ingredient {
         return thumb.getThumbsDown();
     }
 
+    public void giveThumbUp(){
+        thumb.giveThumbUp();
+    }
+
+    public void giveThumbDown(){
+        thumb.giveThumbDown();
+    }
+
     public IngredientDto toIngredientDto(){
         int ups = thumb.getThumbsUp();
         int downs = thumb.getThumbsDown();

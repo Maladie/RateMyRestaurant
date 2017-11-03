@@ -1,8 +1,5 @@
 package pl.ratemyrestaurant.dto;
 
-import pl.ratemyrestaurant.model.Ingredient;
-import pl.ratemyrestaurant.model.Thumb;
-
 public class IngredientDto {
 
     private String name;
