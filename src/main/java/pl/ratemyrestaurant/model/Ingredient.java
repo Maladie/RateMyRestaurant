@@ -1,5 +1,7 @@
 package pl.ratemyrestaurant.model;
 
+import pl.ratemyrestaurant.dto.IngredientDto;
+
 import javax.persistence.*;
 
 @Entity
@@ -32,6 +34,17 @@ public class Ingredient {
 
     public int getThumbsDown(){
         return thumb.getThumbsDown();
+    }
+
+    public IngredientDto toIngredientDto(){
+        int ups = thumb.getThumbsUp();
+        int downs = thumb.getThumbsDown();
+
+        return new IngredientDto.IngredientDtoBuilder()
+                .addName(name)
+                .addThumbsUp(ups)
+                .addThumbsDown(downs)
+                .build();
     }
 
     @Override
