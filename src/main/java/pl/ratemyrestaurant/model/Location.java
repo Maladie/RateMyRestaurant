@@ -11,6 +11,9 @@ public class Location {
     @NotNull
     private double lng;
 
+    Location() {
+    }
+
     public Location(double lat, double lng) {
         this.lat = lat;
         this.lng = lng;
