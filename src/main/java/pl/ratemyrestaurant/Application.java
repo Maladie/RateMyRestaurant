@@ -1,19 +1,19 @@
-package pl.sdacademy;
+package pl.ratemyrestaurant;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import pl.sdacademy.model.UserSearchCircle;
-import pl.sdacademy.services.GooglePlacesConnector;
+import pl.ratemyrestaurant.model.Thumb;
+import pl.ratemyrestaurant.model.UserSearchCircle;
+import pl.ratemyrestaurant.service.placesconnectorservice.impl.GooglePlacesConnector;
 import se.walkercrou.places.Place;
 
-import java.util.List;
 import java.util.Set;
 
 @SpringBootApplication
 public class Application {
     public static void main(String[] args) {
-
         SpringApplication.run(Application.class, args);
+        System.out.println(new Thumb());
 
         GooglePlacesConnector googlePlacesConnector = new GooglePlacesConnector();
 

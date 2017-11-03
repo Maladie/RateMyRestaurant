@@ -1,9 +1,9 @@
-package pl.sdacademy.services;
+package pl.ratemyrestaurant.service.placesconnectorservice.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.sdacademy.model.UserSearchCircle;
-import pl.sdacademy.utils.StreamUtils;
+import pl.ratemyrestaurant.service.placesconnectorservice.PlacesConnector;
+import pl.ratemyrestaurant.model.UserSearchCircle;
+import pl.ratemyrestaurant.utils.StreamUtils;
 import se.walkercrou.places.GooglePlaces;
 import se.walkercrou.places.Param;
 import se.walkercrou.places.Place;
@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class GooglePlacesConnector implements PlacesConnector{
+public class GooglePlacesConnector implements PlacesConnector {
 
     private GooglePlaces client;
 

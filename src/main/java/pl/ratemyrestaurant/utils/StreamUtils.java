@@ -1,4 +1,4 @@
-package pl.sdacademy.utils;
+package pl.ratemyrestaurant.utils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
