@@ -25,12 +25,12 @@ public class GooglePlacesConnector implements PlacesConnector{
     public Set<Place> retrieveRestaurants(UserSearchCircle userSearchCircle) {
         Set<Place> places = new HashSet<>();
         List<Place> bars = retrieveRestaurants(userSearchCircle, "bar");
-        List<Place> foods = retrieveRestaurants(userSearchCircle, "food");
-        List<Place> cafes = retrieveRestaurants(userSearchCircle, "cafe");
+//        List<Place> foods = retrieveRestaurants(userSearchCircle, "food");
+//        List<Place> cafes = retrieveRestaurants(userSearchCircle, "cafe");
         List<Place> restaurants = retrieveRestaurants(userSearchCircle, "restaurant");
-        places.addAll(foods);
+//        places.addAll(foods);
         places.addAll(bars);
-        places.addAll(cafes);
+//        places.addAll(cafes);
         places.addAll(restaurants);
         return places.stream().filter(StreamUtils.distinctByKey(Place::getPlaceId)).collect(Collectors.toSet());
     }
