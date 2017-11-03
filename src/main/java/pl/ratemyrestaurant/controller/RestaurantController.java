@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import pl.ratemyrestaurant.dto.RestaurantDTO;
 import pl.ratemyrestaurant.service.RestaurantService;
 
 @RestController
@@ -17,7 +18,7 @@ public class RestaurantController {
     }
 
     @GetMapping("/{restaurantId}")
-    public void getRestaurantById(@PathVariable Long restaurantId) {
-        restaurantService.getRestaurantDTOById(restaurantId);
+    public RestaurantDTO getRestaurantById(@PathVariable Long restaurantId) {
+       return restaurantService.getRestaurantDTOById(restaurantId);
     }
 }
