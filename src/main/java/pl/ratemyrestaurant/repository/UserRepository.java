@@ -1,4 +1,8 @@
 package pl.ratemyrestaurant.repository;
 
-public class UserRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import pl.ratemyrestaurant.model.User;
+
+public interface UserRepository extends JpaRepository<User, Integer> {
+    User findUserByUsername(String login);
 }
