@@ -22,14 +22,16 @@ public class GooglePlacesConnector implements PlacesConnector {
         client = new GooglePlaces("AIzaSyDwiEyXS5W2lZus1riL0MZ0j_Yfn6TxC2A");
     }
 
-    public Set<Place> retrieveRestaurants(UserSearchCircle userSearchCircle) {
+    public Set<Place> retrieveRestaurants(UserSearchCircle userSearchCircle) throws InterruptedException {
         Set<Place> places = new HashSet<>();
-        List<Place> bars = retrieveRestaurants(userSearchCircle, "bar");
+//        List<Place> bars = retrieveRestaurants(userSearchCircle, "bar");
 //        List<Place> foods = retrieveRestaurants(userSearchCircle, "food");
+//        Thread.sleep(100);
 //        List<Place> cafes = retrieveRestaurants(userSearchCircle, "cafe");
+//        Thread.sleep(100);
         List<Place> restaurants = retrieveRestaurants(userSearchCircle, "restaurant");
 //        places.addAll(foods);
-        places.addAll(bars);
+//        places.addAll(bars);
 //        places.addAll(cafes);
         places.addAll(restaurants);
         return places.stream().filter(StreamUtils.distinctByKey(Place::getPlaceId)).collect(Collectors.toSet());
