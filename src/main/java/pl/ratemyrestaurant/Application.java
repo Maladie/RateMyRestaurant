@@ -17,7 +17,12 @@ public class Application {
 
         GooglePlacesConnector googlePlacesConnector = new GooglePlacesConnector();
 
-        Set<Place> places = googlePlacesConnector.retrieveRestaurants(new UserSearchCircle(50.2606155, 19.0237505, 100));
+        Set<Place> places = null;
+        try {
+            places = googlePlacesConnector.retrieveRestaurants(new UserSearchCircle(50.2606155, 19.0237505, 300));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         System.out.println(places);
     }

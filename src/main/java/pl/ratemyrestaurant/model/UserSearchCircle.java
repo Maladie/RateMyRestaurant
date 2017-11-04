@@ -1,8 +1,5 @@
 package pl.ratemyrestaurant.model;
 
-/**
- * Created by RENT on 2017-11-03.
- */
 public class UserSearchCircle {
     double lat;
     double lng;
