@@ -21,11 +21,11 @@ public class IngredientController {
 
     @GetMapping("/ingredients")
     public Set<Ingredient> getAllIngredients(){
-        return ingredientService.getAllIngredients();
+        return null;//ingredientService.getAllIngredients();
     }
 
     @GetMapping("/ingredients/{ingredientId}")
     public Ingredient getById(@PathVariable Long ingredientId){
-        return ingredientService.getIngredientById(ingredientId);
+        return null;//ingredientService.getIngredientById(ingredientId);
     }
 }
