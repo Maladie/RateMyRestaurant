@@ -54,6 +54,7 @@ public class RestaurantService {
     private RestaurantPIN transformRestaurantToPIN(Restaurant restaurant) {
         RestaurantPIN restaurantPIN = new RestaurantPIN(restaurant);
         return restaurantPIN;
+    }
 
     public List<IngredientDTO> getIngredientsByThumbs(String restaurantId, String orderBy) {
         Set<Ingredient> ingredients = getRestaurantDTOById(restaurantId).getIngredients();
