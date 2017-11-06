@@ -30,14 +30,20 @@ public class RestaurantService {
         this.placesConnector = placesConnector;
     }
 
-    public void addRestaurant(RestaurantDTO restaurantDTO) {
-        //todo: add body
+    public void addOrUpdateRestaurant(RestaurantDTO restaurantDTO) {
+        if(restaurantDTO.isNewlyCreated()){
+           //TODO Save restaurant to database
+        }else {
+            //TODO Update restaurant and save to database
+        }
     }
 
     public RestaurantDTO getOrRetrieveRestaurantDTOByID(String placeId){
         RestaurantDTO restaurantDTO = getRestaurantDTOById(placeId);
         if(restaurantDTO == null){
             restaurantDTO = retrieveDtoIfNotExistInDB(placeId);
+        }else{
+            restaurantDTO.setNewlyCreated(false);
         }
         return restaurantDTO;
     }
@@ -49,14 +55,15 @@ public class RestaurantService {
     private RestaurantDTO retrieveDtoIfNotExistInDB(String placeId){
         Place place = placesConnector.retrievePlaceById(placeId);
         Restaurant restaurant = PlaceToRestaurantMapper.mapToRestaurant(place);
-        return transformRestaurantToDTO(restaurant);
+        RestaurantDTO restaurantDTO = transformRestaurantToDTO(restaurant);
+        restaurantDTO.setNewlyCreated(true);
+        return restaurantDTO;
     }
 
     private RestaurantDTO transformRestaurantToDTO(Restaurant restaurant) {
         RestaurantDTO restaurantDTO = new RestaurantDTO(restaurant);
         return restaurantDTO;
     }
-
 
     public RestaurantPIN getRestaurantPINById(String id) {
         return transformRestaurantToPIN(restaurantRepository.findOne(id));
