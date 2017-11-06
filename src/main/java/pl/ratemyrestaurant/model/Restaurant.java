@@ -19,12 +19,14 @@ public class Restaurant {
 
     Restaurant() {}
 
-    public Restaurant(String name, Location location) {
+    public Restaurant(String id, String name, Location location) {
+        this.id = id;
         this.name = name;
         this.location = location;
     }
 
-    public Restaurant(String name, Location location, Set<FoodType> foodTypes, Set<Ingredient> ingredients) {
+    public Restaurant(String id, String name, Location location, Set<FoodType> foodTypes, Set<Ingredient> ingredients) {
+        this.id = id;
         this.name = name;
         this.location = location;
         this.foodTypes = foodTypes;

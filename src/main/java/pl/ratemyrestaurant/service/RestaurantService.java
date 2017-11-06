@@ -4,7 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.ratemyrestaurant.dto.IngredientDTO;
 import pl.ratemyrestaurant.dto.RestaurantDTO;
+
+import pl.ratemyrestaurant.dto.RestaurantPIN;
+
 import pl.ratemyrestaurant.model.Ingredient;
+
 import pl.ratemyrestaurant.model.Restaurant;
 import pl.ratemyrestaurant.repository.RestaurantRepository;
 
@@ -42,6 +46,15 @@ public class RestaurantService {
         return restaurantDTO;
     }
 
+
+    public RestaurantPIN getRestaurantPINById(String id) {
+        return transformRestaurantToPIN(restaurantRepository.findOne(id));
+    }
+
+    private RestaurantPIN transformRestaurantToPIN(Restaurant restaurant) {
+        RestaurantPIN restaurantPIN = new RestaurantPIN(restaurant);
+        return restaurantPIN;
+
     public List<IngredientDTO> getIngredientsByThumbs(String restaurantId, String orderBy) {
         Set<Ingredient> ingredients = getRestaurantDTOById(restaurantId).getIngredients();
         List<Ingredient> ingredientList = new ArrayList<>(ingredients);
@@ -55,7 +68,6 @@ public class RestaurantService {
         }
         Collections.sort(ingredientList);
         return ingredientList.stream().map(i -> i.toIngredientDto()).collect(Collectors.toList());
-
     }
 
 }

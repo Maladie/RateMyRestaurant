@@ -7,7 +7,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pl.ratemyrestaurant.dto.IngredientDTO;
 import pl.ratemyrestaurant.dto.RestaurantDTO;
+
+import pl.ratemyrestaurant.dto.RestaurantPIN;
+
 import pl.ratemyrestaurant.model.Ingredient;
+
 import pl.ratemyrestaurant.service.RestaurantService;
 
 import java.util.ArrayList;
@@ -31,6 +35,11 @@ public class RestaurantController {
        return restaurantService.getRestaurantDTOById(restaurantId);
     }
 
+
+    @GetMapping("getPin/{restaurantId}")
+    public RestaurantPIN getRestaurantPINById(@PathVariable String restaurantId) {
+        return restaurantService.getRestaurantPINById(restaurantId);
+    }
     @GetMapping("/{restaurantId}/ingredients")
     public List<IngredientDTO> getIngredientsByThumbs(@PathVariable String restaurantId,
                                                       @RequestParam (required = false) String orderBy){
