@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import pl.ratemyrestaurant.dto.IngredientDTO;
 import pl.ratemyrestaurant.model.Ingredient;
 import pl.ratemyrestaurant.service.IngredientService;
 
@@ -19,13 +20,13 @@ public class IngredientController {
         this.ingredientService = ingredientService;
     }
 
-//    @GetMapping("/ingredients")
-//    public Set<Ingredient> getAllIngredients(){
-//        return ingredientService.getAllIngredients();
-//    }
-//
-//    @GetMapping("/ingredients/{ingredientId}")
-//    public Ingredient getById(@PathVariable Long ingredientId){
-//        return ingredientService.getIngredientById(ingredientId);
-//    }
+    @GetMapping("/ingredients")
+    public Set<IngredientDTO> getAllIngredients(){
+        return ingredientService.getAllIngredientDTOs();
+    }
+
+    @GetMapping("/ingredients/{ingredientId}")
+    public IngredientDTO getById(@PathVariable Long ingredientId){
+        return ingredientService.getIngredientDTOById(ingredientId);
+    }
 }

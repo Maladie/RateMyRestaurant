@@ -8,8 +8,7 @@ import java.util.Set;
 public class Restaurant {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
     private String name;
     @Embedded
     private Location location;
@@ -32,7 +31,7 @@ public class Restaurant {
         this.ingredients = ingredients;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 

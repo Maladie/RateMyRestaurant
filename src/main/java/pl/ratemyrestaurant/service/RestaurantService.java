@@ -25,6 +25,7 @@ public class RestaurantService {
     }
 
     public RestaurantDTO getRestaurantDTOById(Long id) {
+    public RestaurantDTO getRestaurantDTOById(String id) {
         return transformRestaurantToDTO(restaurantRepository.findOne(id));
     }
 
