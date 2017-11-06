@@ -2,10 +2,18 @@ package pl.ratemyrestaurant.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.ratemyrestaurant.dto.IngredientDTO;
 import pl.ratemyrestaurant.dto.RestaurantDTO;
+
 import pl.ratemyrestaurant.dto.RestaurantPIN;
+
+import pl.ratemyrestaurant.model.Ingredient;
+
 import pl.ratemyrestaurant.model.Restaurant;
 import pl.ratemyrestaurant.repository.RestaurantRepository;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class RestaurantService {
@@ -21,6 +29,14 @@ public class RestaurantService {
         //todo: add body
     }
 
+    public RestaurantDTO getOrRetrieveRestautantDTOByID(String placeId){
+        RestaurantDTO restaurantDTO = getRestaurantDTOById(placeId);
+        if(restaurantDTO == null){
+            //todo
+        }
+        return restaurantDTO;
+    }
+
     public RestaurantDTO getRestaurantDTOById(String id) {
         return transformRestaurantToDTO(restaurantRepository.findOne(id));
     }
@@ -30,6 +46,7 @@ public class RestaurantService {
         return restaurantDTO;
     }
 
+
     public RestaurantPIN getRestaurantPINById(String id) {
         return transformRestaurantToPIN(restaurantRepository.findOne(id));
     }
@@ -37,6 +54,20 @@ public class RestaurantService {
     private RestaurantPIN transformRestaurantToPIN(Restaurant restaurant) {
         RestaurantPIN restaurantPIN = new RestaurantPIN(restaurant);
         return restaurantPIN;
+
+    public List<IngredientDTO> getIngredientsByThumbs(String restaurantId, String orderBy) {
+        Set<Ingredient> ingredients = getRestaurantDTOById(restaurantId).getIngredients();
+        List<Ingredient> ingredientList = new ArrayList<>(ingredients);
+        if("name".equals(orderBy)){
+            Collections.sort(ingredientList, new Comparator<Ingredient>() {
+                @Override
+                public int compare(Ingredient o1, Ingredient o2) {
+                    return o1.getName().compareTo(o2.getName());
+                }
+            });
+        }
+        Collections.sort(ingredientList);
+        return ingredientList.stream().map(i -> i.toIngredientDto()).collect(Collectors.toList());
     }
 
 }
