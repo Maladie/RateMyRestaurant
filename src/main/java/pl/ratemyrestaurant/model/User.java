@@ -18,12 +18,25 @@ public class User implements UserDetails {
     private int id;
     private String username = "admin";
     private String password = "pass";
+    private String salt;
 
     public User() {
     }
 
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
@@ -35,6 +48,10 @@ public class User implements UserDetails {
     @Override
     public String getPassword() {
         return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
@@ -62,11 +79,16 @@ public class User implements UserDetails {
         return true;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }
