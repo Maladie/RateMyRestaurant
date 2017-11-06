@@ -29,4 +29,5 @@ public class IngredientController {
     public IngredientDTO getById(@PathVariable Long ingredientId){
         return ingredientService.getIngredientDTOById(ingredientId);
     }
+
 }
