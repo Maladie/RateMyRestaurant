@@ -18,7 +18,7 @@ public class RestaurantController {
     }
 
     @GetMapping("/{restaurantId}")
-    public RestaurantDTO getRestaurantById(@PathVariable Long restaurantId) {
+    public RestaurantDTO getRestaurantById(@PathVariable String restaurantId) {
        return restaurantService.getRestaurantDTOById(restaurantId);
     }
 }

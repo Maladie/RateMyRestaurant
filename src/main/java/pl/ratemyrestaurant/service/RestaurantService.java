@@ -20,7 +20,7 @@ public class RestaurantService {
         //todo: add body
     }
 
-    public RestaurantDTO getRestaurantDTOById(Long id) {
+    public RestaurantDTO getRestaurantDTOById(String id) {
         return transformRestaurantToDTO(restaurantRepository.findOne(id));
     }
 
