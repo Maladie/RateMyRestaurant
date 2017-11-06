@@ -19,13 +19,13 @@ public class IngredientController {
         this.ingredientService = ingredientService;
     }
 
-    @GetMapping("/ingredients")
-    public Set<Ingredient> getAllIngredients(){
-        return ingredientService.getAllIngredients();
-    }
-
-    @GetMapping("/ingredients/{ingredientId}")
-    public Ingredient getById(@PathVariable Long ingredientId){
-        return ingredientService.getIngredientById(ingredientId);
-    }
+//    @GetMapping("/ingredients")
+//    public Set<Ingredient> getAllIngredients(){
+//        return ingredientService.getAllIngredients();
+//    }
+//
+//    @GetMapping("/ingredients/{ingredientId}")
+//    public Ingredient getById(@PathVariable Long ingredientId){
+//        return ingredientService.getIngredientById(ingredientId);
+//    }
 }
