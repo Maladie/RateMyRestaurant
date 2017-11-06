@@ -60,14 +60,10 @@ public class RestaurantService {
         Set<Ingredient> ingredients = getRestaurantDTOById(restaurantId).getIngredients();
         List<Ingredient> ingredientList = new ArrayList<>(ingredients);
         if("name".equals(orderBy)){
-            Collections.sort(ingredientList, new Comparator<Ingredient>() {
-                @Override
-                public int compare(Ingredient o1, Ingredient o2) {
-                    return o1.getName().compareTo(o2.getName());
-                }
-            });
+            Collections.sort(ingredientList, Comparator.comparing(Ingredient::getName));
+        } else {
+            Collections.sort(ingredientList);
         }
-        Collections.sort(ingredientList);
         return ingredientList.stream().map(i -> i.toIngredientDto()).collect(Collectors.toList());
     }
 

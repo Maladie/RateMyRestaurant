@@ -16,6 +16,9 @@ public class Ingredient implements Comparable<Ingredient>{
 
     {thumb = new Thumb();}
 
+    public Ingredient() {
+    }
+
     public Ingredient(String name) {
         this.name = name;
     }
