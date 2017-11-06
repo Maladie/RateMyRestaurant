@@ -9,10 +9,16 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
+import pl.ratemyrestaurant.filter.AuthFilter;
+import pl.ratemyrestaurant.filter.LoginFilter;
 import java.util.Arrays;
 
 @Configuration
@@ -28,13 +34,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        String[] patterns = new String[] {
+          "/", "/api/login", "/login", "/index.html", "/error"
+        };
+
         http.authorizeRequests()
-                .antMatchers("/api/**")
-                .authenticated()
+                .antMatchers(patterns)
+                .permitAll()
                 .and()
-                .httpBasic();
-        http.csrf().disable();
-        http.cors();
+                .cors().configurationSource(corsConfigurationSource())
+                .and()
+                .csrf().disable()
+                .httpBasic()
+                .and()
+                .addFilterBefore(new LoginFilter(new AntPathRequestMatcher("/api/login")), UsernamePasswordAuthenticationFilter.class);
+        //TODO fix
+//                .addFilterBefore(new AuthFilter(), UsernamePasswordAuthenticationFilter.class);
+
+
+
+//// .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+
 
     }
 
@@ -56,6 +76,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .withUser("admin")
                 .password("pass")
                 .roles("ADMIN");
-        auth.userDetailsService(userDetailsService);
+        auth.userDetailsService(userDetailsService);//.passwordEncoder(passwordencoder());
+    }
+
+    @Bean(name="passwordEncoder")
+    public PasswordEncoder passwordencoder(){
+        return new BCryptPasswordEncoder(6);
     }
 }
