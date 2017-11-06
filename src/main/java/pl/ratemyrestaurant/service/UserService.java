@@ -4,5 +4,5 @@ import pl.ratemyrestaurant.model.Info;
 
 public interface UserService {
 
-    Info register(String username, String password, String name, String surname);
+    Info register(String username, String password);
 }

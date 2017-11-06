@@ -20,10 +20,8 @@ public class RegisterController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/register")
     public Info registerClient(@RequestParam String username,
-                               @RequestParam String password,
-                               @RequestParam String name,
-                               @RequestParam String surname) {
-        return userService.register(username, password, name, surname);
+                               @RequestParam String password) {
+        return userService.register(username, password);
     }
 
 }

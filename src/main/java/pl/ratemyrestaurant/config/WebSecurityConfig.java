@@ -35,7 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         String[] patterns = new String[] {
-          "/", "/api/login", "/login", "/index.html", "/error"
+          "/", "/api/login", "/login", "/index.html", "/error", "/register"
         };
 
         http.authorizeRequests()
