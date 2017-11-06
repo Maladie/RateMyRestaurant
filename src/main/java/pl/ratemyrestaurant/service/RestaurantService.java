@@ -37,15 +37,19 @@ public class RestaurantService {
     public RestaurantDTO getOrRetrieveRestaurantDTOByID(String placeId){
         RestaurantDTO restaurantDTO = getRestaurantDTOById(placeId);
         if(restaurantDTO == null){
-            Place place = placesConnector.retrievePlaceById(placeId);
-            Restaurant restaurant = PlaceToRestaurantMapper.mapToRestaurant(place);
-            restaurantDTO = transformRestaurantToDTO(restaurant);
+            restaurantDTO = retrieveDtoIfNotExistInDB(placeId);
         }
         return restaurantDTO;
     }
 
     public RestaurantDTO getRestaurantDTOById(String id) {
         return transformRestaurantToDTO(restaurantRepository.findOne(id));
+    }
+
+    private RestaurantDTO retrieveDtoIfNotExistInDB(String placeId){
+        Place place = placesConnector.retrievePlaceById(placeId);
+        Restaurant restaurant = PlaceToRestaurantMapper.mapToRestaurant(place);
+        return transformRestaurantToDTO(restaurant);
     }
 
     private RestaurantDTO transformRestaurantToDTO(Restaurant restaurant) {
