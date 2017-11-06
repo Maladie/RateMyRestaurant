@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class PlacesController {
 
     @GetMapping(value = "/getPlacesInRadius",produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getPlacesInRadius(@RequestParam double lng,@RequestParam double lat,@RequestParam double radius, @RequestParam String type){
+    public String getPlacesInRadius(@RequestParam double lng,@RequestParam double lat,@RequestParam double radius, @RequestParam(required = false) String type){
+
         return lng+" "+lat+" "+radius+" "+type;
     }
+
 }

@@ -19,13 +19,19 @@ public class GooglePlacesConnector implements PlacesConnector {
     private GooglePlaces client;
 
     public GooglePlacesConnector() {
-        client = new GooglePlaces("AIzaSyDwiEyXS5W2lZus1riL0MZ0j_Yfn6TxC2A");
+        client = new GooglePlaces("AIzaSyD8YUXZXgf6IOslQnwLolmbbabf-s1ajPM");
     }
 
+    @Override
     public Set<Place> retrieveRestaurants(UserSearchCircle userSearchCircle) throws InterruptedException {
         Set<Place> places = new HashSet<>();
         addAllRetrievedRestaurantsToPlaces(places, userSearchCircle);
         return places.stream().filter(StreamUtils.distinctByKey(Place::getPlaceId)).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Place retrieveRestaurantById(String placeId) {
+        return client.getPlaceById(placeId);
     }
 
     private List<Place> retrieveRestaurants(UserSearchCircle userSearchCircle, String name) {

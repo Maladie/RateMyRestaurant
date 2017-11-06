@@ -1,30 +1,20 @@
 package pl.ratemyrestaurant.model;
 
 public class UserSearchCircle {
-    double lat;
-    double lng;
-    double radius;
+    private Location location;
+    private double radius;
 
     public UserSearchCircle(double lat, double lng, double radius) {
-        this.lat = lat;
-        this.lng = lng;
+        this.location = new Location(lat, lng);
         this.radius = radius;
     }
 
     public double getLat() {
-        return lat;
-    }
-
-    public void setLat(double lat) {
-        this.lat = lat;
+        return location.getLat();
     }
 
     public double getLng() {
-        return lng;
-    }
-
-    public void setLng(double lng) {
-        this.lng = lng;
+        return location.getLng();
     }
 
     public double getRadius() {
