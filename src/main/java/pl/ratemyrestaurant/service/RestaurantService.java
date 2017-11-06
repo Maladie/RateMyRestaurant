@@ -20,6 +20,14 @@ public class RestaurantService {
         //todo: add body
     }
 
+    public RestaurantDTO getOrRetrieveRestautantDTOByID(String placeId){
+        RestaurantDTO restaurantDTO = getRestaurantDTOById(placeId);
+        if(restaurantDTO == null){
+            //todo
+        }
+        return restaurantDTO;
+    }
+
     public RestaurantDTO getRestaurantDTOById(String id) {
         return transformRestaurantToDTO(restaurantRepository.findOne(id));
     }
@@ -28,4 +36,5 @@ public class RestaurantService {
         RestaurantDTO restaurantDTO = new RestaurantDTO(restaurant);
         return restaurantDTO;
     }
+
 }
