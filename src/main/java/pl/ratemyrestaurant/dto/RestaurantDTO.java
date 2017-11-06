@@ -14,6 +14,7 @@ public class RestaurantDTO {
     private Location location;
     private Set<FoodType> foodTypes;
     private Set<Ingredient> ingredients;
+    private boolean newlyCreated;
 
     public RestaurantDTO(Restaurant restaurant) {
         this.id = restaurant.getId();
@@ -37,5 +38,13 @@ public class RestaurantDTO {
 
     public Set<Ingredient> getIngredients() {
         return ingredients;
+    }
+
+    public boolean isNewlyCreated() {
+        return newlyCreated;
+    }
+
+    public void setNewlyCreated(boolean newlyCreated) {
+        this.newlyCreated = newlyCreated;
     }
 }
