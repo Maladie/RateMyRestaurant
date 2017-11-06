@@ -3,6 +3,7 @@ package pl.ratemyrestaurant.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.ratemyrestaurant.dto.RestaurantDTO;
+import pl.ratemyrestaurant.dto.RestaurantPIN;
 import pl.ratemyrestaurant.model.Restaurant;
 import pl.ratemyrestaurant.repository.RestaurantRepository;
 
@@ -28,4 +29,14 @@ public class RestaurantService {
         RestaurantDTO restaurantDTO = new RestaurantDTO(restaurant);
         return restaurantDTO;
     }
+
+    public RestaurantPIN getRestaurantPINById(String id) {
+        return transformRestaurantToPIN(restaurantRepository.findOne(id));
+    }
+
+    private RestaurantPIN transformRestaurantToPIN(Restaurant restaurant) {
+        RestaurantPIN restaurantPIN = new RestaurantPIN(restaurant);
+        return restaurantPIN;
+    }
+
 }
