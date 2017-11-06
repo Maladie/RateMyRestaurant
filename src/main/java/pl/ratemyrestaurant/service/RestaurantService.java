@@ -21,10 +21,13 @@ public class RestaurantService {
     }
 
     public RestaurantDTO getOrRetrieveRestautantDTOByID(String placeId){
-        return null;
+        RestaurantDTO restaurantDTO = getRestaurantDTOById(placeId);
+        if(restaurantDTO == null){
+            //todo
+        }
+        return restaurantDTO;
     }
 
-    public RestaurantDTO getRestaurantDTOById(Long id) {
     public RestaurantDTO getRestaurantDTOById(String id) {
         return transformRestaurantToDTO(restaurantRepository.findOne(id));
     }
