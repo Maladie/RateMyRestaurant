@@ -5,7 +5,7 @@ import pl.ratemyrestaurant.dto.IngredientDTO;
 import javax.persistence.*;
 
 @Entity
-public class Ingredient {
+public class Ingredient implements Comparable<Ingredient>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,6 +52,10 @@ public class Ingredient {
         thumb.giveThumbDown();
     }
 
+    public int getUpDownDifference(){
+        return getThumbsUp() - getThumbsDown();
+    }
+
     public IngredientDTO toIngredientDto(){
         int ups = thumb.getThumbsUp();
         int downs = thumb.getThumbsDown();
@@ -66,5 +70,10 @@ public class Ingredient {
     @Override
     public String toString() {
         return name + " - " + thumb.toString();
+    }
+
+    @Override
+    public int compareTo(Ingredient o) {
+        return Integer.compare(getUpDownDifference(), o.getUpDownDifference());
     }
 }

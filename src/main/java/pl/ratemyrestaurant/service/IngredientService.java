@@ -1,12 +1,15 @@
 package pl.ratemyrestaurant.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.ratemyrestaurant.dto.IngredientDTO;
 import pl.ratemyrestaurant.model.Ingredient;
 import pl.ratemyrestaurant.repository.IngredientRepository;
 
 import javax.transaction.Transactional;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -52,4 +55,5 @@ public class IngredientService {
     public IngredientDTO getIngredientDTOById(long id){
         return ingredientRepository.findById(id).toIngredientDto();
     }
+
 }
