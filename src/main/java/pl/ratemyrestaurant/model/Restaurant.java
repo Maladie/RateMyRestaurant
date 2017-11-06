@@ -19,7 +19,8 @@ public class Restaurant {
 
     Restaurant() {}
 
-    public Restaurant(String name, Location location) {
+    public Restaurant(String id, String name, Location location) {
+        this.id = id;
         this.name = name;
         this.location = location;
     }
