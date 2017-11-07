@@ -1,5 +1,7 @@
 package pl.ratemyrestaurant.service.placesconnectorservice.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pl.ratemyrestaurant.service.placesconnectorservice.PlacesConnector;
 import pl.ratemyrestaurant.model.UserSearchCircle;
@@ -18,8 +20,9 @@ public class GooglePlacesConnector implements PlacesConnector {
 
     private GooglePlaces client;
 
-    public GooglePlacesConnector() {
-        client = new GooglePlaces("AIzaSyD8YUXZXgf6IOslQnwLolmbbabf-s1ajPM");
+    @Autowired
+    public GooglePlacesConnector(@Value("${googlekey}") String apiKey) {
+        client = new GooglePlaces(apiKey);
     }
 
     @Override

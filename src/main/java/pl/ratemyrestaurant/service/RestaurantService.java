@@ -7,16 +7,21 @@ import pl.ratemyrestaurant.dto.RestaurantDTO;
 
 import pl.ratemyrestaurant.dto.RestaurantPIN;
 
+import pl.ratemyrestaurant.mappers.RestaurantToPinMapper;
+import pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper;
 import pl.ratemyrestaurant.model.Ingredient;
 
 import pl.ratemyrestaurant.model.Restaurant;
 import pl.ratemyrestaurant.repository.RestaurantRepository;
 import pl.ratemyrestaurant.service.placesconnectorservice.PlacesConnector;
-import pl.ratemyrestaurant.utils.PlaceToRestaurantMapper;
+import pl.ratemyrestaurant.mappers.PlaceToRestaurantMapper;
 import se.walkercrou.places.Place;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static pl.ratemyrestaurant.mappers.RestaurantToPinMapper.*;
+import static pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper.*;
 
 @Service
 public class RestaurantService {
@@ -32,10 +37,22 @@ public class RestaurantService {
 
     public void addOrUpdateRestaurant(RestaurantDTO restaurantDTO) {
         if(restaurantDTO.isNewlyCreated()){
-           //TODO Save restaurant to database
+           addNewRestaurant(restaurantDTO);
         }else {
-            //TODO Update restaurant and save to database
+            updateRestaurant(restaurantDTO);
         }
+    }
+
+    private void addNewRestaurant(RestaurantDTO restaurantDTO) {
+        Restaurant restaurant = mapToRestaurant(restaurantDTO);
+        restaurantRepository.save(restaurant);
+    }
+
+    private void updateRestaurant(RestaurantDTO restaurantDTO) {
+        Restaurant restaurant = restaurantRepository.getOne(restaurantDTO.getId());
+        restaurant.setFoodTypes(restaurantDTO.getFoodTypes());
+        restaurant.setIngredients(restaurantDTO.getIngredients());
+        restaurantRepository.save(restaurant);
     }
 
     public RestaurantDTO getOrRetrieveRestaurantDTOByID(String placeId){
@@ -61,8 +78,7 @@ public class RestaurantService {
     }
 
     private RestaurantDTO transformRestaurantToDTO(Restaurant restaurant) {
-        RestaurantDTO restaurantDTO = new RestaurantDTO(restaurant);
-        return restaurantDTO;
+        return mapToRestaurantDto(restaurant);
     }
 
     public RestaurantPIN getRestaurantPINById(String id) {
@@ -70,8 +86,7 @@ public class RestaurantService {
     }
 
     private RestaurantPIN transformRestaurantToPIN(Restaurant restaurant) {
-        RestaurantPIN restaurantPIN = new RestaurantPIN(restaurant);
-        return restaurantPIN;
+        return mapRestaurantToPin(restaurant);
     }
 
     public List<IngredientDTO> getIngredientsByThumbs(String restaurantId, String orderBy) {
