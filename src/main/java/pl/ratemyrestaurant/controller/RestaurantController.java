@@ -12,6 +12,7 @@ import pl.ratemyrestaurant.dto.RestaurantPIN;
 
 import pl.ratemyrestaurant.model.Ingredient;
 
+import pl.ratemyrestaurant.model.Restaurant;
 import pl.ratemyrestaurant.service.RestaurantService;
 
 import java.util.ArrayList;
@@ -44,5 +45,10 @@ public class RestaurantController {
     public List<IngredientDTO> getIngredientsByThumbs(@PathVariable String restaurantId,
                                                       @RequestParam (required = false) String orderBy){
         return restaurantService.getIngredientsByThumbs(restaurantId, orderBy);
+    }
+
+    @GetMapping("/restaurants/ingredient/{name}")
+    public List<RestaurantDTO> getRestaurantsContainingIngredient(@PathVariable String name){
+        return restaurantService.getRestaurantsContainingIngredient(name);
     }
 }
