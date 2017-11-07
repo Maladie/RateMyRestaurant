@@ -1,7 +1,9 @@
 package pl.ratemyrestaurant.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
@@ -19,17 +21,20 @@ import pl.ratemyrestaurant.type.TokenStatus;
 import pl.ratemyrestaurant.utils.SecurityUtils;
 import pl.ratemyrestaurant.utils.Util;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
 @Transactional
 public class TokenAuthenticationServiceImpl implements TokenAuthenticationService {
-    private static final String AUTH_HEADER_NAME = "X-AUTH-TOKEN";
+    private static final String AUTH_HEADER_NAME = "X-XSRF-TOKEN";
 
     @Autowired
     private UserRepository userRepository;
@@ -44,8 +49,22 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
     public Authentication getAuthenticationForLogin(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         User user = null;
 
-        final String username = request.getParameter("username");
-        final String password = request.getParameter("password");
+        String username = "";
+        String password = "";
+        if (request.getHeader("Content-Type") != null && request.getContentType().equals("application/json")) {
+
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+               Map<String, String> s= mapper.readValue(request.getReader().lines().collect(Collectors.joining()), Map.class);
+               username = s.get("username");
+               password = s.get("password");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            username = request.getParameter("username");
+            password = request.getParameter("password");
+        }
 
 
         UserAuthentication auth = new UserAuthentication(null);
@@ -72,8 +91,7 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
                     info.setCode(101L);
                     info.setDesc("User missing password");
                 } else {
-                    String passToVerify = SecurityUtils.generatePasswordHash(password, user.getSalt());
-                    if (!SecurityUtils.isPasswordMatch(user.getPassword(), user.getSalt(), passToVerify)) {
+                    if (!SecurityUtils.isPasswordMatch(password, user.getSalt(), user.getPassword())) {
                         // Password
                         // not
                         // equal
@@ -158,9 +176,15 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
         userTokenRepository.deactivateAllTokensByUser(user.getId());
         //apply all changes to db instantly
         userTokenRepository.flush();
+        userTokenRepository.save(userToken);
         tokenHandlerService.insertToCache(token, user);
 
-        response.addHeader(AUTH_HEADER_NAME, token);
+        Cookie cookie = new Cookie("XSRF-TOKEN", token);
+        cookie.setPath("/");
+        cookie.setHttpOnly(false);
+        response.addCookie(cookie);
+
+        response.addHeader("X-XSRF-TOKEN", token);
         return userToken;
     }
 }

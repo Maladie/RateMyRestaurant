@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
         boolean passwordEmpty = Util.isNullOrEmpty(password);
         Info info = new Info();
         info.setKey(UUID.randomUUID().toString());
-        if(usernameEmpty && passwordEmpty) {
+        if(!usernameEmpty && !passwordEmpty) {
             if(userRepository.findUserByUsername(username)!= null){
                 info.setCode(209L);
                 info.setDesc("Registration failed! Username already used");
@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
                 String passHash = SecurityUtils.generatePasswordHash(password, passSalt);
                 user.setPassword(passHash);
                 userRepository.save(user);
-                info.setDesc("Registration success!");
+                info.setDesc("Registration successful!");
             }
         }else {
             if(usernameEmpty){
