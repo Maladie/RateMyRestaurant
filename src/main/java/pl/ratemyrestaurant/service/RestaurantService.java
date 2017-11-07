@@ -18,6 +18,8 @@ import pl.ratemyrestaurant.service.placesconnectorservice.PlacesConnector;
 import pl.ratemyrestaurant.mappers.PlaceToRestaurantMapper;
 import se.walkercrou.places.Place;
 
+import javax.persistence.EntityManager;
+import javax.persistence.ParameterMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,6 +31,8 @@ public class RestaurantService {
 
     private RestaurantRepository restaurantRepository;
     private PlacesConnector placesConnector;
+    @Autowired
+    private EntityManager entityManager;
 
     @Autowired
     public RestaurantService(RestaurantRepository restaurantRepository, PlacesConnector placesConnector) {
@@ -79,9 +83,9 @@ public class RestaurantService {
 
     public RestaurantDTO getOrRetrieveRestaurantDTOByID(String placeId) {
         RestaurantDTO restaurantDTO = getRestaurantDTOById(placeId);
-        if(restaurantDTO == null){
+        if (restaurantDTO == null) {
             restaurantDTO = retrieveDtoIfNotExistInDB(placeId);
-        }else{
+        } else {
             restaurantDTO.setNewlyCreated(false);
         }
         return restaurantDTO;
@@ -127,4 +131,12 @@ public class RestaurantService {
     }
 
 
+    public List<RestaurantDTO> getRestaurantsContainingIngredient(String name) {
+        List<String> restaurantIds = entityManager.createStoredProcedureQuery("restaurant_by_ingredient")
+                .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
+                .setParameter(1, name).getResultList();
+        List<RestaurantDTO> foundRestaurants = new ArrayList<>();
+        restaurantRepository.findByIdIn(restaurantIds).forEach(r -> foundRestaurants.add(transformRestaurantToDTO(r)));
+        return foundRestaurants;
+    }
 }
