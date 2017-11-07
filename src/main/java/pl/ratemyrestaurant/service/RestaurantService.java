@@ -7,18 +7,23 @@ import pl.ratemyrestaurant.dto.RestaurantDTO;
 
 import pl.ratemyrestaurant.dto.RestaurantPIN;
 
+import pl.ratemyrestaurant.mappers.RestaurantToPinMapper;
+import pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper;
 import pl.ratemyrestaurant.model.Ingredient;
 
 import pl.ratemyrestaurant.model.Restaurant;
 import pl.ratemyrestaurant.repository.RestaurantRepository;
 import pl.ratemyrestaurant.service.placesconnectorservice.PlacesConnector;
-import pl.ratemyrestaurant.utils.PlaceToRestaurantMapper;
+import pl.ratemyrestaurant.mappers.PlaceToRestaurantMapper;
 import se.walkercrou.places.Place;
 
 import javax.persistence.EntityManager;
 import javax.persistence.ParameterMode;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static pl.ratemyrestaurant.mappers.RestaurantToPinMapper.*;
+import static pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper.*;
 
 @Service
 public class RestaurantService {
@@ -35,18 +40,30 @@ public class RestaurantService {
     }
 
     public void addOrUpdateRestaurant(RestaurantDTO restaurantDTO) {
-        if (restaurantDTO.isNewlyCreated()) {
-            //TODO Save restaurant to database
-        } else {
-            //TODO Update restaurant and save to database
+        if(restaurantDTO.isNewlyCreated()){
+           addNewRestaurant(restaurantDTO);
+        }else {
+            updateRestaurant(restaurantDTO);
         }
     }
 
-    public RestaurantDTO getOrRetrieveRestaurantDTOByID(String placeId) {
+    private void addNewRestaurant(RestaurantDTO restaurantDTO) {
+        Restaurant restaurant = mapToRestaurant(restaurantDTO);
+        restaurantRepository.save(restaurant);
+    }
+
+    private void updateRestaurant(RestaurantDTO restaurantDTO) {
+        Restaurant restaurant = restaurantRepository.getOne(restaurantDTO.getId());
+        restaurant.setFoodTypes(restaurantDTO.getFoodTypes());
+        restaurant.setIngredients(restaurantDTO.getIngredients());
+        restaurantRepository.save(restaurant);
+    }
+
+    public RestaurantDTO getOrRetrieveRestaurantDTOByID(String placeId){
         RestaurantDTO restaurantDTO = getRestaurantDTOById(placeId);
-        if (restaurantDTO == null) {
+        if(restaurantDTO == null){
             restaurantDTO = retrieveDtoIfNotExistInDB(placeId);
-        } else {
+        }else{
             restaurantDTO.setNewlyCreated(false);
         }
         return restaurantDTO;
@@ -56,7 +73,7 @@ public class RestaurantService {
         return transformRestaurantToDTO(restaurantRepository.findOne(id));
     }
 
-    private RestaurantDTO retrieveDtoIfNotExistInDB(String placeId) {
+    private RestaurantDTO retrieveDtoIfNotExistInDB(String placeId){
         Place place = placesConnector.retrievePlaceById(placeId);
         Restaurant restaurant = PlaceToRestaurantMapper.mapToRestaurant(place);
         RestaurantDTO restaurantDTO = transformRestaurantToDTO(restaurant);
@@ -65,8 +82,7 @@ public class RestaurantService {
     }
 
     private RestaurantDTO transformRestaurantToDTO(Restaurant restaurant) {
-        RestaurantDTO restaurantDTO = new RestaurantDTO(restaurant);
-        return restaurantDTO;
+        return mapToRestaurantDto(restaurant);
     }
 
     public RestaurantPIN getRestaurantPINById(String id) {
@@ -74,14 +90,13 @@ public class RestaurantService {
     }
 
     private RestaurantPIN transformRestaurantToPIN(Restaurant restaurant) {
-        RestaurantPIN restaurantPIN = new RestaurantPIN(restaurant);
-        return restaurantPIN;
+        return mapRestaurantToPin(restaurant);
     }
 
     public List<IngredientDTO> getIngredientsByThumbs(String restaurantId, String orderBy) {
         Set<Ingredient> ingredients = getRestaurantDTOById(restaurantId).getIngredients();
         List<Ingredient> ingredientList = new ArrayList<>(ingredients);
-        if ("name".equals(orderBy)) {
+        if("name".equals(orderBy)){
             Collections.sort(ingredientList, Comparator.comparing(Ingredient::getName));
         } else {
             Collections.sort(ingredientList);

@@ -16,13 +16,7 @@ public class RestaurantDTO {
     private Set<Ingredient> ingredients;
     private boolean newlyCreated;
 
-    public RestaurantDTO(Restaurant restaurant) {
-        this.id = restaurant.getId();
-        this.name = restaurant.getName();
-        this.location = restaurant.getLocation();
-        this.foodTypes = restaurant.getFoodTypes();
-        this.ingredients = restaurant.getIngredients();
-    }
+    public RestaurantDTO() {}
 
     public String getName() {
         return name;
@@ -46,5 +40,29 @@ public class RestaurantDTO {
 
     public void setNewlyCreated(boolean newlyCreated) {
         this.newlyCreated = newlyCreated;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public void setFoodTypes(Set<FoodType> foodTypes) {
+        this.foodTypes = foodTypes;
+    }
+
+    public void setIngredients(Set<Ingredient> ingredients) {
+        this.ingredients = ingredients;
     }
 }
