@@ -39,6 +39,6 @@ public class RestaurantController {
     @PostMapping(value = "/save", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RestaurantDTO> persistRestaurant(@RequestBody RestaurantDTO restaurantDTO){
         restaurantService.addOrUpdateRestaurant(restaurantDTO);
-        return new ResponseEntity<RestaurantDTO>(restaurantDTO, HttpStatus.CREATED);
+        return new ResponseEntity<>(restaurantDTO, HttpStatus.CREATED);
     }
 }
