@@ -3,15 +3,18 @@ package pl.ratemyrestaurant.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pl.ratemyrestaurant.dto.RestaurantDTO;
+import pl.ratemyrestaurant.dto.RestaurantPIN;
 import pl.ratemyrestaurant.model.UserSearchCircle;
 import pl.ratemyrestaurant.service.RestaurantService;
 
 import java.util.Set;
 
-@RestController("/places")
+@RestController
+@RequestMapping("/places")
 public class PlacesController {
 
     private RestaurantService restaurantService;
@@ -22,10 +25,14 @@ public class PlacesController {
     }
 
     @GetMapping(value = "/allInRadius",produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<RestaurantDTO> getPlacesInRadius(@RequestParam double lng, @RequestParam double lat, @RequestParam double radius, @RequestParam(required = false) String type){
+    public Set<RestaurantPIN> getPlacesInRadius(@RequestParam double lng, @RequestParam double lat, @RequestParam double radius, @RequestParam(required = false) String type){
         UserSearchCircle userSearchCircle = new UserSearchCircle(lng, lat, radius);
-        Set<RestaurantDTO> restaurantDTOSet = restaurantService.retrieveRestaurantsInRadius(userSearchCircle);
-        return restaurantDTOSet;
+        Set<RestaurantPIN> restaurantPINSet = restaurantService.retrieveRestaurantsInRadius(userSearchCircle);
+        return restaurantPINSet;
     }
 
+    @GetMapping(value = "/details", produces = MediaType.APPLICATION_JSON_VALUE)
+    public RestaurantDTO getPlaceDetails(@RequestParam String placeId){
+        return restaurantService.getOrRetrieveRestaurantDTOByID(placeId);
+    }
 }

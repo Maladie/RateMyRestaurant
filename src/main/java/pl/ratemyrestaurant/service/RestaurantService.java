@@ -36,25 +36,25 @@ public class RestaurantService {
         this.placesConnector = placesConnector;
     }
 
-    public Set<RestaurantDTO> retrieveRestaurantsInRadius(UserSearchCircle userSearchCircle) {
+    public Set<RestaurantPIN> retrieveRestaurantsInRadius(UserSearchCircle userSearchCircle) {
         Set<Place> places = new HashSet<>();
-        Set<RestaurantDTO> restaurantDTOs = new HashSet<>();
+        Set<RestaurantPIN> restaurantPINs = new HashSet<>();
         try {
             places = placesConnector.retrievePlaces(userSearchCircle);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         places.forEach(place -> {
-            RestaurantDTO restaurantDTO = mapPlaceToRestaurantDto(place);
-            restaurantDTOs.add(restaurantDTO);
+            RestaurantPIN restaurantPIN = mapPlaceToRestaurantDto(place);
+            restaurantPINs.add(restaurantPIN);
         });
-        return restaurantDTOs;
+        return restaurantPINs;
     }
 
-    public RestaurantDTO mapPlaceToRestaurantDto(Place place){
+    public RestaurantPIN mapPlaceToRestaurantDto(Place place){
         Restaurant restaurant = PlaceToRestaurantMapper.mapToRestaurant(place);
-        RestaurantDTO restaurantDTO = mapToRestaurantDto(restaurant);
-        return restaurantDTO;
+        RestaurantPIN restaurantPIN = RestaurantToPinMapper.mapRestaurantToPin(restaurant);
+        return restaurantPIN;
     }
 
     public void addOrUpdateRestaurant(RestaurantDTO restaurantDTO) {
@@ -79,16 +79,20 @@ public class RestaurantService {
 
     public RestaurantDTO getOrRetrieveRestaurantDTOByID(String placeId) {
         RestaurantDTO restaurantDTO = getRestaurantDTOById(placeId);
-        if (restaurantDTO == null) {
+        if(restaurantDTO == null){
             restaurantDTO = retrieveDtoIfNotExistInDB(placeId);
-        } else {
+        }else{
             restaurantDTO.setNewlyCreated(false);
         }
         return restaurantDTO;
     }
 
     public RestaurantDTO getRestaurantDTOById(String id) {
-        return transformRestaurantToDTO(restaurantRepository.findOne(id));
+        Restaurant restaurant = restaurantRepository.findOne(id);
+        if(restaurant == null){
+            return null;
+        }
+        return transformRestaurantToDTO(restaurant);
     }
 
     private RestaurantDTO retrieveDtoIfNotExistInDB(String placeId) {
