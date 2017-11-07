@@ -9,11 +9,12 @@ import java.util.Set;
 
 public class RestaurantDTO {
 
-    private Long id;
+    private String id;
     private String name;
     private Location location;
     private Set<FoodType> foodTypes;
     private Set<Ingredient> ingredients;
+    private boolean newlyCreated;
 
     public RestaurantDTO(Restaurant restaurant) {
         this.id = restaurant.getId();
@@ -37,5 +38,13 @@ public class RestaurantDTO {
 
     public Set<Ingredient> getIngredients() {
         return ingredients;
+    }
+
+    public boolean isNewlyCreated() {
+        return newlyCreated;
+    }
+
+    public void setNewlyCreated(boolean newlyCreated) {
+        this.newlyCreated = newlyCreated;
     }
 }
