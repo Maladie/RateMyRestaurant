@@ -33,7 +33,7 @@ public class AuthFilter extends GenericFilterBean {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
-
+//        if(httpRequest.getContextPath().equals("/register"))
         UserAuthentication auth = (UserAuthentication) tokenAuthenticationService.getAuthentication(httpRequest, httpResponse);
         SecurityContextHolder.getContext().setAuthentication(auth);
 

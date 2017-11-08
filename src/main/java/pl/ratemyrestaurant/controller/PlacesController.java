@@ -16,4 +16,16 @@ public class PlacesController {
 
         return lng+" "+lat+" "+radius+" "+type;
     }
+
+    @GetMapping(value = "/test",produces = MediaType.APPLICATION_JSON_VALUE)
+    public String test(){
+
+        return "{ \"message\": \"TEST_RESPONSE\" }";
+    }
+
+    @GetMapping(value = "/api/test",produces = MediaType.APPLICATION_JSON_VALUE)
+    public String test2(){
+
+        return "{ \"message\": \"API_TEST_RESPONSE\" }";
+    }
 }

@@ -18,16 +18,16 @@ public class Application {
         CacheUtil.init();
         //==============================
         System.out.println(new Thumb());
-
-        GooglePlacesConnector googlePlacesConnector = new GooglePlacesConnector();
-
-        Set<Place> places = null;
-        try {
-            places = googlePlacesConnector.retrievePlaces(new UserSearchCircle(50.2606155, 19.0237505, 1000));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println(places);
+//
+//        GooglePlacesConnector googlePlacesConnector = new GooglePlacesConnector();
+//
+//        Set<Place> places = null;
+//        try {
+//            places = googlePlacesConnector.retrievePlaces(new UserSearchCircle(50.2606155, 19.0237505, 1000));
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+//        System.out.println(places);
     }
 }
