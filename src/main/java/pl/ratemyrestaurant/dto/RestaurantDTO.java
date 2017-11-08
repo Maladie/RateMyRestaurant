@@ -22,6 +22,7 @@ public class RestaurantDTO {
         this.location = restaurant.getLocation();
         this.foodTypes = restaurant.getFoodTypes();
         this.ingredients = restaurant.getIngredients();
+
     }
 
     public String getName() {

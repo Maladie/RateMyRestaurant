@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -21,9 +22,11 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import pl.ratemyrestaurant.filter.AuthFilter;
 import pl.ratemyrestaurant.filter.LoginFilter;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 
 @Configuration
@@ -47,8 +50,10 @@ public class APIAccessWebSecurityConfigurationAdapter extends WebSecurityConfigu
 
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.csrf().disable().cors().configurationSource(corsConfigurationSource()).and()
+        http.cors().configurationSource(corsConfigurationSource()).and().csrf().disable()
                 .authorizeRequests().antMatchers(patterns).permitAll()
+                .and()
+                .authorizeRequests().antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                 .and()
                 .authorizeRequests().antMatchers("/api/register").permitAll().and()
                 .addFilterBefore(new LoginFilter(new AntPathRequestMatcher("/api/login")), UsernamePasswordAuthenticationFilter.class)
@@ -56,14 +61,23 @@ public class APIAccessWebSecurityConfigurationAdapter extends WebSecurityConfigu
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS"));
-        configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(Arrays.asList("x-xsrf-token","*"));
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        public CorsConfigurationSource corsConfigurationSource() {
+////        final CorsConfiguration configuration = new CorsConfiguration();
+////        configuration.setAllowedOrigins(Arrays.asList("*"));
+////        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS"));
+////        configuration.setAllowCredentials(true);
+////        configuration.setAllowedHeaders(Arrays.asList("x-xsrf-token","*"));
+////        configuration.setMaxAge(3600L);
+////        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+////        source.registerCorsConfiguration("/**
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedHeader("*");
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("*");
+        config.setMaxAge(3600L);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
 //
