@@ -41,4 +41,9 @@ public class RestaurantController {
         restaurantService.addOrUpdateRestaurant(restaurantDTO);
         return new ResponseEntity<>(restaurantDTO, HttpStatus.CREATED);
     }
+
+    @GetMapping("/restaurants/ingredient/{ingredientName}")
+    public List<RestaurantDTO> getAllRestaurantsContainingIngredient(@PathVariable String ingredientName){
+        return restaurantService.getRestaurantsContainingIngredient(ingredientName);
+    }
 }
