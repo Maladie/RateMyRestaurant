@@ -40,9 +40,9 @@ public class RestaurantService {
     }
 
     public void addOrUpdateRestaurant(RestaurantDTO restaurantDTO) {
-        if(restaurantDTO.isNewlyCreated()){
-           addNewRestaurant(restaurantDTO);
-        }else {
+        if (restaurantDTO.isNewlyCreated()) {
+            addNewRestaurant(restaurantDTO);
+        } else {
             updateRestaurant(restaurantDTO);
         }
     }
@@ -59,11 +59,11 @@ public class RestaurantService {
         restaurantRepository.save(restaurant);
     }
 
-    public RestaurantDTO getOrRetrieveRestaurantDTOByID(String placeId){
+    public RestaurantDTO getOrRetrieveRestaurantDTOByID(String placeId) {
         RestaurantDTO restaurantDTO = getRestaurantDTOById(placeId);
-        if(restaurantDTO == null){
+        if (restaurantDTO == null) {
             restaurantDTO = retrieveDtoIfNotExistInDB(placeId);
-        }else{
+        } else {
             restaurantDTO.setNewlyCreated(false);
         }
         return restaurantDTO;
@@ -73,7 +73,7 @@ public class RestaurantService {
         return transformRestaurantToDTO(restaurantRepository.findOne(id));
     }
 
-    private RestaurantDTO retrieveDtoIfNotExistInDB(String placeId){
+    private RestaurantDTO retrieveDtoIfNotExistInDB(String placeId) {
         Place place = placesConnector.retrievePlaceById(placeId);
         Restaurant restaurant = PlaceToRestaurantMapper.mapToRestaurant(place);
         RestaurantDTO restaurantDTO = transformRestaurantToDTO(restaurant);
@@ -96,7 +96,7 @@ public class RestaurantService {
     public List<IngredientDTO> getIngredientsByThumbs(String restaurantId, String orderBy) {
         Set<Ingredient> ingredients = getRestaurantDTOById(restaurantId).getIngredients();
         List<Ingredient> ingredientList = new ArrayList<>(ingredients);
-        if("name".equals(orderBy)){
+        if ("name".equals(orderBy)) {
             Collections.sort(ingredientList, Comparator.comparing(Ingredient::getName));
         } else {
             Collections.sort(ingredientList);
@@ -113,4 +113,7 @@ public class RestaurantService {
         restaurantRepository.findByIdIn(restaurantIds).forEach(r -> foundRestaurants.add(transformRestaurantToDTO(r)));
         return foundRestaurants;
     }
+
+
+
 }
