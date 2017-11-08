@@ -31,6 +31,7 @@ public class RestaurantService {
 
     private RestaurantRepository restaurantRepository;
     private PlacesConnector placesConnector;
+    
     @Autowired
     private EntityManager entityManager;
 
