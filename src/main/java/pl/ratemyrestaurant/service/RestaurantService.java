@@ -4,18 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.ratemyrestaurant.dto.IngredientDTO;
 import pl.ratemyrestaurant.dto.RestaurantDTO;
-
 import pl.ratemyrestaurant.dto.RestaurantPIN;
-
+import pl.ratemyrestaurant.mappers.PlaceToRestaurantMapper;
 import pl.ratemyrestaurant.mappers.RestaurantToPinMapper;
-import pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper;
 import pl.ratemyrestaurant.model.Ingredient;
-
 import pl.ratemyrestaurant.model.Restaurant;
 import pl.ratemyrestaurant.model.UserSearchCircle;
 import pl.ratemyrestaurant.repository.RestaurantRepository;
 import pl.ratemyrestaurant.service.placesconnectorservice.PlacesConnector;
-import pl.ratemyrestaurant.mappers.PlaceToRestaurantMapper;
 import se.walkercrou.places.Place;
 
 import javax.persistence.EntityManager;
@@ -23,8 +19,9 @@ import javax.persistence.ParameterMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static pl.ratemyrestaurant.mappers.RestaurantToPinMapper.*;
-import static pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper.*;
+import static pl.ratemyrestaurant.mappers.RestaurantToPinMapper.mapRestaurantToPin;
+import static pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper.mapToRestaurant;
+import static pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper.mapToRestaurantDto;
 
 @Service
 public class RestaurantService {

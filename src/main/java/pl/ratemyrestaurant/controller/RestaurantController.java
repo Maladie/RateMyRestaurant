@@ -7,18 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ratemyrestaurant.dto.IngredientDTO;
 import pl.ratemyrestaurant.dto.RestaurantDTO;
-
-import pl.ratemyrestaurant.dto.RestaurantPIN;
-
-import pl.ratemyrestaurant.model.Ingredient;
-
 import pl.ratemyrestaurant.service.RestaurantService;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 public class RestaurantController {
