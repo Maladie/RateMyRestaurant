@@ -2,6 +2,8 @@ package pl.ratemyrestaurant;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import pl.ratemyrestaurant.config.ApplicationContextProvider;
 import pl.ratemyrestaurant.model.Thumb;
 import pl.ratemyrestaurant.model.UserSearchCircle;
 import pl.ratemyrestaurant.service.placesconnectorservice.impl.GooglePlacesConnector;
@@ -18,8 +20,10 @@ public class Application {
         CacheUtil.init();
         //==============================
         System.out.println(new Thumb());
+
+//        ApplicationContext applicationContext = ApplicationContextProvider.getApplicationContext();
 //
-//        GooglePlacesConnector googlePlacesConnector = new GooglePlacesConnector();
+//        GooglePlacesConnector googlePlacesConnector = applicationContext.getBean("googlePlacesConnector", GooglePlacesConnector.class);
 //
 //        Set<Place> places = null;
 //        try {

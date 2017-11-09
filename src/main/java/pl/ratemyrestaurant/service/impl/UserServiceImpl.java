@@ -7,7 +7,7 @@ import pl.ratemyrestaurant.model.User;
 import pl.ratemyrestaurant.repository.UserRepository;
 import pl.ratemyrestaurant.service.UserService;
 import pl.ratemyrestaurant.utils.SecurityUtils;
-import pl.ratemyrestaurant.utils.Util;
+import pl.ratemyrestaurant.utils.CheckingUtils;
 
 import java.util.UUID;
 
@@ -23,8 +23,8 @@ public class UserServiceImpl implements UserService {
     //TODO add validation filter before
     @Override
     public Info register(String username, String password) {
-        boolean usernameEmpty = Util.isNullOrEmpty(username);
-        boolean passwordEmpty = Util.isNullOrEmpty(password);
+        boolean usernameEmpty = CheckingUtils.isNullOrEmpty(username);
+        boolean passwordEmpty = CheckingUtils.isNullOrEmpty(password);
         Info info = new Info();
         info.setKey(UUID.randomUUID().toString());
         if(!usernameEmpty && !passwordEmpty) {
