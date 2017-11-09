@@ -8,8 +8,10 @@ import pl.ratemyrestaurant.dto.RestaurantPIN;
 import pl.ratemyrestaurant.mappers.PlaceToRestaurantMapper;
 import pl.ratemyrestaurant.mappers.RestaurantToPinMapper;
 import pl.ratemyrestaurant.model.Ingredient;
+import pl.ratemyrestaurant.model.Rating;
 import pl.ratemyrestaurant.model.Restaurant;
 import pl.ratemyrestaurant.model.UserSearchCircle;
+import pl.ratemyrestaurant.repository.RatingRepository;
 import pl.ratemyrestaurant.repository.RestaurantRepository;
 import pl.ratemyrestaurant.service.placesconnectorservice.PlacesConnector;
 import se.walkercrou.places.Place;
@@ -28,13 +30,14 @@ public class RestaurantService {
 
     private RestaurantRepository restaurantRepository;
     private PlacesConnector placesConnector;
-    @Autowired
-    private EntityManager entityManager;
+    private RatingService ratingService;
 
     @Autowired
-    public RestaurantService(RestaurantRepository restaurantRepository, PlacesConnector placesConnector) {
+    public RestaurantService(RestaurantRepository restaurantRepository, PlacesConnector placesConnector
+            , RatingService ratingService) {
         this.restaurantRepository = restaurantRepository;
         this.placesConnector = placesConnector;
+        this.ratingService = ratingService;
     }
 
     public Set<RestaurantPIN> retrieveRestaurantsInRadius(UserSearchCircle userSearchCircle) {
@@ -74,7 +77,6 @@ public class RestaurantService {
     private void updateRestaurant(RestaurantDTO restaurantDTO) {
         Restaurant restaurant = restaurantRepository.getOne(restaurantDTO.getId());
         restaurant.setFoodTypes(restaurantDTO.getFoodTypes());
-        restaurant.setIngredients(restaurantDTO.getIngredients());
         restaurantRepository.save(restaurant);
     }
 
@@ -105,7 +107,9 @@ public class RestaurantService {
     }
 
     private RestaurantDTO transformRestaurantToDTO(Restaurant restaurant) {
-        return mapToRestaurantDto(restaurant);
+        String restaurantId = restaurant.getId();
+        Set<Rating> ratings = ratingService.retrieveRestaurantRatings(restaurantId);
+        return mapToRestaurantDto(restaurant, ratings);
     }
 
     public RestaurantPIN getRestaurantPINById(String id) {
@@ -115,28 +119,5 @@ public class RestaurantService {
     private RestaurantPIN transformRestaurantToPIN(Restaurant restaurant) {
         return mapRestaurantToPin(restaurant);
     }
-
-    public List<IngredientDTO> getIngredientsByThumbs(String restaurantId, String orderBy) {
-        Set<Ingredient> ingredients = getRestaurantDTOById(restaurantId).getIngredients();
-        List<Ingredient> ingredientList = new ArrayList<>(ingredients);
-        if ("name".equals(orderBy)) {
-            Collections.sort(ingredientList, Comparator.comparing(Ingredient::getName));
-        } else {
-            Collections.sort(ingredientList);
-        }
-        return ingredientList.stream().map(i -> i.toIngredientDto()).collect(Collectors.toList());
-    }
-
-
-    public List<RestaurantDTO> getRestaurantsContainingIngredient(String name) {
-        List<String> restaurantIds = entityManager.createStoredProcedureQuery("restaurant_by_ingredient")
-                .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
-                .setParameter(1, name).getResultList();
-        List<RestaurantDTO> foundRestaurants = new ArrayList<>();
-        restaurantRepository.findByIdIn(restaurantIds).forEach(r -> foundRestaurants.add(transformRestaurantToDTO(r)));
-        return foundRestaurants;
-    }
-
-
 
 }

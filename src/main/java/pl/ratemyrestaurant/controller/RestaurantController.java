@@ -22,11 +22,11 @@ public class RestaurantController {
         this.restaurantService = restaurantService;
     }
 
-    @GetMapping(value = "/{restaurantId}/ingredients", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<IngredientDTO> getIngredientsByThumbs(@PathVariable String restaurantId,
-                                                      @RequestParam (required = false) String orderBy){
-        return restaurantService.getIngredientsByThumbs(restaurantId, orderBy);
-    }
+//    @GetMapping(value = "/{restaurantId}/ingredients", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public List<IngredientDTO> getIngredientsByThumbs(@PathVariable String restaurantId,
+//                                                      @RequestParam (required = false) String orderBy){
+//        return restaurantService.getIngredientsByThumbs(restaurantId, orderBy);
+//    }
 
     @PostMapping(value = "/save", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RestaurantDTO> persistRestaurant(@RequestBody RestaurantDTO restaurantDTO){
@@ -34,8 +34,8 @@ public class RestaurantController {
         return new ResponseEntity<>(restaurantDTO, HttpStatus.CREATED);
     }
 
-    @GetMapping("/restaurants/ingredient/{ingredientName}")
-    public List<RestaurantDTO> getAllRestaurantsContainingIngredient(@PathVariable String ingredientName){
-        return restaurantService.getRestaurantsContainingIngredient(ingredientName);
-    }
+//    @GetMapping("/restaurants/ingredient/{ingredientName}")
+//    public List<RestaurantDTO> getAllRestaurantsContainingIngredient(@PathVariable String ingredientName){
+//        return restaurantService.getRestaurantsContainingIngredient(ingredientName);
+//    }
 }

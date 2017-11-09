@@ -10,7 +10,7 @@ import pl.ratemyrestaurant.service.IngredientService;
 
 import java.util.Set;
 
-@RestController
+@RestController("/ingredients")
 public class IngredientController {
 
     private IngredientService ingredientService;
@@ -20,14 +20,8 @@ public class IngredientController {
         this.ingredientService = ingredientService;
     }
 
-    @GetMapping("/ingredients")
+    @GetMapping
     public Set<IngredientDTO> getAllIngredients(){
-        return ingredientService.getAllIngredientDTOs();
+        return ingredientService.getAllIngredients();
     }
-
-    @GetMapping("/ingredients/{ingredientId}")
-    public IngredientDTO getById(@PathVariable Long ingredientId){
-        return ingredientService.getIngredientDTOById(ingredientId);
-    }
-
 }

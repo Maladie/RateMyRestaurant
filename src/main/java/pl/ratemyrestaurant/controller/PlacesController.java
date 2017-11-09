@@ -21,13 +21,15 @@ public class PlacesController {
         this.restaurantService = restaurantService;
     }
 
-    @GetMapping(value = "/allInRadius",produces = MediaType.APPLICATION_JSON_VALUE)
+    //działa
+    @GetMapping(value = "/area",produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<RestaurantPIN> getPlacesInRadius(@RequestParam double lng, @RequestParam double lat, @RequestParam double radius, @RequestParam(required = false) String type){
         UserSearchCircle userSearchCircle = new UserSearchCircle(lng, lat, radius);
         Set<RestaurantPIN> restaurantPINSet = restaurantService.retrieveRestaurantsInRadius(userSearchCircle);
         return restaurantPINSet;
     }
 
+    //działa
     @GetMapping(value = "/{placeId}/details", produces = MediaType.APPLICATION_JSON_VALUE)
     public RestaurantDTO getPlaceDetails(@PathVariable String placeId){
         return restaurantService.getOrRetrieveRestaurantDTOByID(placeId);

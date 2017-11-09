@@ -3,7 +3,9 @@ package pl.ratemyrestaurant.dto;
 import pl.ratemyrestaurant.model.FoodType;
 import pl.ratemyrestaurant.model.Ingredient;
 import pl.ratemyrestaurant.model.Location;
+import pl.ratemyrestaurant.model.Rating;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -13,8 +15,8 @@ public class RestaurantDTO {
     private String name;
     private Location location;
     private Set<FoodType> foodTypes;
-    private Set<Ingredient> ingredients;
     private boolean newlyCreated;
+    private Set<Rating> ingredientRatings;
 
     public RestaurantDTO() {}
 
@@ -28,10 +30,6 @@ public class RestaurantDTO {
 
     public Set<FoodType> getFoodTypes() {
         return foodTypes;
-    }
-
-    public Set<Ingredient> getIngredients() {
-        return ingredients;
     }
 
     public boolean isNewlyCreated() {
@@ -62,16 +60,20 @@ public class RestaurantDTO {
         this.foodTypes = foodTypes;
     }
 
-    public void setIngredients(Set<Ingredient> ingredients) {
-        this.ingredients = ingredients;
+    public void setIngredientRatings(Set<Rating> ingredientRatings) {
+        this.ingredientRatings = ingredientRatings;
     }
 
-    public IngredientDTO getSpecificIngredient(String name){
-        Optional<Ingredient> ingr = ingredients.stream().filter(i -> i.getName().equals(name)).findFirst();
-        if(ingr.isPresent()){
-            return ingr.get().toIngredientDto();
-        }
-        return null;
+    public Set<Rating> getIngredientRatings() {
+        return ingredientRatings;
     }
+
+//    public IngredientDTO getSpecificIngredient(String name){
+//        Optional<Ingredient> ingr = ingredients.stream().filter(i -> i.getName().equals(name)).findFirst();
+//        if(ingr.isPresent()){
+//            return ingr.get().toIngredientDto();
+//        }
+//        return null;
+//    }
 
 }
