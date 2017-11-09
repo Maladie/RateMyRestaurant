@@ -3,7 +3,9 @@ package pl.ratemyrestaurant.dto;
 import pl.ratemyrestaurant.model.FoodType;
 import pl.ratemyrestaurant.model.Ingredient;
 import pl.ratemyrestaurant.model.Location;
+import pl.ratemyrestaurant.model.Rating;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -14,6 +16,7 @@ public class RestaurantDTO {
     private Location location;
     private Set<FoodType> foodTypes;
     private boolean newlyCreated;
+    private Set<Rating> ingredientRatings;
 
     public RestaurantDTO() {}
 
@@ -55,6 +58,14 @@ public class RestaurantDTO {
 
     public void setFoodTypes(Set<FoodType> foodTypes) {
         this.foodTypes = foodTypes;
+    }
+
+    public void setIngredientRatings(Set<Rating> ingredientRatings) {
+        this.ingredientRatings = ingredientRatings;
+    }
+
+    public Set<Rating> getIngredientRatings() {
+        return ingredientRatings;
     }
 
 //    public IngredientDTO getSpecificIngredient(String name){

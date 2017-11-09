@@ -8,8 +8,10 @@ import pl.ratemyrestaurant.dto.RestaurantPIN;
 import pl.ratemyrestaurant.mappers.PlaceToRestaurantMapper;
 import pl.ratemyrestaurant.mappers.RestaurantToPinMapper;
 import pl.ratemyrestaurant.model.Ingredient;
+import pl.ratemyrestaurant.model.Rating;
 import pl.ratemyrestaurant.model.Restaurant;
 import pl.ratemyrestaurant.model.UserSearchCircle;
+import pl.ratemyrestaurant.repository.RatingRepository;
 import pl.ratemyrestaurant.repository.RestaurantRepository;
 import pl.ratemyrestaurant.service.placesconnectorservice.PlacesConnector;
 import se.walkercrou.places.Place;
@@ -29,12 +31,15 @@ public class RestaurantService {
     private RestaurantRepository restaurantRepository;
     private PlacesConnector placesConnector;
     private EntityManager entityManager;
+    private RatingRepository ratingRepository;
 
     @Autowired
-    public RestaurantService(RestaurantRepository restaurantRepository, PlacesConnector placesConnector, EntityManager entityManager) {
+    public RestaurantService(RestaurantRepository restaurantRepository, PlacesConnector placesConnector
+            , EntityManager entityManager, RatingRepository ratingRepository) {
         this.restaurantRepository = restaurantRepository;
         this.placesConnector = placesConnector;
         this.entityManager = entityManager;
+        this.ratingRepository = ratingRepository;
     }
 
     public Set<RestaurantPIN> retrieveRestaurantsInRadius(UserSearchCircle userSearchCircle) {
@@ -104,7 +109,13 @@ public class RestaurantService {
     }
 
     private RestaurantDTO transformRestaurantToDTO(Restaurant restaurant) {
-        return mapToRestaurantDto(restaurant);
+        String restaurantId = restaurant.getId();
+        Set<Rating> ratings = retrieveRestaurantRatings(restaurantId);
+        return mapToRestaurantDto(restaurant, ratings);
+    }
+
+    private Set<Rating> retrieveRestaurantRatings(String restaurantId){
+        return ratingRepository.findByRestaurant_Id(restaurantId);
     }
 
     public RestaurantPIN getRestaurantPINById(String id) {
