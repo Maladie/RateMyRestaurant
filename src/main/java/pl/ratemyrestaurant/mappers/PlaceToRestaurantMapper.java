@@ -1,4 +1,4 @@
-package pl.ratemyrestaurant.utils;
+package pl.ratemyrestaurant.mappers;
 
 import pl.ratemyrestaurant.model.Location;
 import pl.ratemyrestaurant.model.Restaurant;

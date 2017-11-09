@@ -1,31 +1,38 @@
 package pl.ratemyrestaurant.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import pl.ratemyrestaurant.dto.RestaurantDTO;
+import pl.ratemyrestaurant.dto.RestaurantPIN;
+import pl.ratemyrestaurant.model.UserSearchCircle;
+import pl.ratemyrestaurant.service.RestaurantService;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Set;
 
 @RestController
+@RequestMapping("/places")
 public class PlacesController {
 
-    @GetMapping(value = "/getPlacesInRadius",produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getPlacesInRadius(@RequestParam double lng,@RequestParam double lat,@RequestParam double radius, @RequestParam(required = false) String type){
+    private RestaurantService restaurantService;
 
-        return lng+" "+lat+" "+radius+" "+type;
+    @Autowired
+    public PlacesController(RestaurantService restaurantService) {
+        this.restaurantService = restaurantService;
     }
 
-    @GetMapping(value = "/test",produces = MediaType.APPLICATION_JSON_VALUE)
-    public String test(){
-
-        return "{ \"message\": \"TEST_RESPONSE\" }";
+    @GetMapping(value = "/allInRadius",produces = MediaType.APPLICATION_JSON_VALUE)
+    public Set<RestaurantPIN> getPlacesInRadius(@RequestParam double lng, @RequestParam double lat, @RequestParam double radius, @RequestParam(required = false) String type){
+        UserSearchCircle userSearchCircle = new UserSearchCircle(lng, lat, radius);
+        Set<RestaurantPIN> restaurantPINSet = restaurantService.retrieveRestaurantsInRadius(userSearchCircle);
+        return restaurantPINSet;
     }
 
-    @GetMapping(value = "/api/test",produces = MediaType.APPLICATION_JSON_VALUE)
-    public String test2(){
-
-        return "{ \"message\": \"API_TEST_RESPONSE\" }";
+    @GetMapping(value = "/details", produces = MediaType.APPLICATION_JSON_VALUE)
+    public RestaurantDTO getPlaceDetails(@RequestParam String placeId){
+        return restaurantService.getOrRetrieveRestaurantDTOByID(placeId);
     }
 }
