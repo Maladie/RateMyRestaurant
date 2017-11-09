@@ -3,6 +3,7 @@ package pl.ratemyrestaurant.domain;
 import pl.ratemyrestaurant.model.User;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -25,7 +26,7 @@ public class UserToken {
     private Long status;
 
     @Column(name = "created_date")
-    private LocalDateTime createdDate;
+    private Timestamp createdDate;
 
 
     public int getId() {
@@ -60,11 +61,11 @@ public class UserToken {
         this.status = status;
     }
 
-    public LocalDateTime getCreatedDate() {
+    public Timestamp getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate) {
+    public void setCreatedDate(Timestamp createdDate) {
         this.createdDate = createdDate;
     }
 }

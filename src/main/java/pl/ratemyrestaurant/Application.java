@@ -2,6 +2,7 @@ package pl.ratemyrestaurant;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import pl.ratemyrestaurant.model.Thumb;
 import pl.ratemyrestaurant.model.UserSearchCircle;
 import pl.ratemyrestaurant.service.placesconnectorservice.impl.GooglePlacesConnector;
@@ -11,10 +12,12 @@ import se.walkercrou.places.Place;
 import java.util.Set;
 
 @SpringBootApplication
+@EnableScheduling
 public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
         //===== runs token caching =====
+
         CacheUtil.init();
         //==============================
         System.out.println(new Thumb());
