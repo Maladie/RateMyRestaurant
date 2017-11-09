@@ -25,10 +25,10 @@ public class IngredientController {
 
     @GetMapping
     public Set<IngredientDTO> getAllIngredients(){
-        return ingredientService.getAllIngredients();
+        return ingredientService.getAllIngredientsDTO();
     }
 
-    @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/add")
     public ResponseEntity<IngredientDTO> addIngredient(@RequestBody IngredientDTO ingredientDTO) {
       Ingredient addedIngredient = ingredientService.addIngredient(ingredientDTO);
       IngredientDTO addedIngredientDTO = IngredientToIngredientDTOMapper.mapIngredientToIngredientDTO(addedIngredient);
