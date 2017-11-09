@@ -74,7 +74,6 @@ public class RestaurantService {
     private void updateRestaurant(RestaurantDTO restaurantDTO) {
         Restaurant restaurant = restaurantRepository.getOne(restaurantDTO.getId());
         restaurant.setFoodTypes(restaurantDTO.getFoodTypes());
-        restaurant.setIngredients(restaurantDTO.getIngredients());
         restaurantRepository.save(restaurant);
     }
 
@@ -116,26 +115,26 @@ public class RestaurantService {
         return mapRestaurantToPin(restaurant);
     }
 
-    public List<IngredientDTO> getIngredientsByThumbs(String restaurantId, String orderBy) {
-        Set<Ingredient> ingredients = getRestaurantDTOById(restaurantId).getIngredients();
-        List<Ingredient> ingredientList = new ArrayList<>(ingredients);
-        if ("name".equals(orderBy)) {
-            Collections.sort(ingredientList, Comparator.comparing(Ingredient::getName));
-        } else {
-            Collections.sort(ingredientList);
-        }
-        return ingredientList.stream().map(i -> i.toIngredientDto()).collect(Collectors.toList());
-    }
+//    public List<IngredientDTO> getIngredientsByThumbs(String restaurantId, String orderBy) {
+//        Set<Ingredient> ingredients = getRestaurantDTOById(restaurantId).getIngredients();
+//        List<Ingredient> ingredientList = new ArrayList<>(ingredients);
+//        if ("name".equals(orderBy)) {
+//            Collections.sort(ingredientList, Comparator.comparing(Ingredient::getName));
+//        } else {
+//            Collections.sort(ingredientList);
+//        }
+//        return ingredientList.stream().map(i -> i.toIngredientDto()).collect(Collectors.toList());
+//    }
 
 
-    public List<RestaurantDTO> getRestaurantsContainingIngredient(String name) {
-        List<String> restaurantIds = entityManager.createStoredProcedureQuery("restaurant_by_ingredient")
-                .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
-                .setParameter(1, name).getResultList();
-        List<RestaurantDTO> foundRestaurants = new ArrayList<>();
-        restaurantRepository.findByIdIn(restaurantIds).forEach(r -> foundRestaurants.add(transformRestaurantToDTO(r)));
-        return foundRestaurants;
-    }
+//    public List<RestaurantDTO> getRestaurantsContainingIngredient(String name) {
+//        List<String> restaurantIds = entityManager.createStoredProcedureQuery("restaurant_by_ingredient")
+//                .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
+//                .setParameter(1, name).getResultList();
+//        List<RestaurantDTO> foundRestaurants = new ArrayList<>();
+//        restaurantRepository.findByIdIn(restaurantIds).forEach(r -> foundRestaurants.add(transformRestaurantToDTO(r)));
+//        return foundRestaurants;
+//    }
 
 
 

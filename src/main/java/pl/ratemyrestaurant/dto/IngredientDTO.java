@@ -38,8 +38,8 @@ public class IngredientDTO {
 
     public Ingredient toIngredient(){
         Ingredient ingredient = new Ingredient(name);
-        ingredient.setThumbsUp(thumbsUp);
-        ingredient.setThumbsDown(thumbsDown);
+//        ingredient.setThumbsUp(thumbsUp);
+//        ingredient.setThumbsDown(thumbsDown);
         return ingredient;
     }
 

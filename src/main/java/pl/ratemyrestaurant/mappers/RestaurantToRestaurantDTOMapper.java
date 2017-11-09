@@ -11,7 +11,6 @@ public class RestaurantToRestaurantDTOMapper {
         restaurantDTO.setName(restaurant.getName());
         restaurantDTO.setLocation(restaurant.getLocation());
         restaurantDTO.setFoodTypes(restaurant.getFoodTypes());
-        restaurantDTO.setIngredients(restaurant.getIngredients());
         return restaurantDTO;
     }
 
@@ -20,7 +19,6 @@ public class RestaurantToRestaurantDTOMapper {
         restaurant.setId(restaurantDTO.getId());
         restaurant.setName(restaurantDTO.getName());
         restaurant.setLocation(restaurantDTO.getLocation());
-        restaurant.setIngredients(restaurantDTO.getIngredients());
         restaurant.setFoodTypes(restaurantDTO.getFoodTypes());
         return restaurant;
     }
