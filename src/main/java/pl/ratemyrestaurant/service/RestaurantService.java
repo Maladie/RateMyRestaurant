@@ -140,4 +140,7 @@ public class RestaurantService {
         restaurantRepository.findByIdIn(restaurantIds).forEach(r -> foundRestaurants.add(transformRestaurantToDTO(r)));
         return foundRestaurants;
     }
+
+
+
 }

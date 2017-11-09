@@ -5,6 +5,7 @@ import pl.ratemyrestaurant.model.Ingredient;
 import pl.ratemyrestaurant.model.Location;
 import pl.ratemyrestaurant.model.Restaurant;
 
+import java.util.Optional;
 import java.util.Set;
 
 public class RestaurantDTO {
@@ -65,4 +66,13 @@ public class RestaurantDTO {
     public void setIngredients(Set<Ingredient> ingredients) {
         this.ingredients = ingredients;
     }
+
+    public IngredientDTO getSpecificIngredient(String name){
+        Optional<Ingredient> ingr = ingredients.stream().filter(i -> i.getName().equals(name)).findFirst();
+        if(ingr.isPresent()){
+            return ingr.get().toIngredientDto();
+        }
+        return null;
+    }
+
 }
