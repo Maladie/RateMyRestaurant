@@ -1,8 +1,6 @@
 package pl.ratemyrestaurant.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.query.Procedure;
-import org.springframework.data.repository.query.Param;
 import pl.ratemyrestaurant.model.FoodType;
 import pl.ratemyrestaurant.model.Ingredient;
 import pl.ratemyrestaurant.model.Restaurant;
