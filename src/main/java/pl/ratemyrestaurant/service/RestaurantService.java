@@ -20,7 +20,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static pl.ratemyrestaurant.mappers.RestaurantToPinMapper.mapRestaurantToPin;
-import static pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper.mapToIngredientSet;
 import static pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper.mapToRestaurant;
 import static pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper.mapToRestaurantDto;
 
@@ -75,7 +74,6 @@ public class RestaurantService {
     private void updateRestaurant(RestaurantDTO restaurantDTO) {
         Restaurant restaurant = restaurantRepository.getOne(restaurantDTO.getId());
         restaurant.setFoodTypes(restaurantDTO.getFoodTypes());
-        restaurant.setIngredients(restaurantDTO.getIngredients());
         restaurantRepository.save(restaurant);
     }
 
