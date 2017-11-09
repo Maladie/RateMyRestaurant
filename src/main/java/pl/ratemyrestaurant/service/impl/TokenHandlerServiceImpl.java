@@ -25,7 +25,7 @@ public class TokenHandlerServiceImpl implements TokenHandlerService {
         Object user = CacheUtil.getFromCache(token);
 
         if(user == null){
-            //TODO remove token from db
+            AsyncTokenExpire.expireToken(token);
             throw new TokenException(token, "TOKEN_NOT_FOUND_IN_CACHE", null);
         }
         else {
