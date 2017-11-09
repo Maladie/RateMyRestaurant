@@ -30,16 +30,14 @@ public class RestaurantService {
 
     private RestaurantRepository restaurantRepository;
     private PlacesConnector placesConnector;
-    private EntityManager entityManager;
-    private RatingRepository ratingRepository;
+    private RatingService ratingService;
 
     @Autowired
     public RestaurantService(RestaurantRepository restaurantRepository, PlacesConnector placesConnector
-            , EntityManager entityManager, RatingRepository ratingRepository) {
+            , RatingService ratingService) {
         this.restaurantRepository = restaurantRepository;
         this.placesConnector = placesConnector;
-        this.entityManager = entityManager;
-        this.ratingRepository = ratingRepository;
+        this.ratingService = ratingService;
     }
 
     public Set<RestaurantPIN> retrieveRestaurantsInRadius(UserSearchCircle userSearchCircle) {
@@ -110,12 +108,8 @@ public class RestaurantService {
 
     private RestaurantDTO transformRestaurantToDTO(Restaurant restaurant) {
         String restaurantId = restaurant.getId();
-        Set<Rating> ratings = retrieveRestaurantRatings(restaurantId);
+        Set<Rating> ratings = ratingService.retrieveRestaurantRatings(restaurantId);
         return mapToRestaurantDto(restaurant, ratings);
-    }
-
-    private Set<Rating> retrieveRestaurantRatings(String restaurantId){
-        return ratingRepository.findByRestaurant_Id(restaurantId);
     }
 
     public RestaurantPIN getRestaurantPINById(String id) {
@@ -125,28 +119,5 @@ public class RestaurantService {
     private RestaurantPIN transformRestaurantToPIN(Restaurant restaurant) {
         return mapRestaurantToPin(restaurant);
     }
-
-//    public List<IngredientDTO> getIngredientsByThumbs(String restaurantId, String orderBy) {
-//        Set<Ingredient> ingredients = restaurantRepository.findOne(restaurantId).getIngredients();
-//        List<Ingredient> ingredientList = new ArrayList<>(ingredients);
-//        if ("name".equals(orderBy)) {
-//            Collections.sort(ingredientList, Comparator.comparing(Ingredient::getName));
-//        } else {
-//            Collections.sort(ingredientList);
-//        }
-//        return ingredientList.stream().map(i -> i.toIngredientDto()).collect(Collectors.toList());
-//    }
-
-
-//    public List<RestaurantDTO> getRestaurantsContainingIngredient(String name) {
-//        List<String> restaurantIds = entityManager.createStoredProcedureQuery("restaurant_by_ingredient")
-//                .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
-//                .setParameter(1, name).getResultList();
-//        List<RestaurantDTO> foundRestaurants = new ArrayList<>();
-//        restaurantRepository.findByIdIn(restaurantIds).forEach(r -> foundRestaurants.add(transformRestaurantToDTO(r)));
-//        return foundRestaurants;
-//    }
-
-
 
 }
