@@ -35,7 +35,7 @@ import java.util.Arrays;
 public class APIAccessWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
-    String[] patterns = new String[]{
+    private String[] patterns = new String[]{
             "/index.html", "/error", "/register", "/login"
     };
     @Autowired

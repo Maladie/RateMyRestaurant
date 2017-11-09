@@ -10,12 +10,10 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="org.hibernate.validator.internal.util.Version" level="debug" />
-        <Logger name="pl.ratemyrestaurant.controller" level="debug" />
         <Logger name="pl.ratemyrestaurant.service.impl" level="debug" />
-        <logger name="org.springframework.security" level="debug"/>
+        <logger name="org.springframework.security" level="info"/>
 
-        <Root level="info">
+        <Root level="debug">
             <AppenderRef ref="Console"/>
         </Root>
     </Loggers>

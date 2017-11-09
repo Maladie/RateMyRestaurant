@@ -1,13 +1,15 @@
 package pl.ratemyrestaurant.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.ratemyrestaurant.config.Constants;
 import pl.ratemyrestaurant.dao.UserTokenRepository;
 import pl.ratemyrestaurant.domain.UserToken;
 import pl.ratemyrestaurant.exception.TokenException;
@@ -25,8 +27,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -35,6 +37,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class TokenAuthenticationServiceImpl implements TokenAuthenticationService {
     private static final String AUTH_HEADER_NAME = "X-XSRF-TOKEN";
+    private static Logger logger = LogManager.getLogger(TokenAuthenticationServiceImpl.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -55,11 +58,14 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
 
             ObjectMapper mapper = new ObjectMapper();
             try {
-               Map<String, String> s= mapper.readValue(request.getReader().lines().collect(Collectors.joining()), Map.class);
-               username = s.get("username");
-               password = s.get("password");
+                String body =request.getReader().lines().collect(Collectors.joining());
+                if(!Util.isNullOrEmpty(body)) {
+                    Map<String, String> s = mapper.readValue(body, Map.class);
+                    username = s.get("username");
+                    password = s.get("password");
+                }
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.debug("IOException - authentication for login ", e);
             }
         } else {
             username = request.getParameter("username");
@@ -111,7 +117,7 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
             auth.setAuthenticated(true);
             return auth;
         }
-
+        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         auth.setAuthenticated(false);
         return auth;
@@ -134,29 +140,30 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
                     auth.setUser(user);
                     auth.setAuthenticated(true);
                     auth.setToken(token);
+                    logger.debug("User "+user.getUsername()+ " authentication success! Token: "+ token);
                     return auth;
                 } else {
                     info.setCode(101L);
-                    info.setDesc("User not found");
+                    info.setDesc("User not found. Invalid token.");
+                    logger.debug("User not found. Invalid token. Authentication failed! Token: "+ token);
                 }
             } catch (TokenException e) {
                 info.setCode(102L);
                 info.setDesc(e.getDescription());
-                info.setObject(e);
-
-                System.out.println("Token Exception : " + e.getMessage());
+                logger.debug("TokenException "+info.getCode() + " "+ e.getDescription());
             } catch (Exception e) {
                 info.setCode(103L);
                 info.setDesc("AUTHENTICATE_EXCEPTION_RELOGIN_NEEDED");
-
-                System.out.println("Exception" + Arrays.toString(e.getStackTrace()));
+                logger.catching(e);
             }
 
         } else {
             info.setCode(100L);
-            info.setDesc("Token not found");
+            info.setDesc("Authorization Token not found");
+            logger.debug("Authorization Token not found. Token value: "+ token);
         }
 
+        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         auth.setAuthenticated(false);
         return auth;
@@ -171,20 +178,21 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
         userToken.setUser(user);
         userToken.setToken(token);
         userToken.setStatus(TokenStatus.ACTIVE.getTokenStatus());
-        userToken.setCreatedDate(LocalDateTime.now());
+        userToken.setCreatedDate(Timestamp.valueOf(LocalDateTime.now()));
         //hopefully removes all tokens cached by user
-        userTokenRepository.deactivateAllTokensByUser(user.getId());
+       int result = userTokenRepository.deactivateAllTokensByUser(user.getId());
+       logger.debug("Deactivation status: "+ result);
         //apply all changes to db instantly
         userTokenRepository.flush();
         userTokenRepository.save(userToken);
         tokenHandlerService.insertToCache(token, user);
 
-        Cookie cookie = new Cookie("XSRF-TOKEN", token);
+        Cookie cookie = new Cookie(Constants.COOKIE_XSRF_AUTH_TOKEN, token);
         cookie.setPath("/");
         cookie.setHttpOnly(false);
+        cookie.setMaxAge(-1);
         response.addCookie(cookie);
-
-        response.addHeader("X-XSRF-TOKEN", token);
+        response.addHeader(Constants.HEADER_XSRF_AUTH_TOKEN, token);
         return userToken;
     }
 }
