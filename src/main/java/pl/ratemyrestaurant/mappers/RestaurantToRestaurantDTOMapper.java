@@ -29,17 +29,4 @@ public class RestaurantToRestaurantDTOMapper {
         return restaurant;
     }
 
-//    public static Set<IngredientDTO> mapToDTOSet(Restaurant restaurant){
-//        if(restaurant.getIngredients() == null){
-//            return new HashSet<>();
-//        }
-//       return restaurant.getIngredients().stream().map(ingredient -> ingredient.toIngredientDto()).collect(Collectors.toSet());
-//    }
-//
-//    public static Set<Ingredient> mapToIngredientSet(RestaurantDTO restaurantDTO){
-//        if(restaurantDTO.getIngredients() == null){
-//            return new HashSet<>();
-//        }
-//        return restaurantDTO.getIngredients().stream().map(ingredientDTO -> ingredientDTO.toIngredient()).collect(Collectors.toSet());
-//    }
 }
