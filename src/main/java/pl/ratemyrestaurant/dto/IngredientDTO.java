@@ -1,15 +1,19 @@
 package pl.ratemyrestaurant.dto;
 
-import pl.ratemyrestaurant.model.Ingredient;
-import pl.ratemyrestaurant.model.Thumb;
-
 public class IngredientDTO {
 
+    private Long id;
     private String name;
-    private int thumbsUp;
-    private int thumbsDown;
 
     public IngredientDTO() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -20,49 +24,21 @@ public class IngredientDTO {
         this.name = name;
     }
 
-    public int getThumbsUp() {
-        return thumbsUp;
-    }
-
-    public void setThumbsUp(int thumbsUp) {
-        this.thumbsUp = thumbsUp;
-    }
-
-    public int getThumbsDown() {
-        return thumbsDown;
-    }
-
-    public void setThumbsDown(int thumbsDown) {
-        this.thumbsDown = thumbsDown;
-    }
-
-    public Ingredient toIngredient(){
-        Ingredient ingredient = new Ingredient(name);
-//        ingredient.setThumbsUp(thumbsUp);
-//        ingredient.setThumbsDown(thumbsDown);
-        return ingredient;
-    }
-
-    public static class IngredientDtoBuilder{
+    public static class Builder {
 
         private IngredientDTO ingredientDTO;
 
-        public IngredientDtoBuilder() {
+        public Builder() {
             ingredientDTO = new IngredientDTO();
         }
 
-        public IngredientDtoBuilder addName(String name){
+        public Builder setId(Long id) {
+            ingredientDTO.setId(id);
+            return this;
+        }
+
+        public Builder setName(String name){
             ingredientDTO.setName(name);
-            return this;
-        }
-
-        public IngredientDtoBuilder addThumbsUp(int thumbsUp){
-            ingredientDTO.setThumbsUp(thumbsUp);
-            return this;
-        }
-
-        public IngredientDtoBuilder addThumbsDown(int thumbsDown){
-            ingredientDTO.setThumbsDown(thumbsDown);
             return this;
         }
 

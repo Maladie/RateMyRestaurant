@@ -15,15 +15,16 @@ public class Rating {
     @Embedded
     private Thumb thumb;
 
-    public Rating() {
+    public Rating() {}
+
+    public Rating(Restaurant restaurant, Ingredient ingredient, Thumb thumb) {
+        this.restaurant = restaurant;
+        this.ingredient = ingredient;
+        this.thumb = thumb;
     }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Restaurant getRestaurant() {
