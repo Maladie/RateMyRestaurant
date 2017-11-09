@@ -13,7 +13,6 @@ public class RestaurantDTO {
     private String name;
     private Location location;
     private Set<FoodType> foodTypes;
-    private Set<IngredientDTO> ingredients;
     private boolean newlyCreated;
 
     public RestaurantDTO() {}
@@ -28,10 +27,6 @@ public class RestaurantDTO {
 
     public Set<FoodType> getFoodTypes() {
         return foodTypes;
-    }
-
-    public Set<IngredientDTO> getIngredients() {
-        return ingredients;
     }
 
     public boolean isNewlyCreated() {
@@ -62,16 +57,12 @@ public class RestaurantDTO {
         this.foodTypes = foodTypes;
     }
 
-    public void setIngredients(Set<IngredientDTO> ingredients) {
-        this.ingredients = ingredients;
-    }
-
-    public IngredientDTO getSpecificIngredient(String name){
-        Optional<IngredientDTO> ingr = ingredients.stream().filter(i -> i.getName().equals(name)).findFirst();
-        if(ingr.isPresent()){
-            return ingr.get();
-        }
-        return null;
-    }
+//    public IngredientDTO getSpecificIngredient(String name){
+//        Optional<Ingredient> ingr = ingredients.stream().filter(i -> i.getName().equals(name)).findFirst();
+//        if(ingr.isPresent()){
+//            return ingr.get().toIngredientDto();
+//        }
+//        return null;
+//    }
 
 }

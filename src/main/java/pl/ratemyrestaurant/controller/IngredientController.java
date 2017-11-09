@@ -20,14 +20,14 @@ public class IngredientController {
         this.ingredientService = ingredientService;
     }
 
-    @GetMapping("/ingredients")
-    public Set<IngredientDTO> getAllIngredients(){
-        return ingredientService.getAllIngredientDTOs();
-    }
-
-    @GetMapping("/ingredients/{ingredientId}")
-    public IngredientDTO getById(@PathVariable Long ingredientId){
-        return ingredientService.getIngredientDTOById(ingredientId);
-    }
+//    @GetMapping("/ingredients")
+//    public Set<IngredientDTO> getAllIngredients(){
+//        return ingredientService.getAllIngredientDTOs();
+//    }
+//
+//    @GetMapping("/ingredients/{ingredientId}")
+//    public IngredientDTO getById(@PathVariable Long ingredientId){
+//        return ingredientService.getIngredientDTOById(ingredientId);
+//    }
 
 }

@@ -14,8 +14,6 @@ public class Restaurant {
     private Location location;
     @ElementCollection
     private Set<FoodType> foodTypes;
-    @ManyToMany
-    private Set<Ingredient> ingredients;
 
     public Restaurant() {}
 
@@ -25,12 +23,11 @@ public class Restaurant {
         this.location = location;
     }
 
-    public Restaurant(String id, String name, Location location, Set<FoodType> foodTypes, Set<Ingredient> ingredients) {
+    public Restaurant(String id, String name, Location location, Set<FoodType> foodTypes) {
         this.id = id;
         this.name = name;
         this.location = location;
         this.foodTypes = foodTypes;
-        this.ingredients = ingredients;
     }
 
     public String getId() {
@@ -49,10 +46,6 @@ public class Restaurant {
         return foodTypes;
     }
 
-    public Set<Ingredient> getIngredients() {
-        return ingredients;
-    }
-
     public void setId(String id) {
         this.id = id;
     }
@@ -67,9 +60,5 @@ public class Restaurant {
 
     public void setFoodTypes(Set<FoodType> foodTypes) {
         this.foodTypes = foodTypes;
-    }
-
-    public void setIngredients(Set<Ingredient> ingredients) {
-        this.ingredients = ingredients;
     }
 }

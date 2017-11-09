@@ -32,28 +32,28 @@ public class IngredientService {
 
     public Ingredient thumbUp(long id){
         Ingredient i = ingredientRepository.findById(id);
-        i.giveThumbUp();
+//        i.giveThumbUp();
         ingredientRepository.save(i);
         return i;
     }
 
     public Ingredient thumbDown(long id){
         Ingredient i = ingredientRepository.findById(id);
-        i.giveThumbDown();
+//        i.giveThumbDown();
         ingredientRepository.save(i);
         return i;
     }
 
-    public Set<IngredientDTO> getAllIngredientDTOs(){
-        return ingredientRepository
-                .findAll()
-                .stream()
-                .map(i -> i.toIngredientDto())
-                .collect(Collectors.toSet());
-    }
+//    public Set<IngredientDTO> getAllIngredientDTOs(){
+//        return ingredientRepository
+//                .findAll()
+//                .stream()
+//                .map(i -> i.toIngredientDto())
+//                .collect(Collectors.toSet());
+//    }
 
-    public IngredientDTO getIngredientDTOById(long id){
-        return ingredientRepository.findById(id).toIngredientDto();
-    }
+//    public IngredientDTO getIngredientDTOById(long id){
+//        return ingredientRepository.findById(id).toIngredientDto();
+//    }
 
 }
