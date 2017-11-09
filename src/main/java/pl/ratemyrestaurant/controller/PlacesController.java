@@ -24,7 +24,7 @@ public class PlacesController {
     //działa
     @GetMapping(value = "/area",produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<RestaurantPIN> getPlacesInRadius(@RequestParam double lng, @RequestParam double lat, @RequestParam double radius, @RequestParam(required = false) String type){
-        UserSearchCircle userSearchCircle = new UserSearchCircle(lng, lat, radius);
+        UserSearchCircle userSearchCircle = new UserSearchCircle(lat, lng, radius);
         Set<RestaurantPIN> restaurantPINSet = restaurantService.retrieveRestaurantsInRadius(userSearchCircle);
         return restaurantPINSet;
     }
