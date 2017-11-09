@@ -8,6 +8,10 @@ public class IngredientDTO {
     public IngredientDTO() {
     }
 
+    public IngredientDTO(String name) {
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }
