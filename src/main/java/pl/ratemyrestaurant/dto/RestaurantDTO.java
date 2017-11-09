@@ -3,7 +3,6 @@ package pl.ratemyrestaurant.dto;
 import pl.ratemyrestaurant.model.FoodType;
 import pl.ratemyrestaurant.model.Ingredient;
 import pl.ratemyrestaurant.model.Location;
-import pl.ratemyrestaurant.model.Restaurant;
 
 import java.util.Optional;
 import java.util.Set;
