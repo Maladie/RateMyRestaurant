@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.ratemyrestaurant.domain.UserToken;
 import pl.ratemyrestaurant.type.TokenStatus;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,13 +21,15 @@ public interface UserTokenRepository extends JpaRepository<UserToken, Long> {
 
     UserToken getByToken(String token);
 
-    @Query("select u from UserToken u where u.id = ?1 and u.status = 0 and u.createdDate > ?2")
-    List<UserToken> getTokenToExpire(Long userId, LocalDateTime expirationDate);
+    @Query("select u from UserToken u where u.id = ?1 and u.status = 0 and u.createdDate < ?2")
+    List<UserToken> getTokenToExpire(Integer id, Timestamp expirationDate);
 
     @Query("select u.id from UserToken u where u.status = ?1")
-    List<Long> getUserTokensByStatus(long switchStatus);
+    List<Integer> getUserIdByTokenStatus(long switchStatus);
 
     @Modifying
     @Query("update UserToken u set u.status = 1 where u.id = ?1")
     int deactivateAllTokensByUser(int userId);
+
+    void deleteAllByStatus(Long status);
 }
