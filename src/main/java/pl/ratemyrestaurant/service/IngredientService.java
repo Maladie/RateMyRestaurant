@@ -24,11 +24,11 @@ public class IngredientService {
         this.ingredientRepository = ingredientRepository;
     }
 
-    public Ingredient addIngredient(IngredientDTO ingredientDTO){
-        Ingredient i = ingredientDTO.toIngredient();
-        ingredientRepository.save(i);
-        return i;
-    }
+//    public Ingredient addIngredient(IngredientDTO ingredientDTO){
+//        Ingredient i = ingredientDTO.toIngredient();
+//        ingredientRepository.save(i);
+//        return i;
+//    }
 
     public Ingredient thumbUp(long id){
         Ingredient i = ingredientRepository.findById(id);

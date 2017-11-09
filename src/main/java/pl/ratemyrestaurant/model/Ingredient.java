@@ -59,15 +59,35 @@ public class Ingredient implements Comparable<Ingredient>{
         return getThumbsUp() - getThumbsDown();
     }
 
-    public IngredientDTO toIngredientDto(){
-        int ups = thumb.getThumbsUp();
-        int downs = thumb.getThumbsDown();
+//    public IngredientDTO toIngredientDto(){
+//        int ups = thumb.getThumbsUp();
+//        int downs = thumb.getThumbsDown();
+//
+//        return new IngredientDTO.IngredientDtoBuilder()
+//                .addName(name)
+//                .addThumbsUp(ups)
+//                .addThumbsDown(downs)
+//                .build();
+//    }
 
-        return new IngredientDTO.IngredientDtoBuilder()
-                .addName(name)
-                .addThumbsUp(ups)
-                .addThumbsDown(downs)
-                .build();
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj){
+            return true;
+        }else if(obj instanceof Ingredient){
+            super.equals(obj);
+        }else if(obj instanceof IngredientDTO){
+            IngredientDTO ingredientDTO = (IngredientDTO) obj;
+            if(ingredientDTO.getName().equals(this.getName())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
     }
 
     @Override

@@ -11,7 +11,6 @@ public class RestaurantToRestaurantDTOMapper {
         restaurantDTO.setName(restaurant.getName());
         restaurantDTO.setLocation(restaurant.getLocation());
         restaurantDTO.setFoodTypes(restaurant.getFoodTypes());
-        restaurantDTO.setIngredients(restaurant.getIngredients());
         return restaurantDTO;
     }
 

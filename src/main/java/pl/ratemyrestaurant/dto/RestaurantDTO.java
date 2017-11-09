@@ -13,7 +13,7 @@ public class RestaurantDTO {
     private String name;
     private Location location;
     private Set<FoodType> foodTypes;
-    private Set<Ingredient> ingredients;
+    private Set<IngredientDTO> ingredients;
     private boolean newlyCreated;
 
     public RestaurantDTO() {}
@@ -30,7 +30,7 @@ public class RestaurantDTO {
         return foodTypes;
     }
 
-    public Set<Ingredient> getIngredients() {
+    public Set<IngredientDTO> getIngredients() {
         return ingredients;
     }
 
@@ -62,7 +62,7 @@ public class RestaurantDTO {
         this.foodTypes = foodTypes;
     }
 
-    public void setIngredients(Set<Ingredient> ingredients) {
+    public void setIngredients(Set<IngredientDTO> ingredients) {
         this.ingredients = ingredients;
     }
 }

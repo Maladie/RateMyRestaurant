@@ -31,14 +31,16 @@ public class RestaurantService {
 
     private RestaurantRepository restaurantRepository;
     private PlacesConnector placesConnector;
-    
+    private IngredientService ingredientService;
+
     @Autowired
     private EntityManager entityManager;
 
     @Autowired
-    public RestaurantService(RestaurantRepository restaurantRepository, PlacesConnector placesConnector) {
+    public RestaurantService(RestaurantRepository restaurantRepository, PlacesConnector placesConnector, IngredientService ingredientService) {
         this.restaurantRepository = restaurantRepository;
         this.placesConnector = placesConnector;
+        this.ingredientService = ingredientService;
     }
 
     public Set<RestaurantPIN> retrieveRestaurantsInRadius(UserSearchCircle userSearchCircle) {
@@ -72,14 +74,40 @@ public class RestaurantService {
 
     private void addNewRestaurant(RestaurantDTO restaurantDTO) {
         Restaurant restaurant = mapToRestaurant(restaurantDTO);
+        updateIngredients(restaurant, restaurantDTO);
         restaurantRepository.save(restaurant);
     }
 
     private void updateRestaurant(RestaurantDTO restaurantDTO) {
         Restaurant restaurant = restaurantRepository.getOne(restaurantDTO.getId());
         restaurant.setFoodTypes(restaurantDTO.getFoodTypes());
-        restaurant.setIngredients(restaurantDTO.getIngredients());
+        updateIngredients(restaurant, restaurantDTO);
         restaurantRepository.save(restaurant);
+    }
+
+    private void updateIngredients(Restaurant restaurant, RestaurantDTO restaurantDTO){
+        Set<IngredientDTO> ingredientDTOs = restaurantDTO.getIngredients();
+        Set<Ingredient> ingredients = restaurant.getIngredients();
+
+        ingredientDTOs.forEach(ingredientDTO -> {
+            if(ingredients.contains(ingredientDTO)){
+               Ingredient ingredientToUpdate = ingredients.stream().filter(ingredient -> ingredient.equals(ingredientDTO)).findFirst().get();
+                modifyThumbs(ingredientToUpdate, ingredientDTO);
+            }else{
+                Ingredient newIngredient = new Ingredient();
+                newIngredient.setName(ingredientDTO.getName());
+                modifyThumbs(newIngredient, ingredientDTO);
+            }
+        });
+    }
+
+    private void modifyThumbs(Ingredient ingredientToUpdate, IngredientDTO ingredientDTO){
+        if(ingredientDTO.isThumbsUp()){
+            ingredientToUpdate.giveThumbUp();
+        }
+        if(ingredientDTO.isThumbsDown()){
+            ingredientToUpdate.getThumbsDown();
+        }
     }
 
     public RestaurantDTO getOrRetrieveRestaurantDTOByID(String placeId) {
@@ -120,16 +148,16 @@ public class RestaurantService {
         return mapRestaurantToPin(restaurant);
     }
 
-    public List<IngredientDTO> getIngredientsByThumbs(String restaurantId, String orderBy) {
-        Set<Ingredient> ingredients = getRestaurantDTOById(restaurantId).getIngredients();
-        List<Ingredient> ingredientList = new ArrayList<>(ingredients);
-        if ("name".equals(orderBy)) {
-            Collections.sort(ingredientList, Comparator.comparing(Ingredient::getName));
-        } else {
-            Collections.sort(ingredientList);
-        }
-        return ingredientList.stream().map(i -> i.toIngredientDto()).collect(Collectors.toList());
-    }
+//    public List<IngredientDTO> getIngredientsByThumbs(String restaurantId, String orderBy) {
+//        Set<IngredientDTO> ingredients = getRestaurantDTOById(restaurantId).getIngredients();
+//        List<IngredientDTO> ingredientList = new ArrayList<>(ingredients);
+//        if ("name".equals(orderBy)) {
+//            Collections.sort(ingredientList, Comparator.comparing(Ingredient::getName));
+//        } else {
+//            Collections.sort(ingredientList);
+//        }
+//        return ingredientList.stream().map(i -> i.toIngredientDto()).collect(Collectors.toList());
+//    }
 
 
     public List<RestaurantDTO> getRestaurantsContainingIngredient(String name) {

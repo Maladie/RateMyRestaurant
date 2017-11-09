@@ -6,8 +6,8 @@ import pl.ratemyrestaurant.model.Thumb;
 public class IngredientDTO {
 
     private String name;
-    private int thumbsUp;
-    private int thumbsDown;
+    private boolean thumbsUp;
+    private boolean thumbsDown;
 
     public IngredientDTO() {
     }
@@ -20,28 +20,28 @@ public class IngredientDTO {
         this.name = name;
     }
 
-    public int getThumbsUp() {
+    public boolean isThumbsUp() {
         return thumbsUp;
     }
 
-    public void setThumbsUp(int thumbsUp) {
+    public void setThumbsUp(boolean thumbsUp) {
         this.thumbsUp = thumbsUp;
     }
 
-    public int getThumbsDown() {
+    public boolean isThumbsDown() {
         return thumbsDown;
     }
 
-    public void setThumbsDown(int thumbsDown) {
+    public void setThumbsDown(boolean thumbsDown) {
         this.thumbsDown = thumbsDown;
     }
 
-    public Ingredient toIngredient(){
-        Ingredient ingredient = new Ingredient(name);
-        ingredient.setThumbsUp(thumbsUp);
-        ingredient.setThumbsDown(thumbsDown);
-        return ingredient;
-    }
+//    public Ingredient toIngredient(){
+//        Ingredient ingredient = new Ingredient(name);
+//        ingredient.setThumbsUp(thumbsUp);
+//        ingredient.setThumbsDown(thumbsDown);
+//        return ingredient;
+//    }
 
     public static class IngredientDtoBuilder{
 
@@ -61,7 +61,7 @@ public class IngredientDTO {
             return this;
         }
 
-        public IngredientDtoBuilder addThumbsDown(int thumbsDown){
+        public IngredientDtoBuilder addThumbsDown(boolean thumbsDown){
             ingredientDTO.setThumbsDown(thumbsDown);
             return this;
         }
