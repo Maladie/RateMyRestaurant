@@ -24,17 +24,27 @@ public class IngredientService {
     }
 
     public Ingredient addIngredient(IngredientDTO ingredientDTO){
-        Ingredient ingredient = IngredientToIngredientDTOMapper.mapIngredientDTOToIngredient(ingredientDTO);
-        ingredientRepository.save(ingredient);
+        Ingredient ingredient;
+        if(!getAllIngredients().stream().filter(i -> i.getName().equalsIgnoreCase(ingredientDTO.getName())).findFirst().isPresent()) {
+            ingredient = IngredientToIngredientDTOMapper.mapIngredientDTOToIngredient(ingredientDTO);
+            ingredientRepository.save(ingredient);
+        } else {
+            ingredient = ingredientRepository.findByName(ingredientDTO.getName());
+        }
+
         return ingredient;
     }
 
-    public Set<IngredientDTO> getAllIngredients() {
-        List<Ingredient> allIngredients = ingredientRepository.findAll();
+    public Set<IngredientDTO> getAllIngredientsDTO() {
+        List<Ingredient> allIngredients = getAllIngredients();
         Set<IngredientDTO> allIngredientsDTO = allIngredients.stream()
                                                         .map(ingredient -> IngredientToIngredientDTOMapper.mapIngredientToIngredientDTO(ingredient))
                                                         .collect(Collectors.toSet());
         return allIngredientsDTO;
+    }
+
+    private List<Ingredient> getAllIngredients() {
+        return ingredientRepository.findAll();
     }
 
 }
