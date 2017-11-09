@@ -20,6 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static pl.ratemyrestaurant.mappers.RestaurantToPinMapper.mapRestaurantToPin;
+import static pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper.mapToIngredientSet;
 import static pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper.mapToRestaurant;
 import static pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper.mapToRestaurantDto;
 
@@ -28,13 +29,13 @@ public class RestaurantService {
 
     private RestaurantRepository restaurantRepository;
     private PlacesConnector placesConnector;
-    @Autowired
     private EntityManager entityManager;
 
     @Autowired
-    public RestaurantService(RestaurantRepository restaurantRepository, PlacesConnector placesConnector) {
+    public RestaurantService(RestaurantRepository restaurantRepository, PlacesConnector placesConnector, EntityManager entityManager) {
         this.restaurantRepository = restaurantRepository;
         this.placesConnector = placesConnector;
+        this.entityManager = entityManager;
     }
 
     public Set<RestaurantPIN> retrieveRestaurantsInRadius(UserSearchCircle userSearchCircle) {
@@ -74,6 +75,7 @@ public class RestaurantService {
     private void updateRestaurant(RestaurantDTO restaurantDTO) {
         Restaurant restaurant = restaurantRepository.getOne(restaurantDTO.getId());
         restaurant.setFoodTypes(restaurantDTO.getFoodTypes());
+        restaurant.setIngredients(restaurantDTO.getIngredients());
         restaurantRepository.save(restaurant);
     }
 
@@ -116,7 +118,7 @@ public class RestaurantService {
     }
 
 //    public List<IngredientDTO> getIngredientsByThumbs(String restaurantId, String orderBy) {
-//        Set<Ingredient> ingredients = getRestaurantDTOById(restaurantId).getIngredients();
+//        Set<Ingredient> ingredients = restaurantRepository.findOne(restaurantId).getIngredients();
 //        List<Ingredient> ingredientList = new ArrayList<>(ingredients);
 //        if ("name".equals(orderBy)) {
 //            Collections.sort(ingredientList, Comparator.comparing(Ingredient::getName));
