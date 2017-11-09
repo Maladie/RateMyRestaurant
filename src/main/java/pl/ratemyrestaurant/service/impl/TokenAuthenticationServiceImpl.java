@@ -21,7 +21,7 @@ import pl.ratemyrestaurant.service.TokenAuthenticationService;
 import pl.ratemyrestaurant.service.TokenHandlerService;
 import pl.ratemyrestaurant.type.TokenStatus;
 import pl.ratemyrestaurant.utils.SecurityUtils;
-import pl.ratemyrestaurant.utils.Util;
+import pl.ratemyrestaurant.utils.CheckingUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -59,7 +59,7 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
             ObjectMapper mapper = new ObjectMapper();
             try {
                 String body =request.getReader().lines().collect(Collectors.joining());
-                if(!Util.isNullOrEmpty(body)) {
+                if(!CheckingUtils.isNullOrEmpty(body)) {
                     Map<String, String> s = mapper.readValue(body, Map.class);
                     username = s.get("username");
                     password = s.get("password");
@@ -77,23 +77,23 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
 
         Info info = auth.getInfo();
 
-        boolean isUsernameEmpty = Util.isNullOrEmpty(username);
+        boolean isUsernameEmpty = CheckingUtils.isNullOrEmpty(username);
         boolean isAuthorized = false;
 
         if (isUsernameEmpty) {
             info.setCode(100L);
             info.setDesc("User empty username");
         } else {
-            if (Util.isNullOrEmpty(password)) {
+            if (CheckingUtils.isNullOrEmpty(password)) {
                 info.setCode(101L);
                 info.setDesc("User empty password");
             } else {
                 user = userRepository.findUserByUsername(username);
 
-                if (Util.isNullObject(user)) {
+                if (CheckingUtils.isNullObject(user)) {
                     info.setCode(199L);
                     info.setDesc("User not found");
-                } else if (Util.isNullOrEmpty(user.getPassword())) {
+                } else if (CheckingUtils.isNullOrEmpty(user.getPassword())) {
                     info.setCode(101L);
                     info.setDesc("User missing password");
                 } else {
@@ -131,11 +131,11 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
 
         Info info = auth.getInfo();
 
-        if (!Util.isNullOrEmpty(token)) {
+        if (!CheckingUtils.isNullOrEmpty(token)) {
             try {
                 User user = tokenHandlerService.parseUserFromToken(token);
 
-                if (!Util.isNullObject(user)) {
+                if (!CheckingUtils.isNullObject(user)) {
                     response.setStatus(HttpServletResponse.SC_OK);
                     auth.setUser(user);
                     auth.setAuthenticated(true);

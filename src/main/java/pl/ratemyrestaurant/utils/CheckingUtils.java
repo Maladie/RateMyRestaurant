@@ -1,7 +1,6 @@
 package pl.ratemyrestaurant.utils;
 
-public class Util {
-
+public class CheckingUtils {
     /**
      * Check if string is null or empty
      * @param str string value to check
