@@ -8,7 +8,7 @@ import pl.ratemyrestaurant.dao.UserTokenRepository;
 import pl.ratemyrestaurant.model.User;
 import pl.ratemyrestaurant.type.TokenStatus;
 import pl.ratemyrestaurant.utils.CacheUtil;
-import pl.ratemyrestaurant.utils.Util;
+import pl.ratemyrestaurant.utils.CheckingUtils;
 
 @Async
 public class AsyncTokenExpire {
@@ -23,11 +23,11 @@ public class AsyncTokenExpire {
     public static void expireToken(String expiredToken){
         logger.info("Token Expire Message Received ---> " + expiredToken);
         User user = (User) CacheUtil.getFromCache(expiredToken);
-        if(!Util.isNullObject(user)){
+        if(!CheckingUtils.isNullObject(user)){
             CacheUtil.removeFromCache(expiredToken);
         }
 
-        if(!Util.isNullOrEmpty(expiredToken))
+        if(!CheckingUtils.isNullOrEmpty(expiredToken))
             if (user != null) {
                 userTokenRepository.updateUserTokenStatus(expiredToken, TokenStatus.EXPIRED_TIME, user.getId());
             }
