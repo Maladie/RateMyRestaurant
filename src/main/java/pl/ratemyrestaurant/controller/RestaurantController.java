@@ -6,17 +6,17 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ratemyrestaurant.dto.RestaurantDTO;
-import pl.ratemyrestaurant.service.impl.RestaurantService;
+import pl.ratemyrestaurant.service.impl.RestaurantServiceImpl;
 
 @RestController
 @RequestMapping("/restaurant")
 public class RestaurantController {
 
-    private RestaurantService restaurantService;
+    private RestaurantServiceImpl restaurantServiceImpl;
 
     @Autowired
-    public RestaurantController(RestaurantService restaurantService) {
-        this.restaurantService = restaurantService;
+    public RestaurantController(RestaurantServiceImpl restaurantServiceImpl) {
+        this.restaurantServiceImpl = restaurantServiceImpl;
     }
 
 //    @GetMapping(value = "/{restaurantId}/ingredients", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -27,7 +27,7 @@ public class RestaurantController {
 
     @PostMapping(value = "/save", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RestaurantDTO> persistRestaurant(@RequestBody RestaurantDTO restaurantDTO){
-        restaurantService.addOrUpdateRestaurant(restaurantDTO);
+        restaurantServiceImpl.addOrUpdateRestaurant(restaurantDTO);
         return new ResponseEntity<>(restaurantDTO, HttpStatus.CREATED);
     }
 

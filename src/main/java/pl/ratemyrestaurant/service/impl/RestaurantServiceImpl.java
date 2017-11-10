@@ -11,6 +11,7 @@ import pl.ratemyrestaurant.model.Restaurant;
 import pl.ratemyrestaurant.model.UserSearchCircle;
 import pl.ratemyrestaurant.repository.RestaurantRepository;
 import pl.ratemyrestaurant.service.PlacesConnector;
+import pl.ratemyrestaurant.service.RestaurantService;
 import se.walkercrou.places.Place;
 
 import java.util.*;
@@ -20,18 +21,18 @@ import static pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper.mapToR
 import static pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper.mapToRestaurantDto;
 
 @Service
-public class RestaurantService {
+public class RestaurantServiceImpl implements RestaurantService {
 
     private RestaurantRepository restaurantRepository;
     private PlacesConnector placesConnector;
-    private RatingService ratingService;
+    private RatingServiceImpl ratingServiceImpl;
 
     @Autowired
-    public RestaurantService(RestaurantRepository restaurantRepository, PlacesConnector placesConnector
-            , RatingService ratingService) {
+    public RestaurantServiceImpl(RestaurantRepository restaurantRepository, PlacesConnector placesConnector
+            , RatingServiceImpl ratingServiceImpl) {
         this.restaurantRepository = restaurantRepository;
         this.placesConnector = placesConnector;
-        this.ratingService = ratingService;
+        this.ratingServiceImpl = ratingServiceImpl;
     }
 
     public Set<RestaurantPIN> retrieveRestaurantsInRadius(UserSearchCircle userSearchCircle) {
@@ -102,7 +103,7 @@ public class RestaurantService {
 
     private RestaurantDTO transformRestaurantToDTO(Restaurant restaurant) {
         String restaurantId = restaurant.getId();
-        Set<Rating> ratings = ratingService.retrieveRestaurantRatings(restaurantId);
+        Set<Rating> ratings = ratingServiceImpl.retrieveRestaurantRatings(restaurantId);
         return mapToRestaurantDto(restaurant, ratings);
     }
 
