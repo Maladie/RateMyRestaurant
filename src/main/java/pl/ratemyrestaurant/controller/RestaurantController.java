@@ -4,15 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.ratemyrestaurant.dto.RestaurantDTO;
 import pl.ratemyrestaurant.service.RestaurantService;
 
+import java.util.List;
+import java.util.Set;
+
 @RestController
-@RequestMapping("/restaurant")
+@RequestMapping("/restaurants")
 public class RestaurantController {
 
     private RestaurantService restaurantService;
@@ -22,11 +22,10 @@ public class RestaurantController {
         this.restaurantService = restaurantService;
     }
 
-//    @GetMapping(value = "/{restaurantId}/ingredients", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public List<IngredientDTO> getIngredientsByThumbs(@PathVariable String restaurantId,
-//                                                      @RequestParam (required = false) String orderBy){
-//        return restaurantService.getIngredientsByThumbs(restaurantId, orderBy);
-//    }
+    @GetMapping(value = "/{restaurantId}")
+    public RestaurantDTO getRestaurantById(@PathVariable String restaurantId) {
+        return restaurantService.getRestaurantDTOById(restaurantId);
+    }
 
     @PostMapping(value = "/save", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RestaurantDTO> persistRestaurant(@RequestBody RestaurantDTO restaurantDTO){
@@ -34,8 +33,10 @@ public class RestaurantController {
         return new ResponseEntity<>(restaurantDTO, HttpStatus.CREATED);
     }
 
-//    @GetMapping("/restaurants/ingredient/{ingredientName}")
-//    public List<RestaurantDTO> getAllRestaurantsContainingIngredient(@PathVariable String ingredientName){
-//        return restaurantService.getRestaurantsContainingIngredient(ingredientName);
-//    }
+    //nie działa
+    @GetMapping(value = "/type/{foodType}")
+    public Set<RestaurantDTO> getRestaurantsByFoodType(@PathVariable List<String> foodType) {
+        Set<RestaurantDTO> restaurantsDTOByFoodType = restaurantService.getRestaurantsDTOByFoodType(foodType);
+        return restaurantsDTOByFoodType;
+    }
 }

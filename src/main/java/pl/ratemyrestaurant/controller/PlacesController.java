@@ -18,7 +18,7 @@ public class PlacesController {
     private RestaurantService restaurantService;
 
     @Autowired
-    public PlacesController(RestaurantServiceImpl restaurantServiceImpl) {
+    public PlacesController(RestaurantService restaurantService) {
         this.restaurantService = restaurantService;
     }
 
