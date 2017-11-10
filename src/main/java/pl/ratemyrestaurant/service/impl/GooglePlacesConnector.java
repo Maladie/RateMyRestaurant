@@ -1,14 +1,17 @@
-package pl.ratemyrestaurant.service.placesconnectorservice.impl;
+package pl.ratemyrestaurant.service.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pl.ratemyrestaurant.model.UserSearchCircle;
-import pl.ratemyrestaurant.service.placesconnectorservice.PlacesConnector;
+import pl.ratemyrestaurant.service.PlacesConnector;
 import pl.ratemyrestaurant.utils.StreamUtils;
 import se.walkercrou.places.GooglePlaces;
 import se.walkercrou.places.Param;
 import se.walkercrou.places.Place;
+import se.walkercrou.places.exception.GooglePlacesException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -17,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class GooglePlacesConnector implements PlacesConnector {
-
+    private static Logger logger = LogManager.getLogger(GooglePlacesConnector.class);
     private GooglePlaces client;
 
     @Autowired
@@ -37,16 +40,28 @@ public class GooglePlacesConnector implements PlacesConnector {
         return client.getPlaceById(placeId);
     }
 
-    private List<Place> retrieveRestaurants(UserSearchCircle userSearchCircle, String name) {
-        return client.getNearbyPlaces(userSearchCircle.getLat(), userSearchCircle.getLng(), userSearchCircle.getRadius()
-                , 100, Param.name("type").value(name));
+    private List<Place> retrieveRestaurants(UserSearchCircle userSearchCircle, String name) throws GooglePlacesException {
+        // wg. nowej dokumentacji limit wynosi 200
+        List<Place> nearbyPlaces;
+        try {
+             nearbyPlaces = client.getNearbyPlaces(userSearchCircle.getLat(), userSearchCircle.getLng(), userSearchCircle.getRadius()
+                    , 20, Param.name("type").value(name));
+        } catch (GooglePlacesException e){
+            logger.catching(e);
+            throw e;
+        }
+        return nearbyPlaces;
     }
 
     private void addAllRetrievedRestaurantsToPlaces(Set<Place> places, UserSearchCircle userSearchCircle) {
-        String[] placesNames = {"bar", "food", "cafe", "restaurant"};
+        String[] placesNames = {"bar", "cafe", "restaurant"};
         for (String placesName : placesNames) {
-            List<Place> restaurants = retrieveRestaurants(userSearchCircle, placesName);
-            places.addAll(restaurants);
+            try {
+                List<Place> restaurants = retrieveRestaurants(userSearchCircle, placesName);
+                places.addAll(restaurants);
+            } catch (GooglePlacesException e){
+                logger.debug("Retrieve restaurants exception! Message: | "+ e.getMessage()+ " | while trying to get places with type: "+placesName);
+            }
         }
     }
 }

@@ -5,13 +5,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.ratemyrestaurant.dto.IngredientDTO;
 import pl.ratemyrestaurant.dto.RestaurantDTO;
-import pl.ratemyrestaurant.service.RestaurantService;
-
-import java.util.List;
+import pl.ratemyrestaurant.service.impl.RestaurantService;
 
 @RestController
+@RequestMapping("/restaurant")
 public class RestaurantController {
 
     private RestaurantService restaurantService;
