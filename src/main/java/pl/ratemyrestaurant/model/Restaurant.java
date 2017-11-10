@@ -1,7 +1,10 @@
 package pl.ratemyrestaurant.model;
 
 
-import javax.persistence.*;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Set;
 
 @Entity

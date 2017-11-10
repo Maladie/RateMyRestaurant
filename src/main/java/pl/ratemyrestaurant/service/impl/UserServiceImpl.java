@@ -6,8 +6,8 @@ import pl.ratemyrestaurant.model.Info;
 import pl.ratemyrestaurant.model.User;
 import pl.ratemyrestaurant.repository.UserRepository;
 import pl.ratemyrestaurant.service.UserService;
-import pl.ratemyrestaurant.utils.SecurityUtils;
 import pl.ratemyrestaurant.utils.CheckingUtils;
+import pl.ratemyrestaurant.utils.SecurityUtils;
 
 import java.util.UUID;
 

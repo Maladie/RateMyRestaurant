@@ -4,7 +4,6 @@ import pl.ratemyrestaurant.model.User;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Entity
 public class UserToken {

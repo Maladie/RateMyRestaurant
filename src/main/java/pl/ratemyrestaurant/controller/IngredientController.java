@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.ratemyrestaurant.dto.IngredientDTO;
 import pl.ratemyrestaurant.mappers.IngredientToIngredientDTOMapper;
 import pl.ratemyrestaurant.model.Ingredient;
-import pl.ratemyrestaurant.service.impl.IngredientServiceImpl;
+import pl.ratemyrestaurant.service.IngredientService;
 
 import java.util.Set;
 
@@ -15,21 +15,21 @@ import java.util.Set;
 @RequestMapping("/ingredients")
 public class IngredientController {
 
-    private IngredientServiceImpl ingredientServiceImpl;
+    private IngredientService ingredientService;
 
     @Autowired
-    public IngredientController(IngredientServiceImpl ingredientServiceImpl) {
-        this.ingredientServiceImpl = ingredientServiceImpl;
+    public IngredientController(IngredientService ingredientService) {
+        this.ingredientService = ingredientService;
     }
 
     @GetMapping
     public Set<IngredientDTO> getAllIngredients(){
-        return ingredientServiceImpl.getAllIngredientsDTO();
+        return ingredientService.getAllIngredientsDTO();
     }
 
     @PostMapping(value = "/add")
     public ResponseEntity<IngredientDTO> addIngredient(@RequestBody IngredientDTO ingredientDTO) {
-      Ingredient addedIngredient = ingredientServiceImpl.addIngredient(ingredientDTO);
+      Ingredient addedIngredient = ingredientService.addIngredient(ingredientDTO);
       IngredientDTO addedIngredientDTO = IngredientToIngredientDTOMapper.mapIngredientToIngredientDTO(addedIngredient);
       return new ResponseEntity<>(addedIngredientDTO, HttpStatus.CREATED);
     }
