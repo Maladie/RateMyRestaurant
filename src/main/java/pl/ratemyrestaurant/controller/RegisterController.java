@@ -1,9 +1,6 @@
 package pl.ratemyrestaurant.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import pl.ratemyrestaurant.model.Info;
 import pl.ratemyrestaurant.service.UserService;

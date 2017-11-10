@@ -14,7 +14,8 @@ import pl.ratemyrestaurant.service.PlacesConnector;
 import pl.ratemyrestaurant.service.RestaurantService;
 import se.walkercrou.places.Place;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 import static pl.ratemyrestaurant.mappers.RestaurantToPinMapper.mapRestaurantToPin;
 import static pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper.mapToRestaurant;
