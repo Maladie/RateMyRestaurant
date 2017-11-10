@@ -6,6 +6,7 @@ import pl.ratemyrestaurant.dto.IngredientDTO;
 import pl.ratemyrestaurant.mappers.IngredientToIngredientDTOMapper;
 import pl.ratemyrestaurant.model.Ingredient;
 import pl.ratemyrestaurant.repository.IngredientRepository;
+import pl.ratemyrestaurant.service.IngredientService;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -14,12 +15,12 @@ import java.util.stream.Collectors;
 
 @Transactional
 @Service
-public class IngredientService {
+public class IngredientServiceImpl implements IngredientService {
 
     private IngredientRepository ingredientRepository;
 
     @Autowired
-    public IngredientService(IngredientRepository ingredientRepository) {
+    public IngredientServiceImpl(IngredientRepository ingredientRepository) {
         this.ingredientRepository = ingredientRepository;
     }
 
