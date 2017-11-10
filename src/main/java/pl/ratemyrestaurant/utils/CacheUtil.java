@@ -6,7 +6,6 @@ import com.google.common.cache.RemovalCause;
 import com.google.common.cache.RemovalNotification;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pl.ratemyrestaurant.config.Constants;
 import pl.ratemyrestaurant.service.impl.AsyncTokenExpire;
 
 import java.util.concurrent.ConcurrentMap;
