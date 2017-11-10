@@ -1,32 +1,24 @@
 package pl.ratemyrestaurant.config;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import pl.ratemyrestaurant.filter.AuthFilter;
 import pl.ratemyrestaurant.filter.LoginFilter;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 
 @Configuration
@@ -38,6 +30,7 @@ public class APIAccessWebSecurityConfigurationAdapter extends WebSecurityConfigu
     private String[] patterns = new String[]{
             "/index.html", "/error", "/register", "/login"
     };
+
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
@@ -53,7 +46,7 @@ public class APIAccessWebSecurityConfigurationAdapter extends WebSecurityConfigu
         http.cors().configurationSource(corsConfigurationSource()).and().csrf().disable()
                 .authorizeRequests().antMatchers(patterns).permitAll()
                 .and()
-                .authorizeRequests().antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
+                .authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .and()
                 .authorizeRequests().antMatchers("/api/register").permitAll().and()
                 .addFilterBefore(new LoginFilter(new AntPathRequestMatcher("/api/login")), UsernamePasswordAuthenticationFilter.class)
@@ -61,15 +54,7 @@ public class APIAccessWebSecurityConfigurationAdapter extends WebSecurityConfigu
     }
 
     @Bean
-        public CorsConfigurationSource corsConfigurationSource() {
-////        final CorsConfiguration configuration = new CorsConfiguration();
-////        configuration.setAllowedOrigins(Arrays.asList("*"));
-////        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS"));
-////        configuration.setAllowCredentials(true);
-////        configuration.setAllowedHeaders(Arrays.asList("x-xsrf-token","*"));
-////        configuration.setMaxAge(3600L);
-////        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-////        source.registerCorsConfiguration("/**
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedHeader("*");
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
@@ -80,27 +65,4 @@ public class APIAccessWebSecurityConfigurationAdapter extends WebSecurityConfigu
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-//
-//    @Configuration
-//    @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
-//    @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
-//    public static class AnonymousAccessWebSecurityConfigurationAdapter extends APIAccessWebSecurityConfigurationAdapter {
-//        String[] patterns = new String[]{
-//                "/index.html", "/error", "/register", "/login"
-//        };
-//
-//        @Override
-//        protected void configure(HttpSecurity http) throws Exception {
-//            super.configure(http);
-//            http.sessionManagement()
-//                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                    .and()
-//                    .authorizeRequests()
-//                    .antMatchers(patterns)
-//                    .permitAll().and()
-//                    .addFilterBefore(new LoginFilter(new AntPathRequestMatcher("/api/login")), UsernamePasswordAuthenticationFilter.class);
-//            // .and().authorizeRequests().antMatchers("/api/**").authenticated();
-//        }
-//    }
-
 }
