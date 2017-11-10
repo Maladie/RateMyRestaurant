@@ -7,20 +7,21 @@ import pl.ratemyrestaurant.model.Rating;
 import pl.ratemyrestaurant.model.Restaurant;
 import pl.ratemyrestaurant.model.Thumb;
 import pl.ratemyrestaurant.repository.RatingRepository;
+import pl.ratemyrestaurant.service.RatingService;
 
 import java.util.Set;
 
 @Service
-public class RatingService {
+public class RatingServiceImpl implements RatingService {
 
     private RatingRepository ratingRepository;
 
     @Autowired
-    public RatingService(RatingRepository ratingRepository) {
+    public RatingServiceImpl(RatingRepository ratingRepository) {
         this.ratingRepository = ratingRepository;
     }
 
-    Set<Rating> retrieveRestaurantRatings(String restaurantId){
+    public Set<Rating> retrieveRestaurantRatings(String restaurantId){
         return ratingRepository.findByRestaurant_Id(restaurantId);
     }
 
