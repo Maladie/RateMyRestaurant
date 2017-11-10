@@ -5,15 +5,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import pl.ratemyrestaurant.config.Constants;
-import pl.ratemyrestaurant.dao.UserTokenRepository;
-import pl.ratemyrestaurant.domain.UserToken;
+import pl.ratemyrestaurant.repository.UserTokenRepository;
 import pl.ratemyrestaurant.type.TokenStatus;
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 
 @Component

@@ -10,7 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.ratemyrestaurant.config.Constants;
-import pl.ratemyrestaurant.dao.UserTokenRepository;
+import pl.ratemyrestaurant.repository.UserTokenRepository;
 import pl.ratemyrestaurant.domain.UserToken;
 import pl.ratemyrestaurant.exception.TokenException;
 import pl.ratemyrestaurant.model.Info;

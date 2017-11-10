@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Service;
-import pl.ratemyrestaurant.dao.UserTokenRepository;
+import pl.ratemyrestaurant.repository.UserTokenRepository;
 import pl.ratemyrestaurant.service.StartupJob;
 
 @Service

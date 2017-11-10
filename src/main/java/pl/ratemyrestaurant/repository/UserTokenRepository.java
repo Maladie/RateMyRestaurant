@@ -1,4 +1,4 @@
-package pl.ratemyrestaurant.dao;
+package pl.ratemyrestaurant.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -9,7 +9,6 @@ import pl.ratemyrestaurant.domain.UserToken;
 import pl.ratemyrestaurant.type.TokenStatus;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository

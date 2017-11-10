@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.ratemyrestaurant.dto.RestaurantDTO;
 import pl.ratemyrestaurant.dto.RestaurantPIN;
 import pl.ratemyrestaurant.model.UserSearchCircle;
-import pl.ratemyrestaurant.service.RestaurantService;
+import pl.ratemyrestaurant.service.impl.RestaurantService;
 
 import java.util.Set;
 

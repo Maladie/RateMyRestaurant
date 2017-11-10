@@ -2,11 +2,9 @@ package pl.ratemyrestaurant.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import pl.ratemyrestaurant.dto.IngredientDTO;
-import pl.ratemyrestaurant.model.Ingredient;
-import pl.ratemyrestaurant.service.IngredientService;
+import pl.ratemyrestaurant.service.impl.IngredientService;
 
 import java.util.Set;
 

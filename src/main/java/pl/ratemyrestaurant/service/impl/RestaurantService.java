@@ -1,25 +1,19 @@
-package pl.ratemyrestaurant.service;
+package pl.ratemyrestaurant.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.ratemyrestaurant.dto.IngredientDTO;
 import pl.ratemyrestaurant.dto.RestaurantDTO;
 import pl.ratemyrestaurant.dto.RestaurantPIN;
 import pl.ratemyrestaurant.mappers.PlaceToRestaurantMapper;
 import pl.ratemyrestaurant.mappers.RestaurantToPinMapper;
-import pl.ratemyrestaurant.model.Ingredient;
 import pl.ratemyrestaurant.model.Rating;
 import pl.ratemyrestaurant.model.Restaurant;
 import pl.ratemyrestaurant.model.UserSearchCircle;
-import pl.ratemyrestaurant.repository.RatingRepository;
 import pl.ratemyrestaurant.repository.RestaurantRepository;
-import pl.ratemyrestaurant.service.placesconnectorservice.PlacesConnector;
+import pl.ratemyrestaurant.service.PlacesConnector;
 import se.walkercrou.places.Place;
 
-import javax.persistence.EntityManager;
-import javax.persistence.ParameterMode;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static pl.ratemyrestaurant.mappers.RestaurantToPinMapper.mapRestaurantToPin;
 import static pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper.mapToRestaurant;

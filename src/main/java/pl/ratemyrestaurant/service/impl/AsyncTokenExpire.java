@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import pl.ratemyrestaurant.dao.UserTokenRepository;
+import pl.ratemyrestaurant.repository.UserTokenRepository;
 import pl.ratemyrestaurant.model.User;
 import pl.ratemyrestaurant.type.TokenStatus;
 import pl.ratemyrestaurant.utils.CacheUtil;
