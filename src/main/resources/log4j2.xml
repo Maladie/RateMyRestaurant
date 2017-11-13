@@ -8,13 +8,19 @@
         <Console name="Console" target="SYSTEM_OUT" follow="true">
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </Console>
+        <File name="MyFile" fileName="logs/app.log">
+            <PatternLayout>
+                <Pattern>"${LOG_PATTERN}"</Pattern>
+            </PatternLayout>
+        </File>
     </Appenders>
     <Loggers>
-        <Logger name="pl.ratemyrestaurant.service.impl" level="debug" />
-        <logger name="org.springframework.security" level="info"/>
+        <Logger name="pl.ratemyrestaurant" level="debug" />
+        <!--<logger name="org.springframework.security" level="info"/>-->
 
-        <Root level="debug">
+        <Root level="info">
             <AppenderRef ref="Console"/>
+            <AppenderRef ref="MyFile"/>
         </Root>
     </Loggers>
 </Configuration>

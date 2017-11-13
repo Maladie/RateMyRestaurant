@@ -28,7 +28,7 @@ public class RegisterController {
         return userService.register(formParams.get("username"), formParams.get("password"));
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/api/register")
+    @PostMapping(value = "/api/register")
     public Info registerToApi(@RequestParam String username,
                                @RequestParam String password) {
         return userService.register(username, password);
