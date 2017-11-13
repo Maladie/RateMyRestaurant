@@ -1,10 +1,7 @@
 package pl.ratemyrestaurant.model;
 
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Set;
 
 @Entity
@@ -15,7 +12,7 @@ public class Restaurant {
     private String name;
     @Embedded
     private Location location;
-    @ElementCollection
+    @ManyToMany
     private Set<FoodType> foodTypes;
 
     public Restaurant() {}

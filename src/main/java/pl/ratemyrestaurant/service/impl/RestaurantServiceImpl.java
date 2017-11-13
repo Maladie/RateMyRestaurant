@@ -6,6 +6,7 @@ import pl.ratemyrestaurant.dto.RestaurantDTO;
 import pl.ratemyrestaurant.dto.RestaurantPIN;
 import pl.ratemyrestaurant.mappers.PlaceToRestaurantMapper;
 import pl.ratemyrestaurant.mappers.RestaurantToPinMapper;
+import pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper;
 import pl.ratemyrestaurant.model.Rating;
 import pl.ratemyrestaurant.model.Restaurant;
 import pl.ratemyrestaurant.model.UserSearchCircle;
@@ -15,7 +16,9 @@ import pl.ratemyrestaurant.service.RestaurantService;
 import se.walkercrou.places.Place;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static pl.ratemyrestaurant.mappers.RestaurantToPinMapper.mapRestaurantToPin;
 import static pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper.mapToRestaurant;
@@ -112,8 +115,20 @@ public class RestaurantServiceImpl implements RestaurantService {
         return transformRestaurantToPIN(restaurantRepository.findOne(id));
     }
 
+    @Override
+    public Set<RestaurantDTO> getRestaurantsDTOByFoodType(String foodType) {
+        List<Restaurant> restaurantsByFoodType = restaurantRepository.findAllByFoodTypes_Name(foodType);
+        Set<RestaurantDTO> restaurantsDTOByFoodType = restaurantsByFoodType.stream()
+                .map(i -> RestaurantToRestaurantDTOMapper.mapToRestaurantDto(i, getRestaurantRatings(i.getId()))).collect(Collectors.toSet());
+        return restaurantsDTOByFoodType;
+    }
+
     private RestaurantPIN transformRestaurantToPIN(Restaurant restaurant) {
         return mapRestaurantToPin(restaurant);
     }
 
+    private Set<Rating> getRestaurantRatings(String restaurantId) {
+        Set<Rating> restaurantRatings = ratingServiceImpl.retrieveRestaurantRatings(restaurantId);
+        return restaurantRatings;
+    }
 }
