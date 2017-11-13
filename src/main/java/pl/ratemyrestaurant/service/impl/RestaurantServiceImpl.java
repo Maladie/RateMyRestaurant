@@ -116,8 +116,8 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public Set<RestaurantDTO> getRestaurantsDTOByFoodType(List<String> foodType) {
-        List<Restaurant> restaurantsByFoodType = restaurantRepository.findByFoodTypesIn(foodType);
+    public Set<RestaurantDTO> getRestaurantsDTOByFoodType(String foodType) {
+        List<Restaurant> restaurantsByFoodType = restaurantRepository.findAllByFoodTypes_Name(foodType);
         Set<RestaurantDTO> restaurantsDTOByFoodType = restaurantsByFoodType.stream()
                 .map(i -> RestaurantToRestaurantDTOMapper.mapToRestaurantDto(i, getRestaurantRatings(i.getId()))).collect(Collectors.toSet());
         return restaurantsDTOByFoodType;

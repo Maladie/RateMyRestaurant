@@ -12,8 +12,7 @@ public class Restaurant {
     private String name;
     @Embedded
     private Location location;
-    @ElementCollection
-    @Enumerated(EnumType.STRING)
+    @ManyToMany
     private Set<FoodType> foodTypes;
 
     public Restaurant() {}

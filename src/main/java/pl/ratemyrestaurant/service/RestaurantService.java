@@ -16,5 +16,5 @@ public interface RestaurantService {
     RestaurantDTO getOrRetrieveRestaurantDTOByID(String placeId);
     RestaurantDTO getRestaurantDTOById(String id);
     RestaurantPIN getRestaurantPINById(String id);
-    Set<RestaurantDTO> getRestaurantsDTOByFoodType(List<String> foodType);
+    Set<RestaurantDTO> getRestaurantsDTOByFoodType(String foodType);
 }

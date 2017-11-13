@@ -33,10 +33,10 @@ public class RestaurantController {
         return new ResponseEntity<>(restaurantDTO, HttpStatus.CREATED);
     }
 
-    //nie działa
     @GetMapping(value = "/type/{foodType}")
-    public Set<RestaurantDTO> getRestaurantsByFoodType(@PathVariable List<String> foodType) {
+    public Set<RestaurantDTO> getRestaurantsByFoodType(@PathVariable String foodType) {
         Set<RestaurantDTO> restaurantsDTOByFoodType = restaurantService.getRestaurantsDTOByFoodType(foodType);
         return restaurantsDTOByFoodType;
     }
+
 }
