@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.ratemyrestaurant.dto.IngredientDTO;
 import pl.ratemyrestaurant.mappers.IngredientToIngredientDTOMapper;
 import pl.ratemyrestaurant.model.Ingredient;
-import pl.ratemyrestaurant.service.impl.IngredientService;
+import pl.ratemyrestaurant.service.IngredientService;
 
 import java.util.Set;
 

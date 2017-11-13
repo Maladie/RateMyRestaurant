@@ -45,7 +45,7 @@ public class GooglePlacesConnector implements PlacesConnector {
         List<Place> nearbyPlaces;
         try {
              nearbyPlaces = client.getNearbyPlaces(userSearchCircle.getLat(), userSearchCircle.getLng(), userSearchCircle.getRadius()
-                    , 20, Param.name("type").value(name));
+                    , 40, Param.name("type").value(name));
         } catch (GooglePlacesException e){
             logger.catching(e);
             throw e;

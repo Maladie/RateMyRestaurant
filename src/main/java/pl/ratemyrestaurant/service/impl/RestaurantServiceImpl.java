@@ -6,32 +6,37 @@ import pl.ratemyrestaurant.dto.RestaurantDTO;
 import pl.ratemyrestaurant.dto.RestaurantPIN;
 import pl.ratemyrestaurant.mappers.PlaceToRestaurantMapper;
 import pl.ratemyrestaurant.mappers.RestaurantToPinMapper;
+import pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper;
 import pl.ratemyrestaurant.model.Rating;
 import pl.ratemyrestaurant.model.Restaurant;
 import pl.ratemyrestaurant.model.UserSearchCircle;
 import pl.ratemyrestaurant.repository.RestaurantRepository;
 import pl.ratemyrestaurant.service.PlacesConnector;
+import pl.ratemyrestaurant.service.RestaurantService;
 import se.walkercrou.places.Place;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static pl.ratemyrestaurant.mappers.RestaurantToPinMapper.mapRestaurantToPin;
 import static pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper.mapToRestaurant;
 import static pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper.mapToRestaurantDto;
 
 @Service
-public class RestaurantService {
+public class RestaurantServiceImpl implements RestaurantService {
 
     private RestaurantRepository restaurantRepository;
     private PlacesConnector placesConnector;
-    private RatingService ratingService;
+    private RatingServiceImpl ratingServiceImpl;
 
     @Autowired
-    public RestaurantService(RestaurantRepository restaurantRepository, PlacesConnector placesConnector
-            , RatingService ratingService) {
+    public RestaurantServiceImpl(RestaurantRepository restaurantRepository, PlacesConnector placesConnector
+            , RatingServiceImpl ratingServiceImpl) {
         this.restaurantRepository = restaurantRepository;
         this.placesConnector = placesConnector;
-        this.ratingService = ratingService;
+        this.ratingServiceImpl = ratingServiceImpl;
     }
 
     public Set<RestaurantPIN> retrieveRestaurantsInRadius(UserSearchCircle userSearchCircle) {
@@ -102,7 +107,7 @@ public class RestaurantService {
 
     private RestaurantDTO transformRestaurantToDTO(Restaurant restaurant) {
         String restaurantId = restaurant.getId();
-        Set<Rating> ratings = ratingService.retrieveRestaurantRatings(restaurantId);
+        Set<Rating> ratings = ratingServiceImpl.retrieveRestaurantRatings(restaurantId);
         return mapToRestaurantDto(restaurant, ratings);
     }
 
@@ -110,8 +115,20 @@ public class RestaurantService {
         return transformRestaurantToPIN(restaurantRepository.findOne(id));
     }
 
+    @Override
+    public Set<RestaurantDTO> getRestaurantsDTOByFoodType(List<String> foodType) {
+        List<Restaurant> restaurantsByFoodType = restaurantRepository.findByFoodTypesIn(foodType);
+        Set<RestaurantDTO> restaurantsDTOByFoodType = restaurantsByFoodType.stream()
+                .map(i -> RestaurantToRestaurantDTOMapper.mapToRestaurantDto(i, getRestaurantRatings(i.getId()))).collect(Collectors.toSet());
+        return restaurantsDTOByFoodType;
+    }
+
     private RestaurantPIN transformRestaurantToPIN(Restaurant restaurant) {
         return mapRestaurantToPin(restaurant);
     }
 
+    private Set<Rating> getRestaurantRatings(String restaurantId) {
+        Set<Rating> restaurantRatings = ratingServiceImpl.retrieveRestaurantRatings(restaurantId);
+        return restaurantRatings;
+    }
 }

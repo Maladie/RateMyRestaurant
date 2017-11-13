@@ -6,8 +6,8 @@ import pl.ratemyrestaurant.model.Info;
 import pl.ratemyrestaurant.model.User;
 import pl.ratemyrestaurant.repository.UserRepository;
 import pl.ratemyrestaurant.service.UserService;
-import pl.ratemyrestaurant.utils.SecurityUtils;
 import pl.ratemyrestaurant.utils.CheckingUtils;
+import pl.ratemyrestaurant.utils.SecurityUtils;
 
 import java.util.UUID;
 
@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
         Info info = new Info();
         info.setKey(UUID.randomUUID().toString());
         if(!usernameEmpty && !passwordEmpty) {
-            if(userRepository.findUserByUsername(username)!= null){
+            if(userRepository.findByUsernameIgnoreCase(username)!= null){
                 info.setCode(209L);
                 info.setDesc("Registration failed! Username already used");
                 info.setObject(username);

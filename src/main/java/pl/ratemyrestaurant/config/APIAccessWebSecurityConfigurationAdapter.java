@@ -22,7 +22,7 @@ import pl.ratemyrestaurant.filter.LoginFilter;
 import java.util.Arrays;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class APIAccessWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
     @Autowired

@@ -1,9 +1,6 @@
 package pl.ratemyrestaurant.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import pl.ratemyrestaurant.model.Info;
 import pl.ratemyrestaurant.service.UserService;
@@ -31,7 +28,7 @@ public class RegisterController {
         return userService.register(formParams.get("username"), formParams.get("password"));
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/api/register")
+    @PostMapping(value = "/api/register")
     public Info registerToApi(@RequestParam String username,
                                @RequestParam String password) {
         return userService.register(username, password);

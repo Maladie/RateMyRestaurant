@@ -10,18 +10,18 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.ratemyrestaurant.config.Constants;
-import pl.ratemyrestaurant.repository.UserTokenRepository;
 import pl.ratemyrestaurant.domain.UserToken;
 import pl.ratemyrestaurant.exception.TokenException;
 import pl.ratemyrestaurant.model.Info;
 import pl.ratemyrestaurant.model.User;
 import pl.ratemyrestaurant.model.UserAuthentication;
 import pl.ratemyrestaurant.repository.UserRepository;
+import pl.ratemyrestaurant.repository.UserTokenRepository;
 import pl.ratemyrestaurant.service.TokenAuthenticationService;
 import pl.ratemyrestaurant.service.TokenHandlerService;
 import pl.ratemyrestaurant.type.TokenStatus;
-import pl.ratemyrestaurant.utils.SecurityUtils;
 import pl.ratemyrestaurant.utils.CheckingUtils;
+import pl.ratemyrestaurant.utils.SecurityUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -88,7 +88,7 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
                 info.setCode(101L);
                 info.setDesc("User empty password");
             } else {
-                user = userRepository.findUserByUsername(username);
+                user = userRepository.findByUsernameIgnoreCase(username);
 
                 if (CheckingUtils.isNullObject(user)) {
                     info.setCode(199L);
@@ -114,6 +114,7 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
             info.setCode(0L);
             info.setDesc("Basic");
             auth.setUser(user);
+            auth.setInfo(info);
             auth.setAuthenticated(true);
             return auth;
         }

@@ -13,6 +13,7 @@ public class Restaurant {
     @Embedded
     private Location location;
     @ElementCollection
+    @Enumerated(EnumType.STRING)
     private Set<FoodType> foodTypes;
 
     public Restaurant() {}
