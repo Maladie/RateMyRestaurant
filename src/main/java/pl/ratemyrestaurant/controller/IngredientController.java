@@ -33,4 +33,9 @@ public class IngredientController {
       IngredientDTO addedIngredientDTO = IngredientToIngredientDTOMapper.mapIngredientToIngredientDTO(addedIngredient);
       return new ResponseEntity<>(addedIngredientDTO, HttpStatus.CREATED);
     }
+
+    @GetMapping(value = "/{ingredientId}")
+    public IngredientDTO getingredientById(@PathVariable Long ingredientId) {
+        return ingredientService.getIngredientDTOById(ingredientId);
+    }
 }

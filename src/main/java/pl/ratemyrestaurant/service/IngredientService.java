@@ -9,4 +9,5 @@ public interface IngredientService {
 
     Ingredient addIngredient(IngredientDTO ingredientDTO);
     Set<IngredientDTO> getAllIngredientsDTO();
+    IngredientDTO getIngredientDTOById(Long id);
 }

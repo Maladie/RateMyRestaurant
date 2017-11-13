@@ -44,6 +44,13 @@ public class IngredientServiceImpl implements IngredientService {
         return allIngredientsDTO;
     }
 
+    @Override
+    public IngredientDTO getIngredientDTOById(Long id) {
+        Ingredient ingredient = ingredientRepository.findOne(id);
+        IngredientDTO ingredientDTO = IngredientToIngredientDTOMapper.mapIngredientToIngredientDTO(ingredient);
+        return ingredientDTO;
+    }
+
     private List<Ingredient> getAllIngredients() {
         return ingredientRepository.findAll();
     }
