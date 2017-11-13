@@ -14,4 +14,8 @@ public interface RatingService {
     Set<Rating> retrieveRestaurantRatings(String restaurantId);
     Rating createNewRating(Ingredient ingredient, Restaurant restaurant);
     List<RatingDTO> retrieveRatingsOfIngredientInRestaurants(String ingredientName, List<RestaurantPIN> pins);
+    //RatingDTO rateIngredient(RatingDTO ratingDTO, boolean ok);
+
+    //test
+    RatingDTO rateIngredient(Long id, boolean ok);
 }

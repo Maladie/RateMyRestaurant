@@ -15,7 +15,6 @@ public class Application {
 
         CacheUtil.init();
         //==============================
-        System.out.println(new Thumb());
 //
 //        GooglePlacesConnector googlePlacesConnector = new GooglePlacesConnector();
 //

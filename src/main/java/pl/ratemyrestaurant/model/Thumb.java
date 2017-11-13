@@ -35,13 +35,11 @@ public class Thumb {
         this.thumbsDown = thumbsDown;
     }
 
-    public void giveThumbUp() {
-        thumbsUp++;
+    public void rate(boolean ok) {
+        if(ok) thumbsUp++;
+        else thumbsDown++;
     }
 
-    public void giveThumbDown(){
-        thumbsDown++;
-    }
 
     @Override
     public String toString() {

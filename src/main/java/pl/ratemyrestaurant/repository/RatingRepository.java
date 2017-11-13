@@ -11,4 +11,6 @@ public interface RatingRepository extends JpaRepository<Rating, Long> {
     Set<Rating> findByRestaurant_Id(String restaurantId);
 
     List<Rating> findByIngredient_Name(String name);
+
+    Rating findRatingByIngredient_Id(Long ingredientId);
 }

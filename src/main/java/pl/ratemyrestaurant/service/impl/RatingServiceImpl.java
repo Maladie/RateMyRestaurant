@@ -12,8 +12,6 @@ import pl.ratemyrestaurant.model.Thumb;
 import pl.ratemyrestaurant.repository.RatingRepository;
 import pl.ratemyrestaurant.service.RatingService;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -54,6 +52,23 @@ public class RatingServiceImpl implements RatingService {
         }).map(r -> RatingToRatingDTOMapper.mapRatingToRatingDto(r)).collect(Collectors.toList());
 
     }
+//
+//    public RatingDTO rateIngredient(RatingDTO ratingDTO, boolean ok){
+//        Rating rating = ratingRepository.findRatingByIngredient_Id(ratingDTO.getIngredient().getId());
+//        rating.getThumb().rate(ok);
+//        ratingRepository.save(rating);
+//        return ratingDTO;
+//    }
+
+    //////
+    @Override
+    public RatingDTO rateIngredient(Long id, boolean ok) {
+        Rating rating = ratingRepository.findRatingByIngredient_Id(id);
+        rating.getThumb().rate(ok);
+        ratingRepository.save(rating);
+        return RatingToRatingDTOMapper.mapRatingToRatingDto(rating);
+    }
+    //////
 
     private float countThumbPercentage(Thumb thumb){
         float a = (float)thumb.getThumbsDown();

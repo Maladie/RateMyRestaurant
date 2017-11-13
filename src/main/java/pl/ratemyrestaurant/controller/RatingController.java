@@ -27,4 +27,8 @@ public class RatingController {
          return ratingService.retrieveRatingsOfIngredientInRestaurants(ingredientName, restaurantsFound);
     }
 
+    @PostMapping
+    public RatingDTO rateIngredient(@RequestParam Long id, @RequestParam boolean good){
+        return ratingService.rateIngredient(id, good);
+    }
 }
