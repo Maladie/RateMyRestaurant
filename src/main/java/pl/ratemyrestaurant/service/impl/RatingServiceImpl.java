@@ -3,6 +3,7 @@ package pl.ratemyrestaurant.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.ratemyrestaurant.dto.RatingDTO;
+import pl.ratemyrestaurant.dto.RestaurantPIN;
 import pl.ratemyrestaurant.mappers.RatingToRatingDTOMapper;
 import pl.ratemyrestaurant.model.Ingredient;
 import pl.ratemyrestaurant.model.Rating;
@@ -11,6 +12,7 @@ import pl.ratemyrestaurant.model.Thumb;
 import pl.ratemyrestaurant.repository.RatingRepository;
 import pl.ratemyrestaurant.service.RatingService;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -37,8 +39,16 @@ public class RatingServiceImpl implements RatingService {
     }
 
     @Override
-    public List<RatingDTO> retrieveRatingsOfIngredientInRestaurants(String ingredientName) {
-        List<Rating> ratings = ratingRepository.findByIngredient_Name(ingredientName);
+    public List<RatingDTO> retrieveRatingsOfIngredientInRestaurants(String ingredientName, List<RestaurantPIN> pins) {
+
+        List<String> restaurantIDs = pins.stream().map(p -> p.getId()).collect(Collectors.toList());
+        Set<Rating> ratings = restaurantIDs.stream()
+                .map(p-> ratingRepository
+                        .findByRestaurant_Id(p)
+                        .stream()
+                        .filter(x->x.getIngredient().getName()==ingredientName)
+                        .findFirst().get()).collect(Collectors.toSet());
+
         return ratings.stream().sorted((r1, r2) -> {
             return Float.compare(countThumbPercentage(r2.getThumb()), countThumbPercentage(r1.getThumb()));
         }).map(r -> RatingToRatingDTOMapper.mapRatingToRatingDto(r)).collect(Collectors.toList());
