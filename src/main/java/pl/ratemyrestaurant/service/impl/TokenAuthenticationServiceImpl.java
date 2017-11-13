@@ -88,7 +88,7 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
                 info.setCode(101L);
                 info.setDesc("User empty password");
             } else {
-                user = userRepository.findUserByUsername(username);
+                user = userRepository.findByUsernameIgnoreCase(username);
 
                 if (CheckingUtils.isNullObject(user)) {
                     info.setCode(199L);
@@ -114,6 +114,7 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
             info.setCode(0L);
             info.setDesc("Basic");
             auth.setUser(user);
+            auth.setInfo(info);
             auth.setAuthenticated(true);
             return auth;
         }
