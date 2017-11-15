@@ -8,7 +8,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pl.ratemyrestaurant.dto.RatingDTO;
 import pl.ratemyrestaurant.factories.RatingFactory;
 import pl.ratemyrestaurant.model.Rating;
+import pl.ratemyrestaurant.model.Vote;
+import pl.ratemyrestaurant.repository.IngredientRepository;
 import pl.ratemyrestaurant.repository.RatingRepository;
+import pl.ratemyrestaurant.repository.RestaurantRepository;
 import pl.ratemyrestaurant.service.RatingService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -21,12 +24,16 @@ public class RatingServiceImplTest {
 
         //given
         RatingRepository mockRepo = Mockito.mock(RatingRepository.class);
-        RatingService ratingService = new RatingServiceImpl(mockRepo);
+        RestaurantRepository mockRestRepo = Mockito.mock(RestaurantRepository.class);
+        IngredientRepository mockIngredientRepository = Mockito.mock(IngredientRepository.class);
+        RatingService ratingService = new RatingServiceImpl(mockRepo, mockRestRepo, mockIngredientRepository);
         Rating rating = ratingFactory.getModelRating();
-        Mockito.doReturn(rating).when(mockRepo).findRatingByIngredient_Id(Mockito.anyLong());
+        Vote vote = new Vote("", 123L, true);
+        Mockito.doReturn(rating).when(mockRepo).findByRestaurant_IdAndIngredient_Id("", 123L);
+
 
         //when
-        RatingDTO updatedRating = ratingService.rateIngredient(123L, true);
+        RatingDTO updatedRating = ratingService.addOrUpdateRating(vote);
 
         //then
         Assert.assertEquals(12, updatedRating.getThumb().getThumbsUp());
