@@ -51,6 +51,16 @@ public class IngredientServiceImpl implements IngredientService {
         return ingredientDTO;
     }
 
+    @Override
+    public IngredientDTO getIngredientDTOByName(String ingredientName) {
+        Ingredient ingredient = ingredientRepository.findByName(ingredientName);
+        if(ingredient != null) {
+            IngredientDTO ingredientDTO = IngredientToIngredientDTOMapper.mapIngredientToIngredientDTO(ingredient);
+            return ingredientDTO;
+        }
+        return null;
+    }
+
     private List<Ingredient> getAllIngredients() {
         return ingredientRepository.findAll();
     }
