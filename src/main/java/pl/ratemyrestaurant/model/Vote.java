@@ -2,15 +2,26 @@ package pl.ratemyrestaurant.model;
 
 public class Vote {
 
-    private String id;
+    private String restaurantId;
+    private Long ingredientId;
     private boolean good;
 
-    public String getId() {
-        return id;
+    public Vote() {}
+
+    public Long getIngredientId() {
+        return ingredientId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setIngredientId(Long ingredientId) {
+        this.ingredientId = ingredientId;
+    }
+
+    public String getRestaurantId() {
+        return restaurantId;
+    }
+
+    public void setRestaurantId(String restaurantId) {
+        this.restaurantId = restaurantId;
     }
 
     public boolean isGood() {
@@ -21,7 +32,5 @@ public class Vote {
         this.good = good;
     }
 
-    public Vote() {
 
-    }
 }
