@@ -35,7 +35,12 @@ public class IngredientController {
     }
 
     @GetMapping(value = "/{ingredientId}")
-    public IngredientDTO getingredientById(@PathVariable Long ingredientId) {
+    public IngredientDTO getIngredientById(@PathVariable Long ingredientId) {
         return ingredientService.getIngredientDTOById(ingredientId);
+    }
+
+    @GetMapping(value = "/name/{ingredientName}")
+    public IngredientDTO getIngredientByName(@PathVariable String ingredientName) {
+        return ingredientService.getIngredientDTOByName(ingredientName);
     }
 }

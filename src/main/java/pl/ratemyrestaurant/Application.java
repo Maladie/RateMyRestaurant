@@ -3,7 +3,6 @@ package pl.ratemyrestaurant;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import pl.ratemyrestaurant.model.Thumb;
 import pl.ratemyrestaurant.utils.CacheUtil;
 
 @SpringBootApplication
