@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import pl.ratemyrestaurant.dto.RestaurantDTO;
 import pl.ratemyrestaurant.service.RestaurantService;
 
-import java.util.List;
 import java.util.Set;
 
 @RestController

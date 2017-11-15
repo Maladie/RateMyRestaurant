@@ -5,7 +5,6 @@ import pl.ratemyrestaurant.dto.RestaurantPIN;
 import pl.ratemyrestaurant.model.UserSearchCircle;
 import se.walkercrou.places.Place;
 
-import java.util.List;
 import java.util.Set;
 
 public interface RestaurantService {
