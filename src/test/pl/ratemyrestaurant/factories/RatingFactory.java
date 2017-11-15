@@ -23,7 +23,7 @@ public class RatingFactory {
     private Ingredient getModelIngredient() {
         Ingredient ingredient = new Ingredient();
         ingredient.setName("kasztan");
-        ingredient.setId(12345l);
+        ingredient.setId(12345);
         return ingredient;
     }
 
