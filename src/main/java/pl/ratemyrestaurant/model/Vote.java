@@ -8,6 +8,12 @@ public class Vote {
 
     public Vote() {}
 
+    public Vote(String restaurantId, Long ingredientId, boolean good) {
+        this.restaurantId = restaurantId;
+        this.ingredientId = ingredientId;
+        this.good = good;
+    }
+
     public Long getIngredientId() {
         return ingredientId;
     }
