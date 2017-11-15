@@ -15,7 +15,7 @@ public class SecurityUtils {
         return toBase64(bytes);
     }
 
-    //TODO swith to JBCrypt
+    //TODO switch to JBCrypt
     public static String generatePasswordHash(String password, String salt) {
         String saltedPass = salt + password;
         return DigestUtils.sha256Hex(saltedPass.getBytes(StandardCharsets.UTF_8));

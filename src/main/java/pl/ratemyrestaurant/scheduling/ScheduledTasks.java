@@ -3,7 +3,6 @@ package pl.ratemyrestaurant.scheduling;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import pl.ratemyrestaurant.repository.UserTokenRepository;
 import pl.ratemyrestaurant.type.TokenStatus;
@@ -23,7 +22,7 @@ public class ScheduledTasks {
     /**
      * Remove expired tokens in 1 minute intervals
      */
-    @Scheduled(initialDelay = 10000, fixedDelay = 60000) // 1 minute intervals
+   // @Scheduled(initialDelay = 10000, fixedDelay = 60000) // 1 minute intervals
     public void removeExpiredTokens(){
         logger.debug("Removing expired tokens from db");
         try {
