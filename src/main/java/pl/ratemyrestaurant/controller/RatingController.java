@@ -38,4 +38,10 @@ public class RatingController {
         }
         return new ResponseEntity<>(rating, status);
     }
+
+    //? rateID instead of restaurantID, should be added to restaurant controller
+    @PostMapping(value = "/{restaurantId}/rate")
+    public ResponseEntity<RatingDTO> addIngredientRating(@PathVariable("restaurantId") String restaurantId, @RequestBody Vote vote){
+       return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 }
