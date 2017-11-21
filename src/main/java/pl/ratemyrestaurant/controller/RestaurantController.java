@@ -5,9 +5,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.ratemyrestaurant.dto.RatingDTO;
 import pl.ratemyrestaurant.dto.RestaurantDTO;
 import pl.ratemyrestaurant.dto.RestaurantPIN;
 import pl.ratemyrestaurant.model.UserSearchCircle;
+import pl.ratemyrestaurant.model.Vote;
 import pl.ratemyrestaurant.service.RestaurantService;
 
 import java.util.HashSet;
@@ -61,5 +63,11 @@ public class RestaurantController {
     @GetMapping(value = "/{restaurantID}")
     public RestaurantDTO getRestaurantDetails(@PathVariable String restaurantID){
         return restaurantService.getOrRetrieveRestaurantDTOByID(restaurantID);
+    }
+
+    //TODO impl.
+    @PostMapping(value = "/{restaurantId}/rate")
+    public ResponseEntity<RatingDTO> addIngredientRating(@PathVariable("restaurantId") String restaurantId, @RequestBody Vote vote){
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 }
