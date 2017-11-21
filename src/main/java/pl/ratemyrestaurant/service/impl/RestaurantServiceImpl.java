@@ -56,8 +56,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     public RestaurantPIN mapPlaceToRestaurantDto(Place place){
         Restaurant restaurant = PlaceToRestaurantMapper.mapToRestaurant(place);
-        RestaurantPIN restaurantPIN = RestaurantToPinMapper.mapRestaurantToPin(restaurant);
-        return restaurantPIN;
+        return RestaurantToPinMapper.mapRestaurantToPin(restaurant);
     }
 
     public void addOrUpdateRestaurant(RestaurantDTO restaurantDTO) {
@@ -121,6 +120,11 @@ public class RestaurantServiceImpl implements RestaurantService {
         Set<RestaurantDTO> restaurantsDTOByFoodType = restaurantsByFoodType.stream()
                 .map(i -> RestaurantToRestaurantDTOMapper.mapToRestaurantDto(i, getRestaurantRatings(i.getId()))).collect(Collectors.toSet());
         return restaurantsDTOByFoodType;
+    }
+
+    @Override
+    public boolean isRestaurantInDB(String restaurantID) {
+        return restaurantRepository.exists(restaurantID);
     }
 
     private RestaurantPIN transformRestaurantToPIN(Restaurant restaurant) {
