@@ -6,12 +6,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ratemyrestaurant.dto.RestaurantDTO;
+import pl.ratemyrestaurant.dto.RestaurantPIN;
+import pl.ratemyrestaurant.model.UserSearchCircle;
 import pl.ratemyrestaurant.service.RestaurantService;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/restaurants")
+@RequestMapping(value = "/restaurants", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RestaurantController {
 
     private RestaurantService restaurantService;
@@ -21,21 +24,42 @@ public class RestaurantController {
         this.restaurantService = restaurantService;
     }
 
-    @GetMapping(value = "/{restaurantId}")
-    public RestaurantDTO getRestaurantById(@PathVariable String restaurantId) {
-        return restaurantService.getRestaurantDTOById(restaurantId);
-    }
+    //temp. disabled
+//    @GetMapping(value = "/{restaurantID}")
+//    public RestaurantDTO getRestaurantById(@PathVariable String restaurantId) {
+//        return restaurantService.getRestaurantDTOById(restaurantId);
+//    }
 
+    //? unused currently
     @PostMapping(value = "/save", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RestaurantDTO> persistRestaurant(@RequestBody RestaurantDTO restaurantDTO){
         restaurantService.addOrUpdateRestaurant(restaurantDTO);
         return new ResponseEntity<>(restaurantDTO, HttpStatus.CREATED);
     }
 
+    //? Method to refactor
     @GetMapping(value = "/type/{foodType}")
     public Set<RestaurantDTO> getRestaurantsByFoodType(@PathVariable String foodType) {
-        Set<RestaurantDTO> restaurantsDTOByFoodType = restaurantService.getRestaurantsDTOByFoodType(foodType);
-        return restaurantsDTOByFoodType;
+        return restaurantService.getRestaurantsDTOByFoodType(foodType);
     }
 
+    //TODO refactor
+    //? Refactor idea
+    @GetMapping(value = "/searchInRadius/{foodType}")
+    public Set<RestaurantDTO> getRestaurantsInRadiusByFoodType(@PathVariable String foodType){
+        return new HashSet<>(); //TODO
+    }
+
+    //? Refactor response type from pin to regular restaurant
+    //TODO add parameters validator here or in service
+    @GetMapping(value = "/areaSearch")
+    public Set<RestaurantPIN> getRestaurantInRadius(@RequestParam double lng, @RequestParam double lat, @RequestParam double radius, @RequestParam(required = false) String type){
+        UserSearchCircle userSearchCircle = new UserSearchCircle(lat, lng, radius);
+        return restaurantService.retrieveRestaurantsInRadius(userSearchCircle);
+    }
+
+    @GetMapping(value = "/{restaurantID}")
+    public RestaurantDTO getRestaurantDetails(@PathVariable String restaurantID){
+        return restaurantService.getOrRetrieveRestaurantDTOByID(restaurantID);
+    }
 }
