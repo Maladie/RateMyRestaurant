@@ -2,6 +2,7 @@ package pl.ratemyrestaurant.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ratemyrestaurant.dto.IngredientDTO;
@@ -12,7 +13,7 @@ import pl.ratemyrestaurant.service.IngredientService;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/ingredients")
+@RequestMapping(value = "/ingredients", produces = MediaType.APPLICATION_JSON_VALUE)
 public class IngredientController {
 
     private IngredientService ingredientService;
