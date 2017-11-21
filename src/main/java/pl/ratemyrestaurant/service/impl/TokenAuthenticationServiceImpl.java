@@ -1,5 +1,6 @@
 package pl.ratemyrestaurant.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -60,7 +62,9 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
             try {
                 String body =request.getReader().lines().collect(Collectors.joining());
                 if(!CheckingUtils.isNullOrEmpty(body)) {
-                    Map<String, String> s = mapper.readValue(body, Map.class);
+                    TypeReference<HashMap<String,String>> typeRef
+                            = new TypeReference<HashMap<String,String>>() {};
+                    Map<String, String> s = mapper.readValue(body, typeRef);
                     username = s.get("username");
                     password = s.get("password");
                 }
