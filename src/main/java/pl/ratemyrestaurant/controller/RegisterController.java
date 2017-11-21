@@ -17,17 +17,19 @@ public class RegisterController {
         this.userService = userService;
     }
 
-
+    // seems to be not necessary after CORS configuration change
     @RequestMapping(value = "/*", method = RequestMethod.OPTIONS)
     public String test(){
         return "Option request method not implemented";
     }
 
+    //
     @PostMapping(value = "/register")
     public Info registerClient(@RequestBody HashMap<String, String> formParams) {
         return userService.register(formParams.get("username"), formParams.get("password"));
     }
 
+    //TODO refactor... or remove
     @PostMapping(value = "/api/register")
     public Info registerToApi(@RequestParam String username,
                                @RequestParam String password) {

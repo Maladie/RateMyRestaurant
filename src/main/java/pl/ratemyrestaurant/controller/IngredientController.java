@@ -39,6 +39,7 @@ public class IngredientController {
         return ingredientService.getIngredientDTOById(ingredientId);
     }
 
+    //TODO refactor endpoint
     @GetMapping(value = "/name/{ingredientName}")
     public IngredientDTO getIngredientByName(@PathVariable String ingredientName) {
         return ingredientService.getIngredientDTOByName(ingredientName);

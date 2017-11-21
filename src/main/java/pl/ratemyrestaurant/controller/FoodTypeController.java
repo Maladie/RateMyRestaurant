@@ -32,6 +32,7 @@ public class FoodTypeController {
         return foodTypeService.getFoodTypeDTOByName(foodType);
     }
 
+    //TODO ? empty endpoint instead of /add should be enough
     @PostMapping("/add")
     public ResponseEntity<FoodTypeDTO> addNewFoodType(@RequestBody FoodTypeDTO foodTypeDTO) {
         FoodType foodType = foodTypeService.addNewFoodType(foodTypeDTO);
