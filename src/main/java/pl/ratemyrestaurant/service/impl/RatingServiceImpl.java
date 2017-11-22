@@ -2,7 +2,9 @@ package pl.ratemyrestaurant.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.ratemyrestaurant.dto.IngredientDTO;
 import pl.ratemyrestaurant.dto.RatingDTO;
+import pl.ratemyrestaurant.dto.RestaurantDTO;
 import pl.ratemyrestaurant.dto.RestaurantPIN;
 import pl.ratemyrestaurant.mappers.RatingToRatingDTOMapper;
 import pl.ratemyrestaurant.model.*;
@@ -10,6 +12,7 @@ import pl.ratemyrestaurant.repository.IngredientRepository;
 import pl.ratemyrestaurant.repository.RatingRepository;
 import pl.ratemyrestaurant.repository.RestaurantRepository;
 import pl.ratemyrestaurant.service.RatingService;
+import pl.ratemyrestaurant.service.RestaurantService;
 
 import java.util.List;
 import java.util.Set;
@@ -21,6 +24,9 @@ public class RatingServiceImpl implements RatingService {
     private RatingRepository ratingRepository;
     private RestaurantRepository restaurantRepository;
     private IngredientRepository ingredientRepository;
+    //TEMP
+    @Autowired
+    private RestaurantService restaurantService;
 
     @Autowired
     public RatingServiceImpl(RatingRepository ratingRepository, RestaurantRepository restaurantRepository, IngredientRepository ingredientRepository) {
@@ -29,11 +35,11 @@ public class RatingServiceImpl implements RatingService {
         this.ingredientRepository = ingredientRepository;
     }
 
-    public Set<Rating> retrieveRestaurantRatings(String restaurantId){
+    public Set<Rating> retrieveRestaurantRatings(String restaurantId) {
         return ratingRepository.findByRestaurant_Id(restaurantId);
     }
 
-    public Rating createNewRating(Ingredient ingredient, Restaurant restaurant){
+    public Rating createNewRating(Ingredient ingredient, Restaurant restaurant) {
         Rating rating = new Rating(restaurant, ingredient, new Thumb());
         ratingRepository.save(rating);
         return rating;
@@ -44,10 +50,10 @@ public class RatingServiceImpl implements RatingService {
 
         List<String> restaurantIDs = pins.stream().map(p -> p.getId()).collect(Collectors.toList());
         Set<Rating> ratings = restaurantIDs.stream()
-                .map(p-> ratingRepository
+                .map(p -> ratingRepository
                         .findByRestaurant_Id(p)
                         .stream()
-                        .filter(x->x.getIngredient().getName()==ingredientName)
+                        .filter(x -> x.getIngredient().getName() == ingredientName)
                         .findFirst().get()).collect(Collectors.toSet());
 
         return ratings.stream().sorted((r1, r2) -> {
@@ -59,7 +65,10 @@ public class RatingServiceImpl implements RatingService {
     @Override
     public RatingDTO addOrUpdateRating(Vote vote) {
         Rating rating = ratingRepository.findByRestaurant_IdAndIngredient_Id(vote.getRestaurantId(), vote.getIngredientId());
-        if(rating == null) {
+        if (rating == null) {
+            if (vote.getRestaurantId() == null) {
+                createRestaurant(vote.getRestaurantId());
+            }
             Restaurant restaurant = restaurantRepository.findOne(vote.getRestaurantId());
             Ingredient ingredient = ingredientRepository.findOne(vote.getIngredientId());
             rating = new Rating(restaurant, ingredient, new Thumb());
@@ -69,9 +78,48 @@ public class RatingServiceImpl implements RatingService {
         return RatingToRatingDTOMapper.mapRatingToRatingDto(rating);
     }
 
-    private float countThumbPercentage(Thumb thumb){
-        float a = (float)thumb.getThumbsDown();
-        float b = (float)thumb.getThumbsDown();
-        return a / (a+b);
+    @Override
+    public RatingDTO addNewIngredientRating(String restaurantID, Long ingredientID) {
+        Restaurant restaurant = restaurantRepository.findOne(restaurantID);
+        if(restaurant == null) {
+            //create if not exists in DB
+            restaurant = createRestaurant(restaurantID);
+        }
+        Ingredient ingredient = ingredientRepository.findOne(ingredientID);
+        Rating rating = new Rating(restaurant, ingredient, new Thumb());
+        ratingRepository.save(rating);
+        return RatingToRatingDTOMapper.mapRatingToRatingDto(rating);
+    }
+
+    @Override
+    public RatingDTO rateIngredient(String restaurantID, Long ingredientID, boolean upVote) {
+        Rating rating = ratingRepository.findByRestaurant_IdAndIngredient_Id(restaurantID, ingredientID);
+        if(rating != null) {
+            rating.getThumb().rate(upVote);
+            ratingRepository.save(rating);
+        }
+        return RatingToRatingDTOMapper.mapRatingToRatingDto(rating);
+    }
+
+    @Override
+    public RatingDTO rateIngredient(Long ratingID, boolean upVote) {
+        Rating rating = ratingRepository.findById(ratingID);
+        if(rating != null) {
+            rating.getThumb().rate(upVote);
+            ratingRepository.save(rating);
+        }
+        return RatingToRatingDTOMapper.mapRatingToRatingDto(rating);
+    }
+
+    private float countThumbPercentage(Thumb thumb) {
+        float a = (float) thumb.getThumbsDown();
+        float b = (float) thumb.getThumbsDown();
+        return a / (a + b);
+    }
+
+    private Restaurant createRestaurant(String restaurantID) {
+        RestaurantDTO restaurantDTO = restaurantService.getOrRetrieveRestaurantDTOByID(restaurantID);
+        restaurantService.addOrUpdateRestaurant(restaurantDTO);
+        return restaurantRepository.findOne(restaurantID);
     }
 }

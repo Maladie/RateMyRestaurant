@@ -9,7 +9,7 @@ import java.util.Set;
 public interface RatingRepository extends JpaRepository<Rating, Long> {
 
     Set<Rating> findByRestaurant_Id(String restaurantId);
-
+    Rating findById(Long id);
     Rating findByRestaurant_IdAndIngredient_Id(String restaurantId, Long ingredientId);
 
 }
