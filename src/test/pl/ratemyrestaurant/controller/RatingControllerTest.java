@@ -14,13 +14,11 @@ import pl.ratemyrestaurant.dto.RatingDTO;
 import pl.ratemyrestaurant.factories.RatingFactory;
 import pl.ratemyrestaurant.service.RatingService;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static pl.ratemyrestaurant.utils.TestUtils.asJsonString;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -51,7 +49,6 @@ public class RatingControllerTest {
         boolean givenUpvote = true;
         RatingDTO ratingDTO = new RatingFactory().getModelRatingDto();
         //when
-//        doReturn(rating).when(ratingRepository).findById(givenId);
         doReturn(ratingDTO).when(ratingService).rateIngredient(givenId, givenUpvote);
         //then
         String stringResponse = mockMvc.perform(
@@ -59,7 +56,6 @@ public class RatingControllerTest {
                         .content(asJsonString(givenUpvote))
                         .accept(MediaType.APPLICATION_JSON_UTF8)
                         .contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8)).andReturn().getResponse().getContentAsString();
         assertEquals(asJsonString(ratingDTO), stringResponse);
@@ -71,7 +67,6 @@ public class RatingControllerTest {
         Long givenId = 33L;
         boolean givenUpvote = true;
         //when
-//        doReturn(rating).when(ratingRepository).findById(givenId);
         doReturn(null).when(ratingService).rateIngredient(givenId, givenUpvote);
         //then
         mockMvc.perform(
@@ -79,7 +74,6 @@ public class RatingControllerTest {
                         .content(asJsonString(givenUpvote))
                         .accept(MediaType.APPLICATION_JSON_UTF8)
                         .contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andDo(print())
                 .andExpect(status().isNotFound());
     }
 }

@@ -11,4 +11,13 @@ public class TestUtils {
             throw new RuntimeException(e);
         }
     }
+
+    public static <T> T asObjectJsonString(String jsonString, Class<T> jsonObjectType) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(jsonString, jsonObjectType);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

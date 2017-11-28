@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.ratemyrestaurant.dto.NewUserDTO;
 import pl.ratemyrestaurant.model.Info;
 import pl.ratemyrestaurant.service.UserService;
+import pl.ratemyrestaurant.type.APIInfoCodes;
 
 
 @RestController
@@ -23,7 +24,7 @@ public class RegisterController {
     public ResponseEntity<Info>registerClient(@RequestBody NewUserDTO newUserDTO) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         Info register = userService.register(newUserDTO);
-        if(register.getCode() == 0) {
+        if(register.getInfoCode() == APIInfoCodes.OK) {
             status = HttpStatus.CREATED;
         }
         return new ResponseEntity<>(register, status);

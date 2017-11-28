@@ -46,7 +46,7 @@ public class FoodTypeController {
         FoodTypeDTO addedFoodTypeDTO = foodTypeService.addNewFoodType(foodTypeDTO);
         if(addedFoodTypeDTO == null) {
             Info info = new Info();
-            info.setCode(422L);
+            info.setHttpStatusCode(422L);
             info.setDesc("FoodType already exists");
             info.setObject(foodTypeDTO);
             return new ResponseEntity<>(info, HttpStatus.UNPROCESSABLE_ENTITY);

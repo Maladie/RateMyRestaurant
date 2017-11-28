@@ -32,7 +32,7 @@ public class IngredientController {
       //means already exists
       if(addedIngredientDTO == null) {
           Info info = new Info();
-          info.setCode(422L);
+          info.setHttpStatusCode(422L);
           info.setDesc("Ingredient name already exists");
           info.setObject(ingredientDTO);
           return new ResponseEntity<>(info, HttpStatus.UNPROCESSABLE_ENTITY);
