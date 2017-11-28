@@ -52,8 +52,7 @@ public class IngredientControllerTest {
         mockMvc.perform(get("/ingredients"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$", hasSize(3)))
-                .andDo(print());
+                .andExpect(jsonPath("$", hasSize(3)));
         verify(ingredientRepository, times(1)).findAll();
     }
 
@@ -68,8 +67,7 @@ public class IngredientControllerTest {
         mockMvc.perform(get("/ingredients/{ingredientId}", id)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(status().isBadRequest())
-                .andDo(print());
+                .andExpect(status().isBadRequest());
         verify(ingredientRepository, times(1)).findOne(id);
 
     }
@@ -84,8 +82,7 @@ public class IngredientControllerTest {
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is(testIngredient.getName())))
-                .andDo(print());
+                .andExpect(jsonPath("$.name", is(testIngredient.getName())));
         verify(ingredientRepository, times(1)).findOne(id);
 
     }
@@ -96,7 +93,7 @@ public class IngredientControllerTest {
         testIngredient.setName(null);
         mockMvc.perform(post("/ingredients").content(asJsonString(testIngredient)).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.code",is(422)))
+                .andExpect(jsonPath("$.httpStatusCode",is(422)))
                 .andExpect(jsonPath("$.key", is(Matchers.any(String.class))));
 
     }

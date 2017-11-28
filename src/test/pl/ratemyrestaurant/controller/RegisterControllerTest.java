@@ -55,7 +55,7 @@ public class RegisterControllerTest {
                         .content(asJsonString(newUserDTO)))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.code", is(201)));
+        .andExpect(jsonPath("$.httpStatusCode", is(400)));
     }
 
     @Test
@@ -69,7 +69,7 @@ public class RegisterControllerTest {
                 .content(asJsonString(newUserDTO)))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code", is(202)));
+                .andExpect(jsonPath("$.httpStatusCode", is(400)));
     }
     @Test
     public void shouldReturnBadRequestStatusAndInfoWithCode_209_whenNewUserUsernameAlreadyUsed() throws Exception {
@@ -83,7 +83,7 @@ public class RegisterControllerTest {
                 .content(asJsonString(newUserDTO)))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code", is(209)));
+                .andExpect(jsonPath("$.httpStatusCode", is(400)));
     }
     @Test
     public void shouldReturnCreatedStatusAndInfoWithCode_0_whenNewUserSuccessfullyRegistered() throws Exception {
@@ -96,7 +96,7 @@ public class RegisterControllerTest {
                 .content(asJsonString(newUserDTO)))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.code", is(0)));
+                .andExpect(jsonPath("$.httpStatusCode", is(200)));
     }
 
     public static String asJsonString(final Object obj) {

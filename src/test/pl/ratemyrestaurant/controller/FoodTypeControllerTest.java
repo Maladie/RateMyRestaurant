@@ -25,7 +25,6 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static pl.ratemyrestaurant.utils.TestUtils.asJsonString;
 
@@ -57,8 +56,7 @@ public class FoodTypeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].name", is("food1")))
-                .andExpect(jsonPath("$[1].name", is("food2")))
-        .andDo(print());
+                .andExpect(jsonPath("$[1].name", is("food2")));
     }
 
     @Test
@@ -72,8 +70,7 @@ public class FoodTypeControllerTest {
         mockMvc.perform(get(foodEndpoint+"/{foodName}",foodName).accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is(foodName)))
-        .andDo(print());
+                .andExpect(jsonPath("$.name", is(foodName)));
     }
 
     @Test
@@ -85,8 +82,7 @@ public class FoodTypeControllerTest {
 //        foodTypeService = new FoodTypeServiceImpl(foodTypeRepository);
         //then
         mockMvc.perform(get(foodEndpoint+"/{foodName}",foodName).accept(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(status().isNotFound())
-                .andDo(print());
+                .andExpect(status().isNotFound());
         verify(foodTypeRepository, times(1)).findByName(foodName);
     }
 
@@ -102,7 +98,6 @@ public class FoodTypeControllerTest {
 
         //then
         String responseContent = mockMvc.perform(post(foodEndpoint).accept(MediaType.APPLICATION_JSON_UTF8).contentType(MediaType.APPLICATION_JSON_UTF8).content(asJsonString(foodTypeDTO)))
-                .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andReturn().getResponse().getContentAsString();
@@ -122,9 +117,8 @@ public class FoodTypeControllerTest {
         when(foodTypeRepository.findByNameIgnoreCase(foodName)).thenReturn(foodType);
         //then
         mockMvc.perform(post(foodEndpoint).accept(MediaType.APPLICATION_JSON_UTF8).contentType(MediaType.APPLICATION_JSON_UTF8).content(asJsonString(foodTypeDTO)))
-                .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
-        .andExpect(jsonPath("$.code", is(422)))
+        .andExpect(jsonPath("$.httpStatusCode", is(422)))
         .andExpect(jsonPath("$.desc", is("FoodType already exists")));
         verify(foodTypeRepository, times(1)).findByNameIgnoreCase(foodName);
     }
