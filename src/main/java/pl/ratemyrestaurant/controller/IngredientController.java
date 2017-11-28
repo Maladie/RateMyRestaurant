@@ -2,18 +2,16 @@ package pl.ratemyrestaurant.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ratemyrestaurant.dto.IngredientDTO;
-import pl.ratemyrestaurant.mappers.IngredientToIngredientDTOMapper;
-import pl.ratemyrestaurant.model.Ingredient;
+import pl.ratemyrestaurant.model.Info;
 import pl.ratemyrestaurant.service.IngredientService;
 
 import java.util.Set;
 
 @RestController
-@RequestMapping(value = "/ingredients", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/ingredients")
 public class IngredientController {
 
     private IngredientService ingredientService;
@@ -28,21 +26,27 @@ public class IngredientController {
         return ingredientService.getAllIngredientsDTO();
     }
 
-    @PostMapping(value = "/add")
-    public ResponseEntity<IngredientDTO> addIngredient(@RequestBody IngredientDTO ingredientDTO) {
-      Ingredient addedIngredient = ingredientService.addIngredient(ingredientDTO);
-      IngredientDTO addedIngredientDTO = IngredientToIngredientDTOMapper.mapIngredientToIngredientDTO(addedIngredient);
+    @PostMapping()
+    public ResponseEntity addIngredient(@RequestBody IngredientDTO ingredientDTO) {
+      IngredientDTO addedIngredientDTO = ingredientService.addIngredient(ingredientDTO);
+      //means already exists
+      if(addedIngredientDTO == null) {
+          Info info = new Info();
+          info.setCode(422L);
+          info.setDesc("Ingredient name already exists");
+          info.setObject(ingredientDTO);
+          return new ResponseEntity<>(info, HttpStatus.UNPROCESSABLE_ENTITY);
+      }
       return new ResponseEntity<>(addedIngredientDTO, HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/{ingredientId}")
-    public IngredientDTO getIngredientById(@PathVariable Long ingredientId) {
-        return ingredientService.getIngredientDTOById(ingredientId);
+    public ResponseEntity<IngredientDTO> getIngredientById(@PathVariable Long ingredientId) {
+        IngredientDTO ingredientDTOById = ingredientService.getIngredientDTOById(ingredientId);
+        if(ingredientDTOById != null) {
+            return  new ResponseEntity<>(ingredientDTOById,  HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    //TODO refactor endpoint
-    @GetMapping(value = "/name/{ingredientName}")
-    public IngredientDTO getIngredientByName(@PathVariable String ingredientName) {
-        return ingredientService.getIngredientDTOByName(ingredientName);
-    }
 }
