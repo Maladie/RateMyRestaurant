@@ -2,10 +2,8 @@ package pl.ratemyrestaurant.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.ratemyrestaurant.dto.IngredientDTO;
 import pl.ratemyrestaurant.dto.RatingDTO;
 import pl.ratemyrestaurant.dto.RestaurantDTO;
-import pl.ratemyrestaurant.dto.RestaurantPIN;
 import pl.ratemyrestaurant.mappers.RatingToRatingDTOMapper;
 import pl.ratemyrestaurant.model.*;
 import pl.ratemyrestaurant.repository.IngredientRepository;
@@ -14,9 +12,7 @@ import pl.ratemyrestaurant.repository.RestaurantRepository;
 import pl.ratemyrestaurant.service.RatingService;
 import pl.ratemyrestaurant.service.RestaurantService;
 
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class RatingServiceImpl implements RatingService {
@@ -39,28 +35,28 @@ public class RatingServiceImpl implements RatingService {
         return ratingRepository.findByRestaurant_Id(restaurantId);
     }
 
-    public Rating createNewRating(Ingredient ingredient, Restaurant restaurant) {
-        Rating rating = new Rating(restaurant, ingredient, new Thumb());
-        ratingRepository.save(rating);
-        return rating;
-    }
+    // TODO  refactor
 
-    @Override
-    public List<RatingDTO> retrieveRatingsOfIngredientInRestaurants(String ingredientName, List<RestaurantPIN> pins) {
-
-        List<String> restaurantIDs = pins.stream().map(p -> p.getId()).collect(Collectors.toList());
-        Set<Rating> ratings = restaurantIDs.stream()
-                .map(p -> ratingRepository
-                        .findByRestaurant_Id(p)
-                        .stream()
-                        .filter(x -> x.getIngredient().getName() == ingredientName)
-                        .findFirst().get()).collect(Collectors.toSet());
-
-        return ratings.stream().sorted((r1, r2) -> {
-            return Float.compare(countThumbPercentage(r2.getThumb()), countThumbPercentage(r1.getThumb()));
-        }).map(r -> RatingToRatingDTOMapper.mapRatingToRatingDto(r)).collect(Collectors.toList());
-
-    }
+//    @Override
+//    public List<RatingDTO> retrieveRatingsOfIngredientInRestaurants(String ingredientName, List<RestaurantPIN> pins) {
+//
+//        List<String> restaurantIDs = pins.stream().map(RestaurantPIN::getId).collect(Collectors.toList());
+//        Set<Rating> ratings = restaurantIDs.stream()
+//                .map(p -> ratingRepository
+//                        .findByRestaurant_Id(p)
+//                        .stream()
+//                        .filter(x -> x.getIngredient().getName().equals(ingredientName))
+//                        .findFirst()
+//                        .get()
+//                ).collect(Collectors.toSet());
+//
+//        return ratings
+//                .stream()
+//                .sorted((r1, r2) ->
+//                                Float.compare(countThumbPercentage(r2.getThumb()), countThumbPercentage(r1.getThumb()))
+//                ).map(RatingToRatingDTOMapper::mapRatingToRatingDto)
+//                .collect(Collectors.toList());
+//    }
 
     @Override
     public RatingDTO addOrUpdateRating(Vote vote) {
@@ -111,11 +107,13 @@ public class RatingServiceImpl implements RatingService {
         return RatingToRatingDTOMapper.mapRatingToRatingDto(rating);
     }
 
-    private float countThumbPercentage(Thumb thumb) {
-        float a = (float) thumb.getThumbsDown();
-        float b = (float) thumb.getThumbsDown();
-        return a / (a + b);
-    }
+    // currently not used, waiting for ^^ retrieveRatingsOfIngredientInRestaurants() refactoring
+
+//    private float countThumbPercentage(Thumb thumb) {
+//        float a = (float) thumb.getThumbsDown();
+//        float b = (float) thumb.getThumbsDown();
+//        return a / (a + b);
+//    }
 
     private Restaurant createRestaurant(String restaurantID) {
         RestaurantDTO restaurantDTO = restaurantService.getOrRetrieveRestaurantDTOByID(restaurantID);
