@@ -30,7 +30,7 @@ public class FoodTypeServiceImpl implements FoodTypeService {
 
     @Override
     public FoodTypeDTO getFoodTypeDTOByName(String name) {
-        FoodType foodType = foodTypeRepository.findByNameIgnoreCase(name);
+        FoodType foodType = foodTypeRepository.findByName(name);
         if (foodType != null) {
             return FoodTypeToFoodTypeDTOMapper.mapFoodTypeToFoodTypeDTO(foodType);
         }

@@ -20,8 +20,8 @@ import pl.ratemyrestaurant.service.impl.FoodTypeServiceImpl;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -113,16 +113,20 @@ public class FoodTypeControllerTest {
     }
 
     @Test
-    public void shouldReturn422_whenGivenFoodTypeAlreadyExistsInDB() throws Exception{
+    public void shouldReturn422_whenCreatingFoodTypeAndGivenFoodTypeAlreadyExistsInDB() throws Exception{
         //given
-        String foodName = "food_name_missing";
+        String foodName = "food_name_alreadyExists";
+        FoodType foodType = new FoodType(foodName);
+        FoodTypeDTO foodTypeDTO = new FoodTypeDTO(foodName);
         //when
-        when(foodTypeRepository.findByName(foodName)).thenReturn(null);
+        when(foodTypeRepository.findByNameIgnoreCase(foodName)).thenReturn(foodType);
         //then
-        mockMvc.perform(get(foodEndpoint+"/{foodName}",foodName).accept(MediaType.APPLICATION_JSON_UTF8))
+        mockMvc.perform(post(foodEndpoint).accept(MediaType.APPLICATION_JSON_UTF8).contentType(MediaType.APPLICATION_JSON_UTF8).content(asJsonString(foodTypeDTO)))
+                .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
-                .andDo(print());
-        verify(foodTypeRepository, times(1)).findByName(foodName);
+        .andExpect(jsonPath("$.code", is(422)))
+        .andExpect(jsonPath("$.desc", is("FoodType already exists")));
+        verify(foodTypeRepository, times(1)).findByNameIgnoreCase(foodName);
     }
 
     private List<FoodType> mockFoodTypes() {
