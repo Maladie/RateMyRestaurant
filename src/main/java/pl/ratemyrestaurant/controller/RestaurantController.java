@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @RestController
-@RequestMapping(value = "/restaurants", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/restaurants")
 public class RestaurantController {
 
     private RestaurantService restaurantService;
@@ -41,7 +41,7 @@ public class RestaurantController {
         return new ResponseEntity<>(restaurantDTO, HttpStatus.CREATED);
     }
 
-    //? Method to refactor
+    //? Method to refactor or move filtering to front
     @GetMapping(value = "/type/{foodType}")
     public Set<RestaurantDTO> getRestaurantsByFoodType(@PathVariable String foodType) {
         return restaurantService.getRestaurantsDTOByFoodType(foodType);
