@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ratemyrestaurant.dto.FoodTypeDTO;
+import pl.ratemyrestaurant.model.Info;
 import pl.ratemyrestaurant.service.FoodTypeService;
 
 import java.util.List;
@@ -41,8 +42,15 @@ public class FoodTypeController {
     }
 
     @PostMapping
-    public ResponseEntity<FoodTypeDTO> addNewFoodType(@RequestBody FoodTypeDTO foodTypeDTO) {
+    public ResponseEntity addNewFoodType(@RequestBody FoodTypeDTO foodTypeDTO) {
         FoodTypeDTO addedFoodTypeDTO = foodTypeService.addNewFoodType(foodTypeDTO);
+        if(addedFoodTypeDTO == null) {
+            Info info = new Info();
+            info.setCode(422L);
+            info.setDesc("FoodType already exists");
+            info.setObject(foodTypeDTO);
+            return new ResponseEntity<>(info, HttpStatus.UNPROCESSABLE_ENTITY);
+        }
         return new ResponseEntity<>(addedFoodTypeDTO, HttpStatus.CREATED);
     }
 }

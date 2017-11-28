@@ -1,15 +1,17 @@
 package pl.ratemyrestaurant.controller;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import pl.ratemyrestaurant.dto.FoodTypeDTO;
 import pl.ratemyrestaurant.model.FoodType;
 import pl.ratemyrestaurant.repository.FoodTypeRepository;
 import pl.ratemyrestaurant.service.FoodTypeService;
@@ -22,10 +24,12 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static pl.ratemyrestaurant.utils.TestUtils.asJsonString;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class FoodTypeControllerTest {
     private MockMvc mockMvc;
     private static final String foodEndpoint = "/foodTypes";
@@ -87,14 +91,36 @@ public class FoodTypeControllerTest {
     }
 
     @Test
-    public void shouldReturnCreatedAndFoodTypeDTO_whenAddingNewFoodTypeWithValidName() throws Exception{
+    public void shouldReturn200AndFoodTypeDTO_whenAddingNewValidFoodType() throws Exception{
+        //given
+        String foodName = "new_food_name";
+        FoodTypeDTO foodTypeDTO = new FoodTypeDTO(foodName);
+
+        //when
+        doReturn(null).when(foodTypeRepository).findByNameIgnoreCase(foodName);
+        foodTypeController = new FoodTypeController(foodTypeService);
+
+        //then
+        String responseContent = mockMvc.perform(post(foodEndpoint).accept(MediaType.APPLICATION_JSON_UTF8).contentType(MediaType.APPLICATION_JSON_UTF8).content(asJsonString(foodTypeDTO)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andReturn().getResponse().getContentAsString();
+
+        verify(foodTypeRepository, times(1)).findByNameIgnoreCase(foodName);
+        verify(foodTypeRepository, times(1)).save(any(FoodType.class));
+        Assert.assertEquals(asJsonString(foodTypeDTO), responseContent);
+    }
+
+    @Test
+    public void shouldReturn422_whenGivenFoodTypeAlreadyExistsInDB() throws Exception{
         //given
         String foodName = "food_name_missing";
         //when
         when(foodTypeRepository.findByName(foodName)).thenReturn(null);
         //then
         mockMvc.perform(get(foodEndpoint+"/{foodName}",foodName).accept(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isUnprocessableEntity())
                 .andDo(print());
         verify(foodTypeRepository, times(1)).findByName(foodName);
     }

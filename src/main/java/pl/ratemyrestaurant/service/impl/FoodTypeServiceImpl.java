@@ -30,24 +30,23 @@ public class FoodTypeServiceImpl implements FoodTypeService {
 
     @Override
     public FoodTypeDTO getFoodTypeDTOByName(String name) {
-        FoodType foodType = foodTypeRepository.findByName(name);
-        if(foodType != null) {
+        FoodType foodType = foodTypeRepository.findByNameIgnoreCase(name);
+        if (foodType != null) {
             return FoodTypeToFoodTypeDTOMapper.mapFoodTypeToFoodTypeDTO(foodType);
         }
-        throw new NoSuchElementException("No such foodType "+ name);
+        throw new NoSuchElementException("No such foodType " + name);
     }
 
     @Override
     public FoodTypeDTO addNewFoodType(FoodTypeDTO foodTypeDTO) {
-        FoodType foodType;
+        FoodType foodType = foodTypeRepository.findByNameIgnoreCase(foodTypeDTO.getName());
         //TODO simplify
-        if (getAllFodTypes().stream().noneMatch(ft -> ft.getName().equalsIgnoreCase(foodTypeDTO.getName()))) {
+        if (foodType == null) {
             foodType = FoodTypeToFoodTypeDTOMapper.mapFoodTypeDTOToFoodType(foodTypeDTO);
             foodTypeRepository.save(foodType);
-        } else {
-            foodType = foodTypeRepository.findByName(foodTypeDTO.getName());
+            return FoodTypeToFoodTypeDTOMapper.mapFoodTypeToFoodTypeDTO(foodType);
         }
-        return FoodTypeToFoodTypeDTOMapper.mapFoodTypeToFoodTypeDTO(foodType);
+        return null;
     }
 
     private List<FoodType> getAllFodTypes() {
