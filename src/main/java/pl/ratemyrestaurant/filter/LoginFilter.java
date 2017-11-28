@@ -60,7 +60,7 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
             response.getWriter().write(mapper.writeValueAsString(authResultObject.getInfo()));
         } catch (Exception ex) {
             Info i = new Info();
-            i.setCode(103L);
+            i.setHttpStatusCode(103L);
             i.setDesc("AUTHENTICATION_EXCEPTION_RELOGIN_NEEDED");
 
             System.out.println("Authentication EXCEPTION. " + "Invalid token: " + token +"\n");
@@ -75,7 +75,7 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
         UserAuthenticationException authException = (UserAuthenticationException) failed;
         Info info = authException.getAuthentication().getInfo();
 
-        response.setHeader("X-AUTH-ERR-DESC", info.getCode() + "-" + info.getDesc());
+        response.setHeader("X-AUTH-ERR-DESC", info.getHttpStatusCode() + "-" + info.getDesc());
 
         ObjectMapper mapper = new ObjectMapper();
         response.setCharacterEncoding("UTF-8");

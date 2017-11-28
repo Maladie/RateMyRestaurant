@@ -20,6 +20,7 @@ import pl.ratemyrestaurant.repository.UserRepository;
 import pl.ratemyrestaurant.repository.UserTokenRepository;
 import pl.ratemyrestaurant.service.TokenAuthenticationService;
 import pl.ratemyrestaurant.service.TokenHandlerService;
+import pl.ratemyrestaurant.type.APIInfoCodes;
 import pl.ratemyrestaurant.type.TokenStatus;
 import pl.ratemyrestaurant.utils.CheckingUtils;
 import pl.ratemyrestaurant.utils.SecurityUtils;
@@ -85,28 +86,33 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
         boolean isAuthorized = false;
 
         if (isUsernameEmpty) {
-            info.setCode(100L);
+            info.setHttpStatusCode(400L);
+            info.setInfoCode(APIInfoCodes.INVALID_USERNAME);
             info.setDesc("User empty username");
         } else {
             if (CheckingUtils.isNullOrEmpty(password)) {
-                info.setCode(101L);
+                info.setHttpStatusCode(400L);
+                info.setInfoCode(APIInfoCodes.INVALID_PASSWORD);
                 info.setDesc("User empty password");
             } else {
                 user = userRepository.findByUsernameIgnoreCase(username);
 
                 if (CheckingUtils.isNullObject(user)) {
-                    info.setCode(199L);
+                    info.setHttpStatusCode(400L);
                     info.setDesc("User not found");
+                    info.setInfoCode(APIInfoCodes.USERNAME_NOT_FOUND);
                 } else if (CheckingUtils.isNullOrEmpty(user.getPassword())) {
-                    info.setCode(101L);
+                    info.setHttpStatusCode(400L);
+                    info.setInfoCode(APIInfoCodes.INVALID_PASSWORD);
                     info.setDesc("User missing password");
                 } else {
                     if (!SecurityUtils.isPasswordMatch(password, user.getSalt(), user.getPassword())) {
                         // Password
                         // not
                         // equal
-                        info.setCode(103L);
+                        info.setHttpStatusCode(400L);
                         info.setDesc("User wrong password");
+                        info.setInfoCode(APIInfoCodes.WRONG_USER_PASSWORD);
                     } else { // user is authorized successfully
                         isAuthorized = true;
                     }
@@ -115,7 +121,8 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
         }
 
         if (isAuthorized) {
-            info.setCode(0L);
+            info.setHttpStatusCode(200L);
+            info.setInfoCode(APIInfoCodes.OK);
             info.setDesc("Basic");
             auth.setUser(user);
             auth.setInfo(info);
@@ -148,22 +155,22 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
                     logger.debug("User "+user.getUsername()+ " authentication success! Token: "+ token);
                     return auth;
                 } else {
-                    info.setCode(101L);
+                    info.setHttpStatusCode(101L);
                     info.setDesc("User not found. Invalid token.");
                     logger.debug("User not found. Invalid token. Authentication failed! Token: "+ token);
                 }
             } catch (TokenException e) {
-                info.setCode(102L);
+                info.setHttpStatusCode(102L);
                 info.setDesc(e.getDescription());
-                logger.debug("TokenException "+info.getCode() + " "+ e.getDescription());
+                logger.debug("TokenException "+info.getHttpStatusCode() + " "+ e.getDescription());
             } catch (Exception e) {
-                info.setCode(103L);
+                info.setHttpStatusCode(103L);
                 info.setDesc("AUTHENTICATE_EXCEPTION_RELOGIN_NEEDED");
                 logger.catching(e);
             }
 
         } else {
-            info.setCode(100L);
+            info.setHttpStatusCode(100L);
             info.setDesc("Authorization Token not found");
             logger.debug("Authorization Token not found. Token value: "+ token);
         }

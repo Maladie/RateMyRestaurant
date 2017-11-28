@@ -7,6 +7,7 @@ import pl.ratemyrestaurant.model.Info;
 import pl.ratemyrestaurant.model.User;
 import pl.ratemyrestaurant.repository.UserRepository;
 import pl.ratemyrestaurant.service.UserService;
+import pl.ratemyrestaurant.type.APIInfoCodes;
 import pl.ratemyrestaurant.utils.CheckingUtils;
 import pl.ratemyrestaurant.utils.SecurityUtils;
 
@@ -31,7 +32,8 @@ public class UserServiceImpl implements UserService {
         info.setKey(UUID.randomUUID().toString());
         if(!usernameEmpty && !passwordEmpty) {
             if(userRepository.findByUsernameIgnoreCase(newUserDTO.getUsername())!= null){
-                info.setCode(209L);
+                info.setHttpStatusCode(400L);
+                info.setInfoCode(APIInfoCodes.USERNAME_ALREADY_USED);
                 info.setDesc("Registration failed! Username already used");
                 info.setObject(newUserDTO.getUsername());
             } else {
@@ -43,14 +45,17 @@ public class UserServiceImpl implements UserService {
                 user.setPassword(passHash);
                 userRepository.save(user);
                 info.setDesc("Registration successful!");
+                info.setInfoCode(APIInfoCodes.OK);
             }
         }else {
             if(usernameEmpty){
-                info.setCode(201L);
+                info.setHttpStatusCode(400L);
+                info.setInfoCode(APIInfoCodes.INVALID_USERNAME);
                 info.setDesc("Registration failed! Username invalid or empty");
                 info.setObject(newUserDTO.getUsername());
             } else {
-                info.setCode(202L);
+                info.setHttpStatusCode(400L);
+                info.setInfoCode(APIInfoCodes.INVALID_PASSWORD);
                 info.setDesc("Registration failed! Password invalid or empty");
                 info.setObject(newUserDTO.getPassword());
             }

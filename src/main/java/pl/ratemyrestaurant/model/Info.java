@@ -1,17 +1,30 @@
 package pl.ratemyrestaurant.model;
 
+import pl.ratemyrestaurant.type.APIInfoCodes;
+
 import java.util.UUID;
 
 public class Info {
 
     private String key;
-    private Long code;
+    private long httpStatusCode;
+    private APIInfoCodes infoCode;
+
+    public APIInfoCodes getInfoCode() {
+        return infoCode;
+    }
+
+    public void setInfoCode(APIInfoCodes infoCode) {
+        this.infoCode = infoCode;
+    }
+
     private String desc;
     private Object object;
 
     public Info(){
         key = UUID.randomUUID().toString();
-        code = 0L;
+        httpStatusCode = 200L;
+        infoCode = APIInfoCodes.OK;
     }
 
     public String getKey() {
@@ -20,11 +33,11 @@ public class Info {
     public void setKey(String key) {
         this.key = key;
     }
-    public Long getCode() {
-        return code;
+    public long getHttpStatusCode() {
+        return httpStatusCode;
     }
-    public void setCode(Long code) {
-        this.code = code;
+    public void setHttpStatusCode(long httpStatusCode) {
+        this.httpStatusCode = httpStatusCode;
     }
     public String getDesc() {
         return desc;
@@ -43,7 +56,33 @@ public class Info {
 
     @Override
     public String toString() {
-        return "Info [code=" + code + ", desc=" + desc + ", object=" + object + "]";
+        return "Info [httpStatusCode=" + httpStatusCode + ", desc=" + desc + ", object=" + object + "]";
     }
 
+    public static class InfoBuilder {
+        private Info info;
+
+        public InfoBuilder() {
+            info = new Info();
+        }
+        public InfoBuilder setHttpStatusCode(long code){
+            info.setHttpStatusCode(code);
+            return this;
+        }
+        public InfoBuilder setDescription(String desc) {
+            info.setDesc(desc);
+            return this;
+        }
+        public InfoBuilder setInfoCode(APIInfoCodes infoCode){
+            info.setInfoCode(infoCode);
+            return this;
+        }
+        public InfoBuilder setObject(Object object) {
+            info.setObject(object);
+            return this;
+        }
+        public Info build(){
+            return info;
+        }
+    }
 }
