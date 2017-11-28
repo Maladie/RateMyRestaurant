@@ -2,18 +2,16 @@ package pl.ratemyrestaurant.dto;
 
 public class FoodTypeDTO {
 
-    private Long id;
     private String name;
 
     public FoodTypeDTO() {}
 
-    public FoodTypeDTO(Long id, String name) {
-        this.id = id;
+    public FoodTypeDTO(String name) {
         this.name = name;
     }
 
-    public Long getId() {
-        return id;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getName() {
