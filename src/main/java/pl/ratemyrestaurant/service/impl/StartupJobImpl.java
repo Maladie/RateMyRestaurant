@@ -10,10 +10,17 @@ import pl.ratemyrestaurant.service.StartupJob;
 @Service
 public class StartupJobImpl implements StartupJob, ApplicationListener<ContextRefreshedEvent> {
 
-    @Autowired
-    private UserTokenRepository repository;
+    private final UserTokenRepository repository;
 
-    // Removes all token entries from UserToken table invoked after application init
+    @Autowired
+    public StartupJobImpl(UserTokenRepository repository) {
+        this.repository = repository;
+    }
+
+    /**
+     * Removes all token entries from UserToken table invoked after application init
+     * @param contextRefreshedEvent Application context refreshed event
+     */
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         repository.deleteAll();
     }

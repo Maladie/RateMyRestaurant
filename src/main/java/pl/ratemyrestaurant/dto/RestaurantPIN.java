@@ -12,12 +12,6 @@ public class RestaurantPIN {
     public RestaurantPIN() {
     }
 
-    public RestaurantPIN(Restaurant restaurant) {
-        this.id = restaurant.getId();
-        this.name = restaurant.getName();
-        this.location = restaurant.getLocation();
-    }
-
     public String getId() {
         return id;
     }

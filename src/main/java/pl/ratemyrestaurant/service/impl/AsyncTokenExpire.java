@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
 import pl.ratemyrestaurant.model.User;
 import pl.ratemyrestaurant.repository.UserTokenRepository;
 import pl.ratemyrestaurant.type.TokenStatus;
@@ -11,6 +12,7 @@ import pl.ratemyrestaurant.utils.CacheUtil;
 import pl.ratemyrestaurant.utils.CheckingUtils;
 
 @Async
+@Component
 public class AsyncTokenExpire {
     private static Logger logger = LogManager.getLogger(AsyncTokenExpire.class);
     @Autowired
@@ -18,7 +20,7 @@ public class AsyncTokenExpire {
 
     /**
      * Async expired token removal (cache + DB) if exist
-     * @param expiredToken
+     * @param expiredToken expired token id
      */
     public static void expireToken(String expiredToken){
         logger.info("Token Expire Message Received ---> " + expiredToken);

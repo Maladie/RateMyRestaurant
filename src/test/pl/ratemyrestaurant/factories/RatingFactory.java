@@ -29,13 +29,13 @@ public class RatingFactory {
 
     private Restaurant getModelRestaurant(){
 
-        return new Restaurant("dupa", "Landa Dupa", null);
+        return new Restaurant("restaurantStringID", "RestaurantName", null);
     }
 
     private Thumb getModelThumb(){
         Thumb thumb = new Thumb();
-        thumb.setThumbsDown(5);
-        thumb.setThumbsUp(11);
+        thumb.setThumbsDown(2);
+        thumb.setThumbsUp(10);
         return thumb;
     }
 }

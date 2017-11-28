@@ -1,11 +1,13 @@
 package pl.ratemyrestaurant.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.ratemyrestaurant.dto.NewUserDTO;
 import pl.ratemyrestaurant.model.Info;
 import pl.ratemyrestaurant.service.UserService;
 
-import java.util.HashMap;
 
 @RestController
 public class RegisterController {
@@ -17,20 +19,13 @@ public class RegisterController {
         this.userService = userService;
     }
 
-
-    @RequestMapping(value = "/*", method = RequestMethod.OPTIONS)
-    public String test(){
-        return "Option request method not implemented";
-    }
-
     @PostMapping(value = "/register")
-    public Info registerClient(@RequestBody HashMap<String, String> formParams) {
-        return userService.register(formParams.get("username"), formParams.get("password"));
-    }
-
-    @PostMapping(value = "/api/register")
-    public Info registerToApi(@RequestParam String username,
-                               @RequestParam String password) {
-        return userService.register(username, password);
+    public ResponseEntity<Info>registerClient(@RequestBody NewUserDTO newUserDTO) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        Info register = userService.register(newUserDTO);
+        if(register.getCode() == 0) {
+            status = HttpStatus.CREATED;
+        }
+        return new ResponseEntity<>(register, status);
     }
 }

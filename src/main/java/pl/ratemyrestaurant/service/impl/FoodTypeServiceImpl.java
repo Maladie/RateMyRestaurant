@@ -25,29 +25,28 @@ public class FoodTypeServiceImpl implements FoodTypeService {
     @Override
     public List<FoodTypeDTO> getAllFoodTypesDTO() {
         List<FoodType> allFoodTypes = foodTypeRepository.findAll();
-        List<FoodTypeDTO> allFoodTypesDTO = allFoodTypes.stream().map(FoodTypeToFoodTypeDTOMapper::mapFoodTypeToFoodTypeDTO).collect(Collectors.toList());
-        return allFoodTypesDTO;
+        return allFoodTypes.stream().map(FoodTypeToFoodTypeDTOMapper::mapFoodTypeToFoodTypeDTO).collect(Collectors.toList());
     }
 
     @Override
     public FoodTypeDTO getFoodTypeDTOByName(String name) {
         FoodType foodType = foodTypeRepository.findByName(name);
-        if(foodType != null) {
+        if (foodType != null) {
             return FoodTypeToFoodTypeDTOMapper.mapFoodTypeToFoodTypeDTO(foodType);
         }
-        throw new NoSuchElementException("No such foodType");
+        throw new NoSuchElementException("No such foodType " + name);
     }
 
     @Override
-    public FoodType addNewFoodType(FoodTypeDTO foodTypeDTO) {
-        FoodType foodType;
-        if (!getAllFodTypes().stream().filter(ft -> ft.getName().equalsIgnoreCase(foodTypeDTO.getName())).findFirst().isPresent()) {
+    public FoodTypeDTO addNewFoodType(FoodTypeDTO foodTypeDTO) {
+        FoodType foodType = foodTypeRepository.findByNameIgnoreCase(foodTypeDTO.getName());
+        //TODO simplify
+        if (foodType == null) {
             foodType = FoodTypeToFoodTypeDTOMapper.mapFoodTypeDTOToFoodType(foodTypeDTO);
             foodTypeRepository.save(foodType);
-        } else {
-            foodType = foodTypeRepository.findByName(foodTypeDTO.getName());
+            return FoodTypeToFoodTypeDTOMapper.mapFoodTypeToFoodTypeDTO(foodType);
         }
-        return foodType;
+        return null;
     }
 
     private List<FoodType> getAllFodTypes() {

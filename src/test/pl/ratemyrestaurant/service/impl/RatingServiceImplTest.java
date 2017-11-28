@@ -36,7 +36,7 @@ public class RatingServiceImplTest {
         RatingDTO updatedRating = ratingService.addOrUpdateRating(vote);
 
         //then
-        Assert.assertEquals(12, updatedRating.getThumb().getThumbsUp());
+        Assert.assertEquals(11, updatedRating.getThumb().getThumbsUp());
 
     }
 

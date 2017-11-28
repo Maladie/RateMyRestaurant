@@ -7,7 +7,6 @@ public class IngredientToIngredientDTOMapper {
 
     public static IngredientDTO mapIngredientToIngredientDTO(Ingredient ingredient) {
         IngredientDTO ingredientDTO = new IngredientDTO.Builder()
-                                                        .setId(ingredient.getId())
                                                         .setName(ingredient.getName())
                                                         .build();
         return ingredientDTO;

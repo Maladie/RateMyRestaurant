@@ -24,41 +24,30 @@ public class IngredientServiceImpl implements IngredientService {
         this.ingredientRepository = ingredientRepository;
     }
 
-    public Ingredient addIngredient(IngredientDTO ingredientDTO){
-        Ingredient ingredient;
-        if(!getAllIngredients().stream().filter(i -> i.getName().equalsIgnoreCase(ingredientDTO.getName())).findFirst().isPresent()) {
+    @Override
+    public IngredientDTO addIngredient(IngredientDTO ingredientDTO){
+        Ingredient ingredient = null;
+        //TODO simplify
+        if(ingredientDTO.getName() !=null && getAllIngredients().stream().noneMatch(i -> i.getName().equalsIgnoreCase(ingredientDTO.getName()))) {
             ingredient = IngredientToIngredientDTOMapper.mapIngredientDTOToIngredient(ingredientDTO);
             ingredientRepository.save(ingredient);
-        } else {
-            ingredient = ingredientRepository.findByName(ingredientDTO.getName());
         }
-
-        return ingredient;
+        return ingredient != null ? IngredientToIngredientDTOMapper.mapIngredientToIngredientDTO(ingredient) : null;
     }
 
+    @Override
     public Set<IngredientDTO> getAllIngredientsDTO() {
         List<Ingredient> allIngredients = getAllIngredients();
-        Set<IngredientDTO> allIngredientsDTO = allIngredients.stream()
-                                                        .map(ingredient -> IngredientToIngredientDTOMapper.mapIngredientToIngredientDTO(ingredient))
-                                                        .collect(Collectors.toSet());
-        return allIngredientsDTO;
+        return allIngredients
+                .stream()
+                .map(IngredientToIngredientDTOMapper::mapIngredientToIngredientDTO)
+                .collect(Collectors.toSet());
     }
 
     @Override
     public IngredientDTO getIngredientDTOById(Long id) {
         Ingredient ingredient = ingredientRepository.findOne(id);
-        IngredientDTO ingredientDTO = IngredientToIngredientDTOMapper.mapIngredientToIngredientDTO(ingredient);
-        return ingredientDTO;
-    }
-
-    @Override
-    public IngredientDTO getIngredientDTOByName(String ingredientName) {
-        Ingredient ingredient = ingredientRepository.findByName(ingredientName);
-        if(ingredient != null) {
-            IngredientDTO ingredientDTO = IngredientToIngredientDTOMapper.mapIngredientToIngredientDTO(ingredient);
-            return ingredientDTO;
-        }
-        return null;
+        return ingredient != null ? IngredientToIngredientDTOMapper.mapIngredientToIngredientDTO(ingredient) : null;
     }
 
     private List<Ingredient> getAllIngredients() {

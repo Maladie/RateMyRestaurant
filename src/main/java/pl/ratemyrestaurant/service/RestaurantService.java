@@ -16,4 +16,5 @@ public interface RestaurantService {
     RestaurantDTO getRestaurantDTOById(String id);
     RestaurantPIN getRestaurantPINById(String id);
     Set<RestaurantDTO> getRestaurantsDTOByFoodType(String foodType);
+    boolean isRestaurantInDB(String restaurantID);
 }

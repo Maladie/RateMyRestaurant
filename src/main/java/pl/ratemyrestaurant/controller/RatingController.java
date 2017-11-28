@@ -5,14 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ratemyrestaurant.dto.RatingDTO;
-import pl.ratemyrestaurant.dto.RestaurantPIN;
-import pl.ratemyrestaurant.model.Vote;
 import pl.ratemyrestaurant.service.RatingService;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/rating")
+@RequestMapping(value = "/rating")
 public class RatingController {
 
     private RatingService ratingService;
@@ -22,20 +18,13 @@ public class RatingController {
         this.ratingService = ratingService;
     }
 
-    @PostMapping("/{ingredientName}")
-    public List<RatingDTO> retrieveRatingsOfIngredientInRestaurants(@PathVariable String ingredientName,
-                                                                    @RequestBody List<RestaurantPIN> restaurantsFound) {
-        return ratingService.retrieveRatingsOfIngredientInRestaurants(ingredientName, restaurantsFound);
-    }
-
-    @PostMapping(value = "/rate")
-    public ResponseEntity<RatingDTO> rateIngredient(@RequestBody Vote vote) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        RatingDTO rating = new RatingDTO();
-        if (vote != null) {
-            rating = ratingService.addOrUpdateRating(vote);
-            status = HttpStatus.ACCEPTED;
+    @PutMapping(value = "/{ratingID}")
+    public ResponseEntity<RatingDTO> rateIngredientByRatingID(@PathVariable Long ratingID, @RequestBody Boolean upVote) {
+        RatingDTO rating = null;
+        if (upVote != null && ratingID != null) {
+            rating = ratingService.rateIngredient(ratingID, upVote);
         }
+        HttpStatus status = rating != null ? HttpStatus.OK : HttpStatus.NOT_FOUND;
         return new ResponseEntity<>(rating, status);
     }
 }

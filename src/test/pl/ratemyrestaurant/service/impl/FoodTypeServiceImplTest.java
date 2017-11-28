@@ -11,8 +11,6 @@ import pl.ratemyrestaurant.repository.FoodTypeRepository;
 
 import java.util.NoSuchElementException;
 
-import static org.junit.Assert.*;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FoodTypeServiceImplTest {
 

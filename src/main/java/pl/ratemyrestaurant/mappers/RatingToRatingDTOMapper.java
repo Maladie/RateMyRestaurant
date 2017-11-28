@@ -5,7 +5,15 @@ import pl.ratemyrestaurant.model.Rating;
 
 public class RatingToRatingDTOMapper {
 
+    /**
+     * Maps Rating to RatingDTO
+     * @param rating Rating to map to RatingDTO
+     * @return null if rating parameter was null otherwise RatingDTO
+     */
     public static RatingDTO mapRatingToRatingDto(Rating rating){
+        if(rating == null) {
+            return null;
+        }
         return new RatingDTO.Builder()
                 .setIngredient(rating.getIngredient())
                 .setRestaurant(rating.getRestaurant())
