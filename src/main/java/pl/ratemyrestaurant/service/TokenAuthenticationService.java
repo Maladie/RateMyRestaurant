@@ -11,8 +11,8 @@ import java.io.IOException;
 
 public interface TokenAuthenticationService {
 
-    public Authentication getAuthenticationForLogin(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException;
-    public Authentication getAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException;
+    Authentication getAuthenticationForLogin(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException;
+    Authentication getAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
-    public UserToken addAuthentication(HttpServletResponse response, UserAuthentication authResult);
+    UserToken addAuthentication(HttpServletResponse response, UserAuthentication authResult);
 }

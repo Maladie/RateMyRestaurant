@@ -32,8 +32,11 @@ public class RestaurantServiceImpl implements RestaurantService {
     private RatingServiceImpl ratingServiceImpl;
 
     @Autowired
-    public RestaurantServiceImpl(RestaurantRepository restaurantRepository, PlacesConnector placesConnector
-            , RatingServiceImpl ratingServiceImpl) {
+    public RestaurantServiceImpl(
+            RestaurantRepository restaurantRepository,
+            PlacesConnector placesConnector,
+            RatingServiceImpl ratingServiceImpl) {
+
         this.restaurantRepository = restaurantRepository;
         this.placesConnector = placesConnector;
         this.ratingServiceImpl = ratingServiceImpl;
@@ -117,9 +120,8 @@ public class RestaurantServiceImpl implements RestaurantService {
     @Override
     public Set<RestaurantDTO> getRestaurantsDTOByFoodType(String foodType) {
         List<Restaurant> restaurantsByFoodType = restaurantRepository.findAllByFoodTypes_Name(foodType);
-        Set<RestaurantDTO> restaurantsDTOByFoodType = restaurantsByFoodType.stream()
+        return restaurantsByFoodType.stream()
                 .map(i -> RestaurantToRestaurantDTOMapper.mapToRestaurantDto(i, getRestaurantRatings(i.getId()))).collect(Collectors.toSet());
-        return restaurantsDTOByFoodType;
     }
 
     @Override
@@ -132,7 +134,6 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     private Set<Rating> getRestaurantRatings(String restaurantId) {
-        Set<Rating> restaurantRatings = ratingServiceImpl.retrieveRestaurantRatings(restaurantId);
-        return restaurantRatings;
+        return ratingServiceImpl.retrieveRestaurantRatings(restaurantId);
     }
 }
