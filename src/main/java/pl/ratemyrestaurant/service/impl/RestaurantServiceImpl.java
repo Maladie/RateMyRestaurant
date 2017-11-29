@@ -2,8 +2,10 @@ package pl.ratemyrestaurant.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.ratemyrestaurant.dto.FoodTypeDTO;
 import pl.ratemyrestaurant.dto.RestaurantDTO;
 import pl.ratemyrestaurant.dto.RestaurantPIN;
+import pl.ratemyrestaurant.mappers.FoodTypeToFoodTypeDTOMapper;
 import pl.ratemyrestaurant.mappers.PlaceToRestaurantMapper;
 import pl.ratemyrestaurant.mappers.RestaurantToPinMapper;
 import pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper;
@@ -11,6 +13,7 @@ import pl.ratemyrestaurant.model.Rating;
 import pl.ratemyrestaurant.model.Restaurant;
 import pl.ratemyrestaurant.model.UserSearchCircle;
 import pl.ratemyrestaurant.repository.RestaurantRepository;
+import pl.ratemyrestaurant.service.FoodTypeService;
 import pl.ratemyrestaurant.service.PlacesConnector;
 import pl.ratemyrestaurant.service.RestaurantService;
 import se.walkercrou.places.Place;
@@ -30,16 +33,19 @@ public class RestaurantServiceImpl implements RestaurantService {
     private RestaurantRepository restaurantRepository;
     private PlacesConnector placesConnector;
     private RatingServiceImpl ratingServiceImpl;
+    private FoodTypeService foodTypeService;
 
     @Autowired
     public RestaurantServiceImpl(
             RestaurantRepository restaurantRepository,
             PlacesConnector placesConnector,
-            RatingServiceImpl ratingServiceImpl) {
+            RatingServiceImpl ratingServiceImpl,
+            FoodTypeService foodTypeService) {
 
         this.restaurantRepository = restaurantRepository;
         this.placesConnector = placesConnector;
         this.ratingServiceImpl = ratingServiceImpl;
+        this.foodTypeService = foodTypeService;
     }
 
     public Set<RestaurantPIN> retrieveRestaurantsInRadius(UserSearchCircle userSearchCircle) {
@@ -57,7 +63,27 @@ public class RestaurantServiceImpl implements RestaurantService {
         return restaurantPINs;
     }
 
-    public RestaurantPIN mapPlaceToRestaurantDto(Place place){
+    @Override
+    public Set<RestaurantPIN> retrieveRestaurantsInRadiusWithFoodType(UserSearchCircle userSearchCircle, String foodTypeName) {
+        FoodTypeDTO foodTypeDTO = foodTypeService.getFoodTypeDTOByName(foodTypeName);
+        Set<RestaurantPIN> restaurantPINSWithFoodType = new HashSet<>();
+        //valid foodType else empty Set<RestaurantPIN>
+        if (foodTypeDTO != null) {
+            Set<RestaurantPIN> restaurantPINSet = retrieveRestaurantsInRadius(userSearchCircle);
+            if (restaurantPINSet.size() > 0) {
+                List<String> restaurantIDs = restaurantPINSet.stream().map(RestaurantPIN::getId).collect(Collectors.toList());
+                List<Restaurant> restaurantsByID = restaurantRepository.findByIdIn(restaurantIDs);
+                // filter only with foodType and map to PINs
+                restaurantPINSWithFoodType = restaurantsByID.stream()
+                        .filter(restaurant -> restaurant.getFoodTypes().contains(FoodTypeToFoodTypeDTOMapper.mapFoodTypeDTOToFoodType(foodTypeDTO)))//get only with foodType
+                        .map(this::transformRestaurantToPIN)//map to PINs
+                        .collect(Collectors.toSet());
+            }
+        }
+        return restaurantPINSWithFoodType;
+    }
+
+    public RestaurantPIN mapPlaceToRestaurantDto(Place place) {
         Restaurant restaurant = PlaceToRestaurantMapper.mapToRestaurant(place);
         return RestaurantToPinMapper.mapRestaurantToPin(restaurant);
     }
@@ -93,7 +119,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     public RestaurantDTO getRestaurantDTOById(String id) {
         Restaurant restaurant = restaurantRepository.findOne(id);
-        if(restaurant == null){
+        if (restaurant == null) {
             return null;
         }
         return transformRestaurantToDTO(restaurant);
