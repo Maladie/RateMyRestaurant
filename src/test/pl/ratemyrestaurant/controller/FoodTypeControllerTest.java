@@ -7,15 +7,16 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import pl.ratemyrestaurant.dto.FoodTypeDTO;
+import pl.ratemyrestaurant.exception.NoSuchFoodTypeException;
 import pl.ratemyrestaurant.model.FoodType;
-import pl.ratemyrestaurant.repository.FoodTypeRepository;
+import pl.ratemyrestaurant.model.Info;
 import pl.ratemyrestaurant.service.FoodTypeService;
-import pl.ratemyrestaurant.service.impl.FoodTypeServiceImpl;
+import pl.ratemyrestaurant.type.APIInfoCodes;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,15 +29,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static pl.ratemyrestaurant.utils.TestUtils.asJsonString;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 public class FoodTypeControllerTest {
     private MockMvc mockMvc;
     private static final String foodEndpoint = "/foodTypes";
 
     @Mock
-    private FoodTypeRepository foodTypeRepository;
-    @InjectMocks
-    private FoodTypeService foodTypeService = new FoodTypeServiceImpl(foodTypeRepository);
+    private FoodTypeService foodTypeService;
     @InjectMocks
     private FoodTypeController foodTypeController = new FoodTypeController(foodTypeService);
 
@@ -47,80 +46,92 @@ public class FoodTypeControllerTest {
     }
 
     @Test
-    public void shouldReturnAllFoodTypesAnd200() throws Exception{
+    public void shouldReturnAllFoodTypesAnd200() throws Exception {
         //when
-        when(foodTypeRepository.findAll()).thenReturn(mockFoodTypes());
+        doReturn(mockFoodTypes()).when(foodTypeService).getAllFoodTypesDTO();
         //then
-        mockMvc.perform(get(foodEndpoint).accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        String responseContent = mockMvc.perform(get(foodEndpoint).accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].name", is("food1")))
-                .andExpect(jsonPath("$[1].name", is("food2")));
+                .andExpect(jsonPath("$[1].name", is("food2")))
+                .andReturn().getResponse().getContentAsString();
+        verify(foodTypeService, times(1)).getAllFoodTypesDTO();
+        Assert.assertEquals(asJsonString(mockFoodTypes()), responseContent);
     }
 
     @Test
     public void shouldReturnFoodTypeAnd200_whenValidFoodNameProvided() throws Exception {
         //given
         String foodName = "food2";
-        FoodType food2 = new FoodType(foodName);
+        FoodTypeDTO food2 = new FoodTypeDTO(foodName);
         //when
-        when(foodTypeRepository.findByName(foodName)).thenReturn(food2);
+        doReturn(food2).when(foodTypeService).getFoodTypeDTOByName(foodName);
         //then
-        mockMvc.perform(get(foodEndpoint+"/{foodName}",foodName).accept(MediaType.APPLICATION_JSON_UTF8))
+        String responseContent = mockMvc.perform(get(foodEndpoint + "/{foodName}", foodName).accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is(foodName)));
+                .andReturn().getResponse().getContentAsString();
+
+        verify(foodTypeService, times(1)).getFoodTypeDTOByName(foodName);
+        Assert.assertEquals(asJsonString(food2), responseContent);
     }
 
     @Test
-    public void shouldReturn404_whenProvidedFoodNameNotExistsInDB() throws Exception{
+    public void shouldReturn404_whenProvidedFoodTypeNotExistsInDB() throws Exception {
         //given
         String foodName = "food_name_missing";
         //when
-        when(foodTypeRepository.findByName(foodName)).thenReturn(null);
-//        foodTypeService = new FoodTypeServiceImpl(foodTypeRepository);
+        Info info = new Info.InfoBuilder()
+                .setDescription("No such foodType: " + foodName)
+                .setInfoCode(APIInfoCodes.FOOD_TYPE_NOT_FOUND)
+                .setHttpStatusCode(404L).build();
+        doThrow(new NoSuchFoodTypeException(info)).when(foodTypeService).getFoodTypeDTOByName(foodName);
         //then
-        mockMvc.perform(get(foodEndpoint+"/{foodName}",foodName).accept(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(status().isNotFound());
-        verify(foodTypeRepository, times(1)).findByName(foodName);
+        String responseContent = mockMvc.perform(get(foodEndpoint + "/{foodName}", foodName).accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andReturn().getResponse().getContentAsString();
+
+        verify(foodTypeService, times(1)).getFoodTypeDTOByName(foodName);
+        Assert.assertEquals(asJsonString(info), responseContent);
     }
 
     @Test
-    public void shouldReturn200AndFoodTypeDTO_whenAddingNewValidFoodType() throws Exception{
+    public void shouldReturn200AndFoodTypeDTO_whenAddingNewValidFoodType() throws Exception {
         //given
         String foodName = "new_food_name";
         FoodTypeDTO foodTypeDTO = new FoodTypeDTO(foodName);
-
         //when
-        doReturn(null).when(foodTypeRepository).findByNameIgnoreCase(foodName);
-        foodTypeController = new FoodTypeController(foodTypeService);
-
+        doReturn(foodTypeDTO).when(foodTypeService).addNewFoodType(any(FoodTypeDTO.class));
         //then
-        String responseContent = mockMvc.perform(post(foodEndpoint).accept(MediaType.APPLICATION_JSON_UTF8).contentType(MediaType.APPLICATION_JSON_UTF8).content(asJsonString(foodTypeDTO)))
+        String responseContent = mockMvc.perform(post(foodEndpoint)
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(asJsonString(foodTypeDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andReturn().getResponse().getContentAsString();
 
-        verify(foodTypeRepository, times(1)).findByNameIgnoreCase(foodName);
-        verify(foodTypeRepository, times(1)).save(any(FoodType.class));
+        verify(foodTypeService, times(1)).addNewFoodType(any(FoodTypeDTO.class));
         Assert.assertEquals(asJsonString(foodTypeDTO), responseContent);
     }
 
     @Test
-    public void shouldReturn422_whenCreatingFoodTypeAndGivenFoodTypeAlreadyExistsInDB() throws Exception{
+    public void shouldReturn422_whenCreatingFoodTypeAndGivenFoodTypeAlreadyExistsInDB() throws Exception {
         //given
         String foodName = "food_name_alreadyExists";
-        FoodType foodType = new FoodType(foodName);
         FoodTypeDTO foodTypeDTO = new FoodTypeDTO(foodName);
         //when
-        when(foodTypeRepository.findByNameIgnoreCase(foodName)).thenReturn(foodType);
+        doReturn(null).when(foodTypeService).addNewFoodType(foodTypeDTO);
         //then
         mockMvc.perform(post(foodEndpoint).accept(MediaType.APPLICATION_JSON_UTF8).contentType(MediaType.APPLICATION_JSON_UTF8).content(asJsonString(foodTypeDTO)))
                 .andExpect(status().isUnprocessableEntity())
-        .andExpect(jsonPath("$.httpStatusCode", is(422)))
-        .andExpect(jsonPath("$.desc", is("FoodType already exists")));
-        verify(foodTypeRepository, times(1)).findByNameIgnoreCase(foodName);
+                .andExpect(jsonPath("$.httpStatusCode", is(422)))
+                .andExpect(jsonPath("$.infoCode", is(APIInfoCodes.ENTITY_ALREADY_EXISTS.toString())))
+                .andExpect(jsonPath("$.desc", is("FoodType already exists")));
+        verify(foodTypeService, times(1)).addNewFoodType(any(FoodTypeDTO.class));
     }
 
     private List<FoodType> mockFoodTypes() {

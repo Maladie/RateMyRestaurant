@@ -16,6 +16,8 @@ import pl.ratemyrestaurant.service.RatingService;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -25,14 +27,9 @@ import static pl.ratemyrestaurant.utils.TestUtils.asJsonString;
 public class RatingControllerTest {
     private MockMvc mockMvc;
     private static final String ratingEndpoint = "/rating";
-    //    @Mock
-//    private RatingRepository ratingRepository;
-//    @Mock
-//    private RestaurantRepository restaurantRepository;
-//    @Mock
-//    private IngredientRepository ingredientRepository;
+
     @Mock
-    private RatingService ratingService;// = new RatingServiceImpl(ratingRepository, restaurantRepository, ingredientRepository);
+    private RatingService ratingService;
     @InjectMocks
     private RatingController ratingController = new RatingController(ratingService);
 
@@ -58,12 +55,13 @@ public class RatingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8)).andReturn().getResponse().getContentAsString();
+        verify(ratingService, times(1)).rateIngredient(givenId, givenUpvote);
         assertEquals(asJsonString(ratingDTO), stringResponse);
     }
 
     @Test
     public void shouldReturn404_whenVotingWithInvalidRatingID() throws Exception {
-//given
+        //given
         Long givenId = 33L;
         boolean givenUpvote = true;
         //when
@@ -75,5 +73,6 @@ public class RatingControllerTest {
                         .accept(MediaType.APPLICATION_JSON_UTF8)
                         .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
+        verify(ratingService, times(1)).rateIngredient(givenId, givenUpvote);
     }
 }

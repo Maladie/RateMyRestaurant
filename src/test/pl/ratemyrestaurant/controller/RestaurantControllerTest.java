@@ -85,13 +85,36 @@ public class RestaurantControllerTest {
         String responseContent = mockMvc.perform(get(restaurantsEndpoint + "/areaSearch")
                 .param("lat", "19.1")
                 .param("lng", "51.1")
-                .param("radius", "500")
-                .param("type", "bar"))
+                .param("radius", "500"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andReturn().getResponse().getContentAsString();
         verify(restaurantService, times(1)).retrieveRestaurantsInRadius(any(UserSearchCircle.class));
+        verifyNoMoreInteractions(restaurantService);
+        Assert.assertEquals(asJsonString(restaurantPINS), responseContent);
+    }
+
+    @Test
+    public void shouldReturn200AndCollectionOfRestaurantPinsWithSpecifiedFoodType_whenValidLocationDataGivenAndAnyRestaurantFoundThere() throws Exception {
+        String foodType = "kebab";
+        String restaurantID_1 = "restaurant_1_in_radius";
+        String restaurantID_2 = "restaurant_2_in_radius";
+        RestaurantPIN restaurantPIN1 = getMockRestaurantPIN(restaurantID_1);
+        RestaurantPIN restaurantPIN2 = getMockRestaurantPIN(restaurantID_2);
+        Set<RestaurantPIN> restaurantPINS = new HashSet<>(Arrays.asList(restaurantPIN1, restaurantPIN2));
+        // any userSearchCircle, because is created from parameters just before service call
+        doReturn(restaurantPINS).when(restaurantService).retrieveRestaurantsInRadiusWithFoodType(any(UserSearchCircle.class),anyString());
+        String responseContent = mockMvc.perform(get(restaurantsEndpoint + "/areaSearch")
+                .param("lat", "19.1")
+                .param("lng", "51.1")
+                .param("radius", "500")
+                .param("foodType", foodType))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andReturn().getResponse().getContentAsString();
+        verify(restaurantService, times(1)).retrieveRestaurantsInRadiusWithFoodType(any(UserSearchCircle.class),anyString());
         verifyNoMoreInteractions(restaurantService);
         Assert.assertEquals(asJsonString(restaurantPINS), responseContent);
     }
@@ -103,8 +126,7 @@ public class RestaurantControllerTest {
         mockMvc.perform(get(restaurantsEndpoint + "/areaSearch")
                 .param("lat", "19.1")
                 .param("lng", "51.1")
-                .param("radius", "500")
-                .param("type", "bar"))
+                .param("radius", "500"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(0)));

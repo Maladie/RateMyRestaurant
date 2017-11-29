@@ -26,7 +26,7 @@ public class IngredientController {
         return ingredientService.getAllIngredientsDTO();
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity addIngredient(@RequestBody IngredientDTO ingredientDTO) {
       IngredientDTO addedIngredientDTO = ingredientService.addIngredient(ingredientDTO);
       //means already exists

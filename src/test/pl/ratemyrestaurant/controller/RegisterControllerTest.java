@@ -1,116 +1,112 @@
 package pl.ratemyrestaurant.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import pl.ratemyrestaurant.dto.NewUserDTO;
-import pl.ratemyrestaurant.model.User;
-import pl.ratemyrestaurant.repository.UserRepository;
+import pl.ratemyrestaurant.model.Info;
 import pl.ratemyrestaurant.service.UserService;
-import pl.ratemyrestaurant.service.impl.UserServiceImpl;
+import pl.ratemyrestaurant.type.APIInfoCodes;
 
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static pl.ratemyrestaurant.utils.TestUtils.asJsonString;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class RegisterControllerTest {
 
     private MockMvc mockMvc;
 
-    @Mock
-    private UserRepository userRepository;
-    @InjectMocks
-    private UserService userService = new UserServiceImpl(userRepository);
-    @InjectMocks
-    private RegisterController registerController = new RegisterController(userService);
+    private UserService userService;
 
     @Before
-    public void setUp(){
-        MockitoAnnotations.initMocks(this);
+    public void setUp() {
+        userService = mock(UserService.class);
+        RegisterController registerController = new RegisterController(userService);
         mockMvc = MockMvcBuilders.standaloneSetup(registerController).build();
     }
-    //skipping tests of following fields in info response:
-    // key: (random generated),
-    // decs: (basic error code description)
-    // object: (could be anything including null)
 
     @Test
-    public void shouldReturnBadRequestStatusAndInfoWithCode_201_whenNewUserHasInvalidUsername() throws Exception {
+    public void shouldReturn400AndINVALID_USERNAMEInfoCode_whenNewUserInvalidUsernameGiven() throws Exception {
         NewUserDTO newUserDTO = new NewUserDTO();
         newUserDTO.setUsername(null);
         newUserDTO.setPassword("password");
-        mockMvc.perform(post("/register")
-                        .accept(MediaType.APPLICATION_JSON_VALUE)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(asJsonString(newUserDTO)))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-        .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.httpStatusCode", is(400)));
+        Info mockInfo = mockInfo("Invalid Username", APIInfoCodes.INVALID_USERNAME);
+        doReturn(mockInfo).when(userService).register(any(NewUserDTO.class));
+        String responseContent = mockMvc.perform(post("/register")
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(asJsonString(newUserDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andReturn().getResponse().getContentAsString();
+        verify(userService, times(1)).register(any(NewUserDTO.class));
+        Assert.assertEquals(asJsonString(mockInfo), responseContent);
     }
 
     @Test
-    public void shouldReturnBadRequestStatusAndInfoWithCode_202_whenNewUserHasInvalidPassword() throws Exception {
+    public void shouldReturn400AndINVALID_PASSWORDInfoCode_whenNewUserHasInvalidPassword() throws Exception {
         NewUserDTO newUserDTO = new NewUserDTO();
         newUserDTO.setUsername("newUserDTO");
         newUserDTO.setPassword(null);
-        mockMvc.perform(post("/register")
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        Info mockInfo = mockInfo("Invalid Password", APIInfoCodes.INVALID_PASSWORD);
+        doReturn(mockInfo).when(userService).register(any(NewUserDTO.class));
+        String responseContent = mockMvc.perform(post("/register")
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(asJsonString(newUserDTO)))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.httpStatusCode", is(400)));
+                .andReturn().getResponse().getContentAsString();
+        verify(userService, times(1)).register(any(NewUserDTO.class));
+        Assert.assertEquals(asJsonString(mockInfo), responseContent);
     }
+
     @Test
-    public void shouldReturnBadRequestStatusAndInfoWithCode_209_whenNewUserUsernameAlreadyUsed() throws Exception {
+    public void should400AndUSERNAME_ALREADY_USERD_whenNewUserUsernameAlreadyUsed() throws Exception {
         NewUserDTO newUserDTO = new NewUserDTO();
         newUserDTO.setUsername("usedUsername");
         newUserDTO.setPassword("password");
-        when(userRepository.findByUsernameIgnoreCase(newUserDTO.getUsername())).thenReturn(mockUser(newUserDTO));
-        mockMvc.perform(post("/register")
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        Info mockInfo = mockInfo("Invalid Password", APIInfoCodes.USERNAME_ALREADY_USED);
+        doReturn(mockInfo).when(userService).register(any(NewUserDTO.class));
+        String responseContent = mockMvc.perform(post("/register")
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(asJsonString(newUserDTO)))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.httpStatusCode", is(400)));
+                .andReturn().getResponse().getContentAsString();
+        verify(userService, times(1)).register(any(NewUserDTO.class));
+        Assert.assertEquals(asJsonString(mockInfo), responseContent);
     }
+
     @Test
-    public void shouldReturnCreatedStatusAndInfoWithCode_0_whenNewUserSuccessfullyRegistered() throws Exception {
+    public void shouldReturn201AndOKInfoCode_whenNewUserSuccessfullyRegistered() throws Exception {
         NewUserDTO newUserDTO = new NewUserDTO();
         newUserDTO.setUsername("newUserDTO");
         newUserDTO.setPassword("password");
-        mockMvc.perform(post("/register")
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        Info mockInfo = mockInfo("Invalid Password", APIInfoCodes.OK);
+        doReturn(mockInfo).when(userService).register(any(NewUserDTO.class));
+        String responseContent = mockMvc.perform(post("/register")
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(asJsonString(newUserDTO)))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.httpStatusCode", is(200)));
+                .andReturn().getResponse().getContentAsString();
+        verify(userService, times(1)).register(any(NewUserDTO.class));
+        Assert.assertEquals(asJsonString(mockInfo), responseContent);
     }
 
-    public static String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static User mockUser(NewUserDTO newUserDTO){
-        User user = new User();
-        user.setUsername(newUserDTO.getUsername());
-        user.setPassword(newUserDTO.getPassword());
-        return user;
+    private static Info mockInfo(String mockMessage, APIInfoCodes infoCode) {
+        return new Info.InfoBuilder().setDescription(mockMessage).setInfoCode(infoCode).setHttpStatusCode(400).build();
     }
 }

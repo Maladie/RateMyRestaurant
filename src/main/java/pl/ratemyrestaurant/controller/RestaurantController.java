@@ -57,12 +57,16 @@ public class RestaurantController {
 //        return new HashSet<>(); //TODO
 //    }
 
-    //? Refactor response type from pin to regular restaurant
-    //TODO add parameters validator here or in service
     @GetMapping(value = "/areaSearch")
-    public Set<RestaurantPIN> getRestaurantInRadius(@RequestParam double lng, @RequestParam double lat, @RequestParam double radius, @RequestParam(required = false) String type) {
+    public Set<RestaurantPIN> getRestaurantInRadius(@RequestParam double lng, @RequestParam double lat, @RequestParam double radius, @RequestParam(required = false) String foodType) {
         UserSearchCircle userSearchCircle = new UserSearchCircle(lat, lng, radius);
-        return restaurantService.retrieveRestaurantsInRadius(userSearchCircle);
+        Set<RestaurantPIN> restaurantPINSet;
+        if (foodType != null) {
+            restaurantPINSet = restaurantService.retrieveRestaurantsInRadiusWithFoodType(userSearchCircle, foodType);
+        } else {
+            restaurantPINSet = restaurantService.retrieveRestaurantsInRadius(userSearchCircle);
+        }
+        return restaurantPINSet;
     }
 
     @GetMapping(value = "/{restaurantID}")

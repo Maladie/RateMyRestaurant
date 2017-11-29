@@ -7,11 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ratemyrestaurant.dto.FoodTypeDTO;
+import pl.ratemyrestaurant.exception.NoSuchFoodTypeException;
 import pl.ratemyrestaurant.model.Info;
 import pl.ratemyrestaurant.service.FoodTypeService;
+import pl.ratemyrestaurant.type.APIInfoCodes;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping(value = "/foodTypes")
@@ -34,9 +35,9 @@ public class FoodTypeController {
         FoodTypeDTO foodTypeDTO;
         try {
             foodTypeDTO = foodTypeService.getFoodTypeDTOByName(foodType);
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchFoodTypeException e) {
             logger.catching(e);
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(e.getInfo(), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(foodTypeDTO, HttpStatus.OK);
     }
@@ -47,6 +48,7 @@ public class FoodTypeController {
         if(addedFoodTypeDTO == null) {
             Info info = new Info();
             info.setHttpStatusCode(422L);
+            info.setInfoCode(APIInfoCodes.ENTITY_ALREADY_EXISTS);
             info.setDesc("FoodType already exists");
             info.setObject(foodTypeDTO);
             return new ResponseEntity<>(info, HttpStatus.UNPROCESSABLE_ENTITY);

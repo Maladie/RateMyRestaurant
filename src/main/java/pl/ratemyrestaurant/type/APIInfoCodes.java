@@ -1,12 +1,16 @@
 package pl.ratemyrestaurant.type;
 
 public enum APIInfoCodes {
-    OK(0L),
+    //ok
+    OK(200000L),
+    //currently not found 404xxxL
+    ENTITY_NOT_FOUND(404001L),
+    FOOD_TYPE_NOT_FOUND(404002L),
+    //unprocessable 422xxxL
     ENTITY_ALREADY_EXISTS(422001L),
     RESTAURANT_NOT_EXISTS(422002L),
     INGREDIENT_RATING_NOT_EXISTS(422003L),
-    ENTITY_NOT_FOUND(404001L),
-    //auth
+    //auth 400xxxL
     INVALID_USERNAME(400001L),
     INVALID_PASSWORD(400002L),
     USERNAME_ALREADY_USED(400003L),

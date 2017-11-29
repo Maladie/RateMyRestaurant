@@ -3,13 +3,15 @@ package pl.ratemyrestaurant.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.ratemyrestaurant.dto.FoodTypeDTO;
+import pl.ratemyrestaurant.exception.NoSuchFoodTypeException;
 import pl.ratemyrestaurant.mappers.FoodTypeToFoodTypeDTOMapper;
 import pl.ratemyrestaurant.model.FoodType;
+import pl.ratemyrestaurant.model.Info;
 import pl.ratemyrestaurant.repository.FoodTypeRepository;
 import pl.ratemyrestaurant.service.FoodTypeService;
+import pl.ratemyrestaurant.type.APIInfoCodes;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +36,8 @@ public class FoodTypeServiceImpl implements FoodTypeService {
         if (foodType != null) {
             return FoodTypeToFoodTypeDTOMapper.mapFoodTypeToFoodTypeDTO(foodType);
         }
-        throw new NoSuchElementException("No such foodType " + name);
+        Info info = new Info.InfoBuilder().setHttpStatusCode(404).setDescription("No such foodType " + name).setInfoCode(APIInfoCodes.FOOD_TYPE_NOT_FOUND).build();
+        throw new NoSuchFoodTypeException(info);
     }
 
     @Override
@@ -47,9 +50,5 @@ public class FoodTypeServiceImpl implements FoodTypeService {
             return FoodTypeToFoodTypeDTOMapper.mapFoodTypeToFoodTypeDTO(foodType);
         }
         return null;
-    }
-
-    private List<FoodType> getAllFodTypes() {
-        return foodTypeRepository.findAll();
     }
 }

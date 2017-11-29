@@ -10,6 +10,7 @@ import java.util.Set;
 public interface RestaurantService {
 
     Set<RestaurantPIN> retrieveRestaurantsInRadius(UserSearchCircle userSearchCircle);
+    Set<RestaurantPIN> retrieveRestaurantsInRadiusWithFoodType(UserSearchCircle userSearchCircle, String foodTypeName);
     RestaurantPIN mapPlaceToRestaurantDto(Place place);
     void addOrUpdateRestaurant(RestaurantDTO restaurantDTO);
     RestaurantDTO getOrRetrieveRestaurantDTOByID(String placeId);
