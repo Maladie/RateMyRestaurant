@@ -1,6 +1,7 @@
 package pl.ratemyrestaurant.controller;
 
 import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,19 +14,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import pl.ratemyrestaurant.dto.IngredientDTO;
 import pl.ratemyrestaurant.model.Ingredient;
-import pl.ratemyrestaurant.repository.IngredientRepository;
 import pl.ratemyrestaurant.service.IngredientService;
-import pl.ratemyrestaurant.service.impl.IngredientServiceImpl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static pl.ratemyrestaurant.utils.TestUtils.asJsonString;
 
@@ -33,12 +31,11 @@ import static pl.ratemyrestaurant.utils.TestUtils.asJsonString;
 public class IngredientControllerTest {
 
     private MockMvc mockMvc;
+    private static final String ingredientsEndpoint = "/ingredients";
     @Mock
-    private IngredientRepository ingredientRepository;
+    private IngredientService ingredientService;
     @InjectMocks
-    private IngredientService ingredientService = new IngredientServiceImpl(ingredientRepository);
-    @InjectMocks
-    private IngredientController ingredientController = new IngredientController(ingredientService);
+    private IngredientController ingredientController;
 
     @Before
     public void setUp() throws Exception {
@@ -48,12 +45,16 @@ public class IngredientControllerTest {
 
     @Test
     public void getAllIngredients() throws Exception {
-        when(ingredientRepository.findAll()).thenReturn(getMockList());
-        mockMvc.perform(get("/ingredients"))
+        //when
+        doReturn(getMockList()).when(ingredientService).getAllIngredientsDTO();
+        //then
+        String responseContent = mockMvc.perform(get(ingredientsEndpoint))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$", hasSize(3)));
-        verify(ingredientRepository, times(1)).findAll();
+                .andExpect(jsonPath("$", hasSize(3)))
+        .andReturn().getResponse().getContentAsString();
+        verify(ingredientService, times(1)).getAllIngredientsDTO();
+        Assert.assertEquals(asJsonString(getMockList()), responseContent);
     }
 
     @Test
@@ -62,71 +63,75 @@ public class IngredientControllerTest {
 
     @Test
     public void shouldReturnBadRequest_whenIngredientIsGetByInvalidId() throws Exception {
+        //given
         Long id = -2L;
-        when(ingredientRepository.findOne(id)).thenReturn(null);
-        mockMvc.perform(get("/ingredients/{ingredientId}", id)
+        //when
+        doReturn(null).when(ingredientService).getIngredientDTOById(id);
+        //then
+        mockMvc.perform(get(ingredientsEndpoint+"/{ingredientId}", id)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isBadRequest());
-        verify(ingredientRepository, times(1)).findOne(id);
-
+        verify(ingredientService, times(1)).getIngredientDTOById(id);
     }
 
     @Test
     public void shouldReturnOK_whenIngredientIsGetByValidId() throws Exception {
+        //given
         Long id = 100L;
-        Ingredient testIngredient = new Ingredient("test");
-        testIngredient.setId(id);
-        when(ingredientRepository.findOne(id)).thenReturn(testIngredient);
-        mockMvc.perform(get("/ingredients/{ingredientId}", id)
+        IngredientDTO ingredientDTO = new IngredientDTO();
+        ingredientDTO.setName("Ingredient_name");
+        //when
+        doReturn(ingredientDTO).when(ingredientService).getIngredientDTOById(id);
+        //then
+        mockMvc.perform(get(ingredientsEndpoint+"/{ingredientId}", id)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is(testIngredient.getName())));
-        verify(ingredientRepository, times(1)).findOne(id);
-
+                .andExpect(jsonPath("$.name", is(ingredientDTO.getName())));
+        verify(ingredientService, times(1)).getIngredientDTOById(id);
     }
 
     @Test
     public void shouldReturn422_whenInvalidDataProvided() throws Exception {
+        //given
         IngredientDTO testIngredient = new IngredientDTO();
         testIngredient.setName(null);
-        mockMvc.perform(post("/ingredients").content(asJsonString(testIngredient)).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        //when
+        doReturn(null).when(ingredientService).addIngredient(testIngredient);
+        //then
+        mockMvc.perform(post(ingredientsEndpoint).content(asJsonString(testIngredient)).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.httpStatusCode",is(422)))
                 .andExpect(jsonPath("$.key", is(Matchers.any(String.class))));
-
+        verify(ingredientService, times(1)).addIngredient(any(IngredientDTO.class));
     }
 
 
     @Test
-    public void shouldAddIngredientAndStatusCreated_whenValidDataProvided() throws Exception {
+    public void shouldAddIngredientAndStatus201_whenValidDataGiven() throws Exception {
         //given
         IngredientDTO testIngredient = new IngredientDTO();
         testIngredient.setName("testName");
-        Ingredient ingredientToSave = new Ingredient();
-        ingredientToSave.setName(testIngredient.getName());
         //when
-        when(ingredientRepository.findAll()).thenReturn(getMockList());
-        when(ingredientRepository.save(ingredientToSave)).thenReturn(ingredientToSave);
+        doReturn(testIngredient).when(ingredientService).addIngredient(any(IngredientDTO.class));
         //then
-        mockMvc.perform(post("/ingredients").content(asJsonString(testIngredient)).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        mockMvc.perform(post(ingredientsEndpoint).content(asJsonString(testIngredient)).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name", is(testIngredient.getName())));
 
-        verify(ingredientRepository, times(1)).findAll();
-        verify(ingredientRepository, times(1)).save(any(Ingredient.class));
+        verify(ingredientService, times(1)).addIngredient(any(IngredientDTO.class));
 
     }
 
-    private static List<Ingredient> getMockList() {
+    private static Set<Ingredient> getMockList() {
         Ingredient ingredient1 = new Ingredient("mock2");
         ingredient1.setId(1);
         Ingredient ingredient2 = new Ingredient("mock1");
         ingredient2.setId(20);
         Ingredient ingredient3 = new Ingredient("mock3");
         ingredient3.setId(30);
-        List<Ingredient> ingredients = new ArrayList<>();
+        Set<Ingredient> ingredients = new LinkedHashSet<>();
         ingredients.add(ingredient1);
         ingredients.add(ingredient2);
         ingredients.add(ingredient3);
