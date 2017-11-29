@@ -11,6 +11,7 @@ import pl.ratemyrestaurant.type.APIInfoCodes;
 
 
 @RestController
+@RequestMapping(value = "/register")
 public class RegisterController {
 
     private UserService userService;
@@ -20,7 +21,7 @@ public class RegisterController {
         this.userService = userService;
     }
 
-    @PostMapping(value = "/register")
+    @PostMapping
     public ResponseEntity<Info>registerClient(@RequestBody NewUserDTO newUserDTO) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         Info register = userService.register(newUserDTO);
