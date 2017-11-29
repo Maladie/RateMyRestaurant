@@ -15,6 +15,7 @@ import pl.ratemyrestaurant.model.UserSearchCircle;
 import pl.ratemyrestaurant.repository.RestaurantRepository;
 import pl.ratemyrestaurant.service.FoodTypeService;
 import pl.ratemyrestaurant.service.PlacesConnector;
+import pl.ratemyrestaurant.service.RatingService;
 import pl.ratemyrestaurant.service.RestaurantService;
 import se.walkercrou.places.Place;
 
@@ -32,19 +33,19 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     private RestaurantRepository restaurantRepository;
     private PlacesConnector placesConnector;
-    private RatingServiceImpl ratingServiceImpl;
+    private RatingService ratingService;
     private FoodTypeService foodTypeService;
 
     @Autowired
     public RestaurantServiceImpl(
             RestaurantRepository restaurantRepository,
             PlacesConnector placesConnector,
-            RatingServiceImpl ratingServiceImpl,
+            RatingService ratingService,
             FoodTypeService foodTypeService) {
 
         this.restaurantRepository = restaurantRepository;
         this.placesConnector = placesConnector;
-        this.ratingServiceImpl = ratingServiceImpl;
+        this.ratingService = ratingService;
         this.foodTypeService = foodTypeService;
     }
 
@@ -135,7 +136,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     private RestaurantDTO transformRestaurantToDTO(Restaurant restaurant) {
         String restaurantId = restaurant.getId();
-        Set<Rating> ratings = ratingServiceImpl.retrieveRestaurantRatings(restaurantId);
+        Set<Rating> ratings = ratingService.retrieveRestaurantRatings(restaurantId);
         return mapToRestaurantDto(restaurant, ratings);
     }
 
@@ -160,6 +161,6 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     private Set<Rating> getRestaurantRatings(String restaurantId) {
-        return ratingServiceImpl.retrieveRestaurantRatings(restaurantId);
+        return ratingService.retrieveRestaurantRatings(restaurantId);
     }
 }
