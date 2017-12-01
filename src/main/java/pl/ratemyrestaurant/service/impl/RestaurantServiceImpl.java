@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.ratemyrestaurant.dto.FoodTypeDTO;
 import pl.ratemyrestaurant.dto.RestaurantDTO;
 import pl.ratemyrestaurant.dto.RestaurantPIN;
-import pl.ratemyrestaurant.mappers.FoodTypeToFoodTypeDTOMapper;
+import pl.ratemyrestaurant.exception.NoSuchFoodTypeException;
 import pl.ratemyrestaurant.mappers.PlaceToRestaurantMapper;
 import pl.ratemyrestaurant.mappers.RestaurantToPinMapper;
 import pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper;
@@ -66,8 +66,15 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public Set<RestaurantPIN> retrieveRestaurantsInRadiusWithFoodType(UserSearchCircle userSearchCircle, String foodTypeName) {
-        FoodTypeDTO foodTypeDTO = foodTypeService.getFoodTypeDTOByName(foodTypeName);
         Set<RestaurantPIN> restaurantPINSWithFoodType = new HashSet<>();
+        FoodTypeDTO foodTypeDTO;
+        try {
+            foodTypeDTO = foodTypeService.getFoodTypeDTOByName(foodTypeName);
+        } catch (NoSuchFoodTypeException e) {
+            e.printStackTrace();
+            foodTypeDTO = null;
+        }
+        //TODO compare performance with regular DB select filtering
         //valid foodType else empty Set<RestaurantPIN>
         if (foodTypeDTO != null) {
             Set<RestaurantPIN> restaurantPINSet = retrieveRestaurantsInRadius(userSearchCircle);
@@ -76,7 +83,7 @@ public class RestaurantServiceImpl implements RestaurantService {
                 List<Restaurant> restaurantsByID = restaurantRepository.findByIdIn(restaurantIDs);
                 // filter only with foodType and map to PINs
                 restaurantPINSWithFoodType = restaurantsByID.stream()
-                        .filter(restaurant -> restaurant.getFoodTypes().contains(FoodTypeToFoodTypeDTOMapper.mapFoodTypeDTOToFoodType(foodTypeDTO)))//get only with foodType
+                        .filter(restaurant -> restaurant.getFoodTypes().stream().anyMatch(foodType -> foodType.getName().equals(foodTypeName)))//get only with foodType
                         .map(this::transformRestaurantToPIN)//map to PINs
                         .collect(Collectors.toSet());
             }
