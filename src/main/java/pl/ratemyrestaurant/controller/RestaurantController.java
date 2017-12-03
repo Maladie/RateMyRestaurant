@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.ratemyrestaurant.dto.FoodTypeDTO;
 import pl.ratemyrestaurant.dto.RatingDTO;
 import pl.ratemyrestaurant.dto.RestaurantDTO;
 import pl.ratemyrestaurant.dto.RestaurantPIN;
@@ -35,6 +36,12 @@ public class RestaurantController {
 //    public RestaurantDTO getRestaurantById(@PathVariable String restaurantId) {
 //        return restaurantService.getRestaurantDTOById(restaurantId);
 //    }
+    @PostMapping("/{restaurantID}/foodTypes")
+    public RestaurantDTO addFoodType(@PathVariable String restaurantID, @RequestBody FoodTypeDTO foodTypeDTO) {
+        return restaurantService.addFoodType(restaurantID, foodTypeDTO);
+
+    }
+
 
     //? unused currently, we cant add new restaurant currently
 
@@ -96,7 +103,7 @@ public class RestaurantController {
 
     @PutMapping(value = "/{restaurantId}/ingredientRatings/{ingredientId}")
     public ResponseEntity voteOnIngredient(@PathVariable("restaurantId") String restaurantId, @PathVariable("ingredientId") Long ingredientId, @RequestBody Boolean upVote) {
-        RatingDTO rating = null;
+        RatingDTO rating;
         try {
             rating = ratingService.rateIngredient(restaurantId, ingredientId, upVote);
         } catch (RestaurantNotFoundException e) {

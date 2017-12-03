@@ -1,5 +1,6 @@
 package pl.ratemyrestaurant.service;
 
+import pl.ratemyrestaurant.dto.FoodTypeDTO;
 import pl.ratemyrestaurant.dto.RestaurantDTO;
 import pl.ratemyrestaurant.dto.RestaurantPIN;
 import pl.ratemyrestaurant.model.UserSearchCircle;
@@ -15,7 +16,7 @@ public interface RestaurantService {
     void addOrUpdateRestaurant(RestaurantDTO restaurantDTO);
     RestaurantDTO getOrRetrieveRestaurantDTOByID(String placeId);
     RestaurantDTO getRestaurantDTOById(String id);
-    RestaurantPIN getRestaurantPINById(String id);
-    Set<RestaurantDTO> getRestaurantsDTOByFoodType(String foodType);
     boolean isRestaurantInDB(String restaurantID);
+
+    RestaurantDTO addFoodType(String restaurantID, FoodTypeDTO foodTypeDTO);
 }
