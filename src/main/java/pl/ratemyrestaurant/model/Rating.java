@@ -17,7 +17,8 @@ public class Rating {
 
     public Rating() {}
 
-    public Rating(Restaurant restaurant, Ingredient ingredient, Thumb thumb) {
+    public Rating(Long id, Restaurant restaurant, Ingredient ingredient, Thumb thumb) {
+        this.id = id;
         this.restaurant = restaurant;
         this.ingredient = ingredient;
         this.thumb = thumb;

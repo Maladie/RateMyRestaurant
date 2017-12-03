@@ -9,6 +9,7 @@ public class RatingDTO {
     private Ingredient ingredient;
     private Restaurant restaurant;
     private Thumb thumb;
+    private Long id;
 
     public RatingDTO() {
     }
@@ -19,6 +20,14 @@ public class RatingDTO {
 
     public void setIngredient(Ingredient ingredient) {
         this.ingredient = ingredient;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Restaurant getRestaurant() {
@@ -45,7 +54,7 @@ public class RatingDTO {
             this.ratingDTO = new RatingDTO();
         }
 
-        public Builder setIngredient(Ingredient ingredient){
+        public Builder setIngredient(Ingredient ingredient) {
             ratingDTO.setIngredient(ingredient);
             return this;
         }
@@ -55,13 +64,18 @@ public class RatingDTO {
             return this;
         }
 
-        public Builder setThumb(Thumb thumb){
+        public Builder setThumb(Thumb thumb) {
             ratingDTO.setThumb(thumb);
             return this;
         }
 
-        public RatingDTO build(){
+        public RatingDTO build() {
             return ratingDTO;
+        }
+
+        public Builder setId(Long id) {
+            ratingDTO.setId(id);
+            return this;
         }
     }
 }
