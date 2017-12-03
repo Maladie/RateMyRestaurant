@@ -6,5 +6,5 @@ import pl.ratemyrestaurant.model.Ingredient;
 public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
 
     Ingredient findByName(String name);
-
+    Boolean existsByName(String name);
 }
