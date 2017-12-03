@@ -6,10 +6,14 @@ import pl.ratemyrestaurant.model.FoodType;
 public class FoodTypeToFoodTypeDTOMapper {
 
     public static FoodTypeDTO mapFoodTypeToFoodTypeDTO(FoodType foodType) {
-        return new FoodTypeDTO(foodType.getName());
+        FoodTypeDTO foodTypeDTO = new FoodTypeDTO(foodType.getName());
+        foodTypeDTO.setId(foodType.getId());
+        return foodTypeDTO;
     }
 
     public static FoodType mapFoodTypeDTOToFoodType(FoodTypeDTO foodTypeDTO) {
-        return new FoodType(foodTypeDTO.getName());
+        FoodType foodType = new FoodType(foodTypeDTO.getName());
+        foodType.setId(foodTypeDTO.getId());
+        return foodType;
     }
 }

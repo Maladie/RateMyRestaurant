@@ -50,7 +50,7 @@ public class FoodTypeController {
             info.setHttpStatusCode(422L);
             info.setInfoCode(APIInfoCodes.ENTITY_ALREADY_EXISTS);
             info.setDesc("FoodType already exists");
-            info.setObject(foodTypeDTO);
+            info.setObject(foodTypeDTO.getName());
             return new ResponseEntity<>(info, HttpStatus.UNPROCESSABLE_ENTITY);
         }
         return new ResponseEntity<>(addedFoodTypeDTO, HttpStatus.CREATED);
