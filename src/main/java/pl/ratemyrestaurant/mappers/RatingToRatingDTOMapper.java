@@ -15,12 +15,13 @@ public class RatingToRatingDTOMapper {
             return null;
         }
         return new RatingDTO.Builder()
+                .setId(rating.getId())
                 .setIngredient(rating.getIngredient())
                 .setRestaurant(rating.getRestaurant())
                 .setThumb(rating.getThumb()).build();
     }
 
     public static Rating ratingDTOToRating(RatingDTO ratingDTO){
-        return new Rating(ratingDTO.getRestaurant(), ratingDTO.getIngredient(), ratingDTO.getThumb());
+        return new Rating(ratingDTO.getId(), ratingDTO.getRestaurant(), ratingDTO.getIngredient(), ratingDTO.getThumb());
     }
 }

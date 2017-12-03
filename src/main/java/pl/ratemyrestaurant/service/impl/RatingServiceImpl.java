@@ -20,7 +20,6 @@ public class RatingServiceImpl implements RatingService {
     private RatingRepository ratingRepository;
     private RestaurantRepository restaurantRepository;
     private IngredientRepository ingredientRepository;
-    //TEMP
     @Autowired
     private RestaurantService restaurantService;
 
@@ -67,7 +66,10 @@ public class RatingServiceImpl implements RatingService {
             }
             Restaurant restaurant = restaurantRepository.findOne(vote.getRestaurantId());
             Ingredient ingredient = ingredientRepository.findOne(vote.getIngredientId());
-            rating = new Rating(restaurant, ingredient, new Thumb());
+            rating = new Rating();
+            rating.setRestaurant(restaurant);
+            rating.setIngredient(ingredient);
+            rating.setThumb(new Thumb());
         }
         rating.getThumb().rate(vote.isGood());
         ratingRepository.save(rating);
@@ -82,7 +84,10 @@ public class RatingServiceImpl implements RatingService {
             restaurant = createRestaurant(restaurantID);
         }
         Ingredient ingredient = ingredientRepository.findOne(ingredientID);
-        Rating rating = new Rating(restaurant, ingredient, new Thumb());
+        Rating rating =  new Rating();
+        rating.setRestaurant(restaurant);
+        rating.setIngredient(ingredient);
+        rating.setThumb(new Thumb());
         ratingRepository.save(rating);
         return RatingToRatingDTOMapper.mapRatingToRatingDto(rating);
     }

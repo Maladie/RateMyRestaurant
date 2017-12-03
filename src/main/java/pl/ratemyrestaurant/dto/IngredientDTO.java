@@ -1,10 +1,18 @@
 package pl.ratemyrestaurant.dto;
 
 public class IngredientDTO {
-
+    private Long id;
     private String name;
 
     public IngredientDTO() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -23,12 +31,17 @@ public class IngredientDTO {
             ingredientDTO = new IngredientDTO();
         }
 
-        public Builder setName(String name){
+        public Builder setId(Long id) {
+            ingredientDTO.setId(id);
+            return this;
+        }
+
+        public Builder setName(String name) {
             ingredientDTO.setName(name);
             return this;
         }
 
-        public IngredientDTO build(){
+        public IngredientDTO build() {
             return ingredientDTO;
         }
     }

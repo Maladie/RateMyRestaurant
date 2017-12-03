@@ -16,8 +16,11 @@ public class RatingFactory {
     }
 
     public Rating getModelRating(){
-
-        return new Rating(getModelRestaurant(), getModelIngredient(), getModelThumb());
+        Rating rating = new Rating();
+        rating.setRestaurant(getModelRestaurant());
+        rating.setIngredient(getModelIngredient());
+        rating.setThumb(getModelThumb());
+        return rating;
     }
 
     private Ingredient getModelIngredient() {

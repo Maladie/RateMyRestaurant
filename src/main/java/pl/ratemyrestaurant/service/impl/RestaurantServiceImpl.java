@@ -5,10 +5,11 @@ import org.springframework.stereotype.Service;
 import pl.ratemyrestaurant.dto.FoodTypeDTO;
 import pl.ratemyrestaurant.dto.RestaurantDTO;
 import pl.ratemyrestaurant.dto.RestaurantPIN;
-import pl.ratemyrestaurant.mappers.FoodTypeToFoodTypeDTOMapper;
+import pl.ratemyrestaurant.exception.NoSuchFoodTypeException;
 import pl.ratemyrestaurant.mappers.PlaceToRestaurantMapper;
 import pl.ratemyrestaurant.mappers.RestaurantToPinMapper;
 import pl.ratemyrestaurant.mappers.RestaurantToRestaurantDTOMapper;
+import pl.ratemyrestaurant.model.FoodType;
 import pl.ratemyrestaurant.model.Rating;
 import pl.ratemyrestaurant.model.Restaurant;
 import pl.ratemyrestaurant.model.UserSearchCircle;
@@ -19,9 +20,7 @@ import pl.ratemyrestaurant.service.RatingService;
 import pl.ratemyrestaurant.service.RestaurantService;
 import se.walkercrou.places.Place;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static pl.ratemyrestaurant.mappers.RestaurantToPinMapper.mapRestaurantToPin;
@@ -66,20 +65,30 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public Set<RestaurantPIN> retrieveRestaurantsInRadiusWithFoodType(UserSearchCircle userSearchCircle, String foodTypeName) {
-        FoodTypeDTO foodTypeDTO = foodTypeService.getFoodTypeDTOByName(foodTypeName);
         Set<RestaurantPIN> restaurantPINSWithFoodType = new HashSet<>();
+        FoodTypeDTO foodTypeDTO;
+        try {
+            foodTypeDTO = foodTypeService.getFoodTypeDTOByName(foodTypeName);
+        } catch (NoSuchFoodTypeException e) {
+            e.printStackTrace();
+            foodTypeDTO = null;
+        }
         //valid foodType else empty Set<RestaurantPIN>
         if (foodTypeDTO != null) {
-            Set<RestaurantPIN> restaurantPINSet = retrieveRestaurantsInRadius(userSearchCircle);
+            // db query
+            List<Restaurant> restaurantsInRadiusWithFood = getRestaurantsInRadiusWithFoodType(foodTypeDTO.getName(), userSearchCircle);
+            restaurantPINSWithFoodType = restaurantsInRadiusWithFood.stream().map(this::transformRestaurantToPIN).collect(Collectors.toSet());
+            // same in java...
+            /*Set<RestaurantPIN> restaurantPINSet = retrieveRestaurantsInRadius(userSearchCircle);
             if (restaurantPINSet.size() > 0) {
                 List<String> restaurantIDs = restaurantPINSet.stream().map(RestaurantPIN::getId).collect(Collectors.toList());
                 List<Restaurant> restaurantsByID = restaurantRepository.findByIdIn(restaurantIDs);
                 // filter only with foodType and map to PINs
                 restaurantPINSWithFoodType = restaurantsByID.stream()
-                        .filter(restaurant -> restaurant.getFoodTypes().contains(FoodTypeToFoodTypeDTOMapper.mapFoodTypeDTOToFoodType(foodTypeDTO)))//get only with foodType
+                        .filter(restaurant -> restaurant.getFoodTypes().stream().anyMatch(foodType -> foodType.getName().equals(foodTypeName)))//get only with foodType
                         .map(this::transformRestaurantToPIN)//map to PINs
                         .collect(Collectors.toSet());
-            }
+            }*/
         }
         return restaurantPINSWithFoodType;
     }
@@ -140,20 +149,27 @@ public class RestaurantServiceImpl implements RestaurantService {
         return mapToRestaurantDto(restaurant, ratings);
     }
 
-    public RestaurantPIN getRestaurantPINById(String id) {
-        return transformRestaurantToPIN(restaurantRepository.findOne(id));
-    }
-
-    @Override
-    public Set<RestaurantDTO> getRestaurantsDTOByFoodType(String foodType) {
-        List<Restaurant> restaurantsByFoodType = restaurantRepository.findAllByFoodTypes_Name(foodType);
-        return restaurantsByFoodType.stream()
-                .map(i -> RestaurantToRestaurantDTOMapper.mapToRestaurantDto(i, getRestaurantRatings(i.getId()))).collect(Collectors.toSet());
-    }
-
     @Override
     public boolean isRestaurantInDB(String restaurantID) {
         return restaurantRepository.exists(restaurantID);
+    }
+
+    // TODO HIGH_PR currently awful workaround
+    @Override
+    public RestaurantDTO addFoodType(String restaurantID, FoodTypeDTO foodTypeDTO) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantID);
+        if (restaurant == null) {
+            restaurant = PlaceToRestaurantMapper.mapToRestaurant(placesConnector.retrievePlaceById(restaurantID));
+        }
+        FoodType foodType = foodTypeService.getFoodTypeByFoodTypeDTO(foodTypeDTO);
+        if (restaurant.getFoodTypes() == null) {
+            restaurant.setFoodTypes(new HashSet<>(Collections.singletonList(foodType)));
+            restaurantRepository.saveAndFlush(restaurant);
+        } else if (restaurant.getFoodTypes().stream().noneMatch(food -> food.getName().equals(foodTypeDTO.getName()))) {
+            restaurant.getFoodTypes().add(foodType);
+            restaurantRepository.saveAndFlush(restaurant);
+        }
+        return RestaurantToRestaurantDTOMapper.mapToRestaurantDto(restaurant, getRestaurantRatings(restaurant.getId()));
     }
 
     private RestaurantPIN transformRestaurantToPIN(Restaurant restaurant) {
@@ -162,5 +178,34 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     private Set<Rating> getRestaurantRatings(String restaurantId) {
         return ratingService.retrieveRestaurantRatings(restaurantId);
+    }
+
+    private List<Restaurant> getRestaurantsInRadiusWithFoodType(String foodTypeName,final UserSearchCircle searchCircle) {
+        final double lat = searchCircle.getLat();
+        final double lng = searchCircle.getLng();
+        final double latInRad = Math.toRadians(lat);
+        final double lngInRad = Math.toRadians(lng);
+        final double radius = searchCircle.getRadius() / 1000; // radius in m
+        final double earthRadiusInKm = 6371;
+
+        double radiusDivEarthDeg = Math.toDegrees(radius / earthRadiusInKm);
+
+        double maxLat = lat + radiusDivEarthDeg;
+        double minLat = lat - radiusDivEarthDeg;
+
+        double asinRadiusDivEarthDeg = Math.toDegrees(Math.toDegrees(radiusDivEarthDeg) / Math.cos(latInRad));
+
+        double maxLng = lng + asinRadiusDivEarthDeg;
+        double minLng = lng - asinRadiusDivEarthDeg;
+
+        List<Restaurant> restaurantsInRadius = restaurantRepository
+                .findRestaurantsByFoodTypeInRadius(minLat, maxLat, minLng, maxLng, latInRad, lngInRad, radius, earthRadiusInKm);
+
+        return restaurantsInRadius.stream()
+                .filter(restaurant ->
+                        restaurant.getFoodTypes().stream()
+                                .anyMatch(foodType ->
+                                        foodType.getName().equalsIgnoreCase(foodTypeName)))
+                .collect(Collectors.toList());
     }
 }

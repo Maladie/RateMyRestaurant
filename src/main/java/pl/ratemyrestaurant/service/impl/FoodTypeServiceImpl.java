@@ -40,6 +40,10 @@ public class FoodTypeServiceImpl implements FoodTypeService {
         throw new NoSuchFoodTypeException(info);
     }
 
+    public FoodType getFoodTypeByFoodTypeDTO(FoodTypeDTO foodTypeDTO) {
+        return foodTypeRepository.findByNameIgnoreCase(foodTypeDTO.getName());
+    }
+
     @Override
     public FoodTypeDTO addNewFoodType(FoodTypeDTO foodTypeDTO) {
         FoodType foodType = foodTypeRepository.findByNameIgnoreCase(foodTypeDTO.getName());

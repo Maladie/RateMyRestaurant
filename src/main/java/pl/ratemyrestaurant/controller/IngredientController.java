@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ratemyrestaurant.dto.IngredientDTO;
-import pl.ratemyrestaurant.model.Info;
+import pl.ratemyrestaurant.exception.APIValidationException;
 import pl.ratemyrestaurant.service.IngredientService;
 
 import java.util.Set;
@@ -22,29 +22,27 @@ public class IngredientController {
     }
 
     @GetMapping
-    public Set<IngredientDTO> getAllIngredients(){
+    public Set<IngredientDTO> getAllIngredients() {
         return ingredientService.getAllIngredientsDTO();
     }
 
     @PostMapping
     public ResponseEntity addIngredient(@RequestBody IngredientDTO ingredientDTO) {
-      IngredientDTO addedIngredientDTO = ingredientService.addIngredient(ingredientDTO);
-      //means already exists
-      if(addedIngredientDTO == null) {
-          Info info = new Info();
-          info.setHttpStatusCode(422L);
-          info.setDesc("Ingredient name already exists");
-          info.setObject(ingredientDTO);
-          return new ResponseEntity<>(info, HttpStatus.UNPROCESSABLE_ENTITY);
-      }
-      return new ResponseEntity<>(addedIngredientDTO, HttpStatus.CREATED);
+        try {
+            IngredientDTO addedIngredientDTO = ingredientService.addIngredient(ingredientDTO);
+            return new ResponseEntity<>(addedIngredientDTO, HttpStatus.CREATED);
+        } catch (APIValidationException e) {
+            System.out.println(e.getInfo().getDesc() + " " + e.getInfo().getInfoCode().getValue());
+            HttpStatus status = e.getInfo().getHttpStatusCode() == 422L ? HttpStatus.UNPROCESSABLE_ENTITY : HttpStatus.BAD_REQUEST;
+            return new ResponseEntity<>(e.getInfo(), status);
+        }
     }
 
     @GetMapping(value = "/{ingredientId}")
     public ResponseEntity<IngredientDTO> getIngredientById(@PathVariable Long ingredientId) {
         IngredientDTO ingredientDTOById = ingredientService.getIngredientDTOById(ingredientId);
-        if(ingredientDTOById != null) {
-            return  new ResponseEntity<>(ingredientDTOById,  HttpStatus.OK);
+        if (ingredientDTOById != null) {
+            return new ResponseEntity<>(ingredientDTOById, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
